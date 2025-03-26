@@ -4,12 +4,14 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
-import ProductDetailHeader from "../module/product/ProductDetailHeader";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../util/colors";
 import { AntDesign, EvilIcons, Foundation, Ionicons } from "@expo/vector-icons";
+import MyButton from "../component/MyButton";
+import HeaderNavigation from "../component/HeaderNavigation";
 
 const car = {
   id: "room1",
@@ -28,7 +30,8 @@ const ProductCheckoutScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <ProductDetailHeader title="Resquest to book" navigation={navigation} />
+        <HeaderNavigation title="Resquest to book" navigation={navigation} />
+        {/* <ProductDetailHeader title="Resquest to book" navigation={navigation} /> */}
         {/* Product info */}
         <View
           style={{
@@ -114,6 +117,25 @@ const ProductCheckoutScreen = ({ route }) => {
             <Text>Los Angels, CA 91602</Text>
           </View>
         </CheckoutSection>
+        <CheckoutSection title="Coupon">
+          <View style={{ flexDirection: "row", gap: 6 }}>
+            <TextInput
+              placeholder="Enter your coupon"
+              style={{
+                flex: 9.5,
+                borderWidth: 1,
+                borderColor: colors.textGray,
+                fontSize: 20,
+                height: 48,
+                fontSize: 12,
+                borderRadius: 8,
+                paddingLeft: 15,
+                textAlignVertical: "center",
+              }}
+            ></TextInput>
+            <MyButton title="Apply"></MyButton>
+          </View>
+        </CheckoutSection>
         <CheckoutSection title="Payment">
           <View
             style={{
@@ -121,7 +143,9 @@ const ProductCheckoutScreen = ({ route }) => {
               // flexDirection: "row",
               // justifyContent: "space-evenly",
               alignItems: "center",
-              padding: 15,
+              // padding: 15,
+              paddingHorizontal: 15,
+              paddingTop: 15,
               borderRadius: 8,
             }}
           >
@@ -165,10 +189,38 @@ const ProductCheckoutScreen = ({ route }) => {
               <Text style={{ fontWeight: 500, fontSize: 14 }}>-</Text>
             </View>
             <View
-              style={{ height: 0.5, width: "100%", backgroundColor: "#777" }}
+              style={{
+                height: 0.5,
+                width: "100%",
+                backgroundColor: "#777",
+                marginBottom: 16,
+              }}
             ></View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 16,
+              }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: 500 }}>
+                Total Amount
+              </Text>
+              <Text style={{ fontWeight: 500, fontSize: 16 }}>11,058.27</Text>
+            </View>
           </View>
         </CheckoutSection>
+
+        <MyButton
+          buttonStyle={{
+            marginHorizontal: 15,
+            marginTop: 28,
+            paddingVertical: 16,
+          }}
+          title="Check out"
+          textStyle={{ fontWeight: 800 }}
+        ></MyButton>
       </ScrollView>
       {/* <Text>ProductCheckout</Text> */}
     </SafeAreaView>

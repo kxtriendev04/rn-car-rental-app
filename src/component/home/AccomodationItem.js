@@ -8,6 +8,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { formatPrice } from "../../util/formatValue";
 
 const AccomodationItem = ({ data, type = "normal" }) => {
   const isNormal = type == "normal";
@@ -117,7 +118,8 @@ const AccomodationItem = ({ data, type = "normal" }) => {
                 letterSpacing: -1,
               }}
             >
-              1.000.000 VNĐ
+              {formatPrice(data?.pricingDecreased) + " "}
+              VNĐ
             </Text>
           </View>
           {/* <Text

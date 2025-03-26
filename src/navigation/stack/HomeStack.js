@@ -5,6 +5,7 @@ import HomeScreen from "../../screens/HomeScreen";
 import ProductDetailScreen from "../../screens/ProductDetailScreen";
 import AcommodationMap from "../../screens/AcommodationMap";
 import ProductCheckoutScreen from "../../screens/ProductCheckoutScreen";
+import TripDateTimePicker from "../../screens/TripDateTimePickerScreen";
 
 const Stack = createStackNavigator();
 const HomeStack = () => {
@@ -29,6 +30,12 @@ const HomeStack = () => {
       <Stack.Screen
         name="AcommodationMap"
         component={AcommodationMap}
+        options={{ headerShown: false }}
+      />
+      {/* TripDateTimePicker */}
+      <Stack.Screen
+        name="TripDateTimePicker"
+        component={TripDateTimePicker}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

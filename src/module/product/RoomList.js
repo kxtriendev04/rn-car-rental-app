@@ -32,12 +32,12 @@ const RoomList = ({ rooms = [] }) => {
           color: colors.mainColor,
         }}
       >
-        Những xe khác của Triển
+        Những xe nổi bật khác của Triển
       </Text>
       {/* Schedule */}
-      <View style={{ height: 50, backgroundColor: "white" }}>
+      {/* <View style={{ height: 50, backgroundColor: "white" }}>
         <Text>Lịch</Text>
-      </View>
+      </View> */}
       {/* Room Item */}
       <View>
         {rooms &&
@@ -199,8 +199,8 @@ const RoomItem = ({ room }) => {
           </Text>
         </View>
         <MyButton
-          onPress={() => navigation.navigate("ProductCheckout")}
-          title="Đặt"
+          onPress={() => navigation.navigate("ProductDetail", { id: 1 })}
+          title="Chi tiết"
         ></MyButton>
       </View>
     </View>

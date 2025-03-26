@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import colors from "../../util/colors";
 import { useNavigation } from "@react-navigation/native";
+import { formatPrice } from "../../util/formatValue";
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -175,7 +176,7 @@ const Item = ({ data }) => {
             }}
           >
             {" "}
-            đ {data?.pricingDecreased}
+            đ {formatPrice(data?.pricingDecreased)}
           </Text>
           <Text
             style={{
@@ -184,7 +185,7 @@ const Item = ({ data }) => {
               letterSpacing: -1,
             }}
           >
-            đ {data?.historicalCost}
+            đ {formatPrice(data?.historicalCost)}
           </Text>
         </View>
       </View>

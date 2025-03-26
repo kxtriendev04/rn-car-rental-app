@@ -30,12 +30,13 @@ import {
 import colors from "../util/colors";
 import FeatureItem from "../component/FeatureItem";
 import MyButton from "../component/MyButton";
-import ProductDetailHeader from "../module/product/ProductDetailHeader";
 import AccomodationRated from "../module/product/AccomodationRated";
 import AcommodationDesc from "../module/product/AcommodationDesc";
 import RoomList from "../module/product/RoomList";
 import ImageList from "../component/ImageList";
 import AcommodationLocation from "../module/product/AcommodationLocation";
+import HeaderNavigation from "../component/HeaderNavigation";
+import { formatDate, formatPrice } from "../util/formatValue";
 
 // Giả sử bạn có danh sách dữ liệu để lấy chi tiết sản phẩm
 
@@ -175,8 +176,17 @@ const data = {
     },
   ],
 };
-
+const DateNow = new Date().toISOString().split("T")[0];
+const Tomorrow = new Date(new Date().setDate(new Date().getDate() + 2))
+  .toISOString()
+  .split("T")[0];
 const ProductDetailScreen = ({ route }) => {
+  const [time, setTime] = useState({
+    pickupDate: DateNow,
+    returnDate: Tomorrow,
+    pickupTime: 5,
+    returnTime: 22,
+  });
   const navigation = useNavigation();
   // Lấy id từ tham số navigation
   const { id } = route.params;
@@ -192,22 +202,14 @@ const ProductDetailScreen = ({ route }) => {
     };
   }, [navigation, route]);
 
-  //
-  // Thêm ref cho ScrollView
-  const scrollViewRef = useRef(null);
-  // State để lưu tọa độ Y của RoomList
-  const [roomListY, setRoomListY] = useState(null);
-  // Hàm cuộn đến RoomList
-  const scrollToRoomList = () => {
-    if (scrollViewRef.current && roomListY !== null) {
-      scrollViewRef.current.scrollTo({ y: roomListY, animated: true });
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView ref={scrollViewRef} style={{ marginBottom: 100 }}>
-        <ProductDetailHeader title={data.title} navigation={navigation} />
+      <ScrollView style={{ marginBottom: 100 }}>
+        <HeaderNavigation
+          title={data.title}
+          navigation={navigation}
+          rightIcon=<Feather name="save" size={24} color="black" />
+        />
         <View style={{ backgroundColor: colors.whiteColor, paddingBottom: 0 }}>
           <ImageList images={data?.images}></ImageList>
           <FlatList
@@ -247,7 +249,7 @@ const ProductDetailScreen = ({ route }) => {
                   color: "orange",
                 }}
               >
-                {data.pricingDecreased}
+                {formatPrice(data.pricingDecreased)}
               </Text>{" "}
               VNĐ/day
             </Text>
@@ -268,7 +270,9 @@ const ProductDetailScreen = ({ route }) => {
             <Text>{data.location}</Text>
           </View>
         </View>
-
+        <View
+          style={{ height: 15, backgroundColor: colors.greyBackground }}
+        ></View>
         {/* Host info */}
         <View
           style={{
@@ -340,6 +344,74 @@ const ProductDetailScreen = ({ route }) => {
             </View>
           </View>
         </View>
+
+        <View
+          style={{ height: 15, backgroundColor: colors.greyBackground }}
+        ></View>
+        {/* Trip dates */}
+        <View
+          style={{
+            backgroundColor: colors.whiteColor,
+            paddingHorizontal: 15,
+            paddingBottom: 15,
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: 600,
+              fontSize: 17,
+              marginBottom: 16,
+              marginTop: 22,
+            }}
+          >
+            Trip dates
+          </Text>
+          <View
+            style={{
+              // padding: 10,
+              borderRadius: 16,
+              // backgroundColor: "red",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#e7e7e7",
+              paddingVertical: 18,
+              paddingHorizontal: 16,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={24}
+                color={colors.mainColor}
+              />
+              <Text style={{ fontWeight: 500 }}>
+                {formatDate(time.pickupDate)}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                gap: 8,
+                alignItems: "center",
+              }}
+              onPress={() =>
+                navigation.navigate("TripDateTimePicker", { time, setTime })
+              }
+            >
+              <Text style={{ fontWeight: 500, color: colors.mainColor }}>
+                Change
+              </Text>
+              <AntDesign name="right" size={16} color={colors.mainColor} />
+            </TouchableOpacity>
+          </View>
+        </View>
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
         ></View>
@@ -365,10 +437,10 @@ const ProductDetailScreen = ({ route }) => {
         {/* <RoomList rooms={data.rooms}></RoomList> */}
         {/* Room List với onLayout để lấy tọa độ Y */}
         <View
-          onLayout={(event) => {
-            const { y } = event.nativeEvent.layout;
-            setRoomListY(y);
-          }}
+        // onLayout={(event) => {
+        //   const { y } = event.nativeEvent.layout;
+        //   setRoomListY(y);
+        // }}
         >
           <RoomList rooms={data.rooms}></RoomList>
         </View>
@@ -527,12 +599,13 @@ const ProductDetailScreen = ({ route }) => {
               Giá bắt đầu từ
             </Text>
             <Text style={{ fontSize: 16, color: "orange", fontWeight: 600 }}>
-              {data.pricingDecreased} VND
+              {formatPrice(data.pricingDecreased)} VND
             </Text>
           </View>
           <MyButton
-            title="Chọn xe"
-            onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
+            onPress={() => navigation.navigate("ProductCheckout")}
+            title="Đặt xe"
+            // onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
             buttonStyle={{ paddingVertical: 16 }}
           ></MyButton>
         </View>

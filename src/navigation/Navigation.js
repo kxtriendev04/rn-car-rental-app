@@ -6,10 +6,16 @@ import ProfileScreen from "../screens/ProfileScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AntDesign, FontAwesome6, Ionicons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome6,
+  Fontisto,
+  Ionicons,
+} from "@expo/vector-icons";
 import HomeStack from "./stack/HomeStack";
 import colors from "../util/colors";
 import NewFeedStack from "./stack/NewFeedStack";
+import ChatStack from "./stack/ChatStack";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -87,28 +93,7 @@ function MainTabs() {
         options={{
           tabBarLabel: "Xe đã đặt",
           tabBarIcon: ({ color }) => (
-            // <View
-            //   style={{
-            //     position: "absolute",
-            //     bottom: 0, // space from bottombar
-            //     height: 70,
-            //     width: 70,
-            //     borderRadius: 68,
-            //     justifyContent: "center",
-            //     alignItems: "center",
-            //   }}
-            // >
-            //   <View
-            //     style={{
-            //       padding: 10,
-            //       backgroundColor: "white",
-            //       borderRadius: "100%",
-            //     }}
-            //   >
-            // <AntDesign name="book" size={26} color={color} />
             <FontAwesome6 name="car-rear" size={22} color={color} />
-            //   </View>
-            // </View>
           ),
         }}
         component={HomeScreen}
@@ -124,6 +109,17 @@ function MainTabs() {
         component={HomeScreen}
       />
 
+      <Tab.Screen
+        name="Chat"
+        options={{
+          tabBarLabel: "Chat",
+          tabBarIcon: ({ color }) => (
+            <Fontisto name="hipchat" size={24} color={color} />
+          ),
+          headerShown: false,
+        }}
+        component={ChatStack}
+      />
       <Tab.Screen
         name="Profile"
         options={{

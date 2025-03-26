@@ -2,19 +2,35 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
-const ProductDetailHeader = ({ navigation, title }) => {
+const HeaderNavigation = ({
+  navigation,
+  title = "",
+  leftIcon = <AntDesign name="left" size={24} color="black" />,
+  rightIcon,
+  leftOnPress = () => navigation.goBack(),
+  rightOnPress = () => {},
+}) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity
         style={styles.headerButtonContainer}
-        onPress={() => navigation.goBack()}
+        onPress={leftOnPress}
       >
-        <AntDesign name="left" size={24} color="black" />
+        {leftIcon}
+        {/* <AntDesign name="left" size={24} color="black" /> */}
       </TouchableOpacity>
       <Text style={styles.headerTitle}>{title}</Text>
-      <TouchableOpacity style={styles.headerButtonContainer}>
-        <Feather name="save" size={24} color="black" />
-      </TouchableOpacity>
+      {rightIcon ? (
+        <TouchableOpacity
+          style={styles.headerButtonContainer}
+          onPress={rightOnPress}
+        >
+          {/* <Feather name="save" size={24} color="black" /> */}
+          {rightIcon}
+        </TouchableOpacity>
+      ) : (
+        <View style={{ padding: 8 }}></View>
+      )}
     </View>
   );
 };
@@ -44,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductDetailHeader;
+export default HeaderNavigation;
