@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import { Calendar } from "react-native-calendars";
 import Slider from "@react-native-community/slider";
 import HeaderNavigation from "../component/HeaderNavigation";
@@ -8,43 +14,24 @@ import { SafeAreaView } from "react-native";
 import colors from "../util/colors";
 import { AntDesign } from "@expo/vector-icons";
 import MyButton from "../component/MyButton";
+import { TimeContext } from "../context/TimeContext";
+import { formatTime } from "../util/formatValue";
+import TimePicker from "../component/TimePicker";
+
+const timeOptions = ["23:00", "23:30", "00:00"];
 
 const TripDateTimePicker = ({ route, navigation }) => {
-  const { time, setTime } = route.params;
-  //   useEffect(() => {
-  //     // Cập nhật lại danh sách ngày đã chọn khi component được render lần đầu
-  //     setPickupDate(DateNow);
-  //     setReturnDate(Tomorrow);
-  //   }, []);
+  const { time, setTime } = useContext(TimeContext);
+  const [isSheetVisible, setSheetVisible] = useState(false);
+  const [selectedTime, setSelectedTime] = useState("Chưa chọn");
 
-  const formatTime = (value) => {
-    const hours = Math.floor(value);
-    const minutes = Math.round((value % 1) * 60);
-    return `${hours}:${minutes.toString().padStart(2, "0")} ${
-      hours >= 12 ? "PM" : "AM"
-    }`;
-  };
-
+  // console.log(time);
   return (
     <SafeAreaView style={styles.container}>
       <HeaderNavigation
         title="Select Trip Date & Time"
         navigation={navigation}
       ></HeaderNavigation>
-
-      {/* Date Selection */}
-      {/* <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>
-          {pickupDate}
-          {" → "}
-          {returnDate}
-        </Text>
-        <Text style={styles.timeText}>
-          {formatTime(pickupTime)}
-          {" → "}
-          {formatTime(returnTime)}
-        </Text>
-      </View> */}
 
       <View
         style={{
@@ -84,12 +71,14 @@ const TripDateTimePicker = ({ route, navigation }) => {
       {/* Calendar */}
       <Calendar
         current={time.pickupDate}
+        minDate={new Date().toISOString().split("T")[0]}
         markedDates={getMarkedDates(time.pickupDate, time.returnDate)}
         onDayPress={(day) => {
           if (!time.pickupDate || time.returnDate) {
-            setTime({ pickupDate: day.dateString, returnDate: "" });
+            setTime({ ...time, pickupDate: day.dateString, returnDate: "" });
           } else if (time.pickupDate > day.dateString) {
             setTime({
+              ...time,
               pickupDate: day.dateString,
               returnDate: time.pickupDate,
             });
@@ -112,7 +101,7 @@ const TripDateTimePicker = ({ route, navigation }) => {
       />
 
       {/* Time Picker */}
-      <View style={styles.sliderContainer}>
+      {/* <View style={styles.sliderContainer}>
         <Text style={styles.sliderLabel}>Pickup</Text>
         <Slider
           style={styles.slider}
@@ -126,9 +115,78 @@ const TripDateTimePicker = ({ route, navigation }) => {
           thumbTintColor="green"
         />
         <Text>{formatTime(time.pickupTime)}</Text>
+      </View> */}
+      <View style={{ margin: 15, flexDirection: "row", gap: 10 }}>
+        <Pressable
+          onPress={() => setSheetVisible(true)}
+          style={{
+            flex: 1,
+            borderColor: "#e7e7e7",
+            borderWidth: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 10,
+            borderRadius: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ color: colors.textGray }}>
+            Nhận xe :{" "}
+            <Text style={{ fontSize: 15, fontWeight: 500, color: "black" }}>
+              {formatTime(time.pickupTime)}
+            </Text>
+          </Text>
+          <AntDesign name="down" size={20} color="black" />
+        </Pressable>
+        <Pressable
+          onPress={() => setSheetVisible(true)}
+          style={{
+            flex: 1,
+            borderColor: "#e7e7e7",
+            borderWidth: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 10,
+            borderRadius: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ color: colors.textGray }}>
+            Trả xe :{" "}
+            <Text style={{ fontSize: 15, fontWeight: 500, color: "black" }}>
+              {formatTime(time.returnTime)}
+            </Text>
+          </Text>
+          <AntDesign name="down" size={20} color="black" />
+        </Pressable>
       </View>
+      <Text
+        style={{
+          backgroundColor: colors.greyBackground,
+          width: "100%",
+          padding: 15,
+          marginBottom: 8,
+          marginHorizontal: 15,
+          borderRadius: 10,
+          color: "#333",
+          fontSize: 13,
+        }}
+      >
+        Thời gian trả xe: 0h - {formatTime(time.pickupTime)}
+      </Text>
 
-      <View style={styles.sliderContainer}>
+      {/* <TouchableOpacity
+        style={styles.button}
+        onPress={() => setSheetVisible(true)}
+      >
+        <Text style={styles.buttonText}>Mở chọn giờ</Text>
+      </TouchableOpacity> */}
+      <TimePicker
+        isVisible={isSheetVisible}
+        onClose={() => setSheetVisible(false)}
+        onSelectTime={(time) => setSelectedTime(time)}
+      />
+      {/* <View style={styles.sliderContainer}>
         <Text style={styles.sliderLabel}>Return</Text>
         <Slider
           style={styles.slider}
@@ -142,7 +200,7 @@ const TripDateTimePicker = ({ route, navigation }) => {
           thumbTintColor="green"
         />
         <Text>{formatTime(time.returnTime)}</Text>
-      </View>
+      </View> */}
 
       {/* Save Button */}
       <MyButton

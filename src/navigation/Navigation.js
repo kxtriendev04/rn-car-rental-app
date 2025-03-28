@@ -16,6 +16,7 @@ import HomeStack from "./stack/HomeStack";
 import colors from "../util/colors";
 import NewFeedStack from "./stack/NewFeedStack";
 import ChatStack from "./stack/ChatStack";
+import { TimeProvider } from "../context/TimeContext";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -127,6 +128,7 @@ function MainTabs() {
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color={color} />
           ),
+          headerShown: false,
         }}
         component={ProfileScreen}
       />
@@ -139,10 +141,12 @@ const RootStack = createStackNavigator();
 export default function Navigation() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name="Auth" component={AuthNavigator} />
-        <RootStack.Screen name="MainTabs" component={MainTabs} />
-      </RootStack.Navigator>
+      <TimeProvider>
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+          <RootStack.Screen name="Auth" component={AuthNavigator} />
+          <RootStack.Screen name="MainTabs" component={MainTabs} />
+        </RootStack.Navigator>
+      </TimeProvider>
     </NavigationContainer>
   );
 }

@@ -1,5 +1,6 @@
 const colors = {
   mainColor: "#32D34B",
+  darkMainColor: "#B0B0B0",
   lightMainColor: "#E3E4FD",
   lightLightMainColor: "#f5fdf6",
   whiteColor: "#fff",
@@ -8,6 +9,7 @@ const colors = {
   blue: "#5392F9",
   borderColor: "#ededed",
   greyBackground: "#f9f9f9",
+  mainBackgroundColor: "#99f099",
 };
 
 export default colors;

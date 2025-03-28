@@ -24,6 +24,7 @@ const AccomodationRated = ({ rated = 1, ratedNumber = 1, navigation }) => {
           Xếp hạng & Đánh giá
         </Text>
         <TouchableOpacity
+          onPress={() => navigation.navigate("ReviewScreen")}
           style={{
             flexDirection: "row",
             alignItems: "center",

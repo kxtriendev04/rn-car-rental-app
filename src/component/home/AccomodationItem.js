@@ -118,8 +118,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
                 letterSpacing: -1,
               }}
             >
-              {formatPrice(data?.pricingDecreased) + " "}
-              VNĐ
+              {formatPrice(data?.pricingDecreased)}k
             </Text>
           </View>
           {/* <Text

@@ -13,7 +13,7 @@ import {
   getFocusedRouteNameFromRoute,
   useNavigation,
 } from "@react-navigation/native";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -36,7 +36,15 @@ import RoomList from "../module/product/RoomList";
 import ImageList from "../component/ImageList";
 import AcommodationLocation from "../module/product/AcommodationLocation";
 import HeaderNavigation from "../component/HeaderNavigation";
-import { formatDate, formatPrice } from "../util/formatValue";
+import {
+  calculateDays,
+  formatDates,
+  formatPrice,
+  formatTime,
+} from "../util/formatValue";
+import { TimeContext } from "../context/TimeContext";
+import RadioButton from "../component/RadioButton";
+import AccomodationItem from "../component/home/AccomodationItem";
 
 // Giả sử bạn có danh sách dữ liệu để lấy chi tiết sản phẩm
 
@@ -74,15 +82,15 @@ const data = {
   feature: [
     {
       title: "Không gian thoải mái",
-      icon: <Foundation name="social-myspace" size={24} color="black" />,
+      icon: <Foundation name="social-myspace" size={20} color="black" />,
     },
     {
       title: "Số tự động",
-      icon: <EvilIcons name="gear" size={24} color="black" />,
+      icon: <EvilIcons name="gear" size={20} color="black" />,
     },
     {
       title: "Giá rẻ",
-      icon: <Ionicons name="pricetags-outline" size={24} color="black" />,
+      icon: <Ionicons name="pricetags-outline" size={20} color="black" />,
     },
     {
       title: "7.5",
@@ -92,102 +100,51 @@ const data = {
   rated: "7.5",
   rooms: [
     {
-      id: "room1",
-      area: 2007,
-      bedNumber: 2,
-      name: "Lamborghini Revuelto",
-      price: 1500000,
-      images: [
-        "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-        "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-        "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-      ],
-      features: [
-        {
-          title: "Không gian thoải mái",
-          icon: <Foundation name="social-myspace" size={24} color="black" />,
-        },
-        {
-          title: "Số tự động",
-          icon: <EvilIcons name="gear" size={24} color="black" />,
-        },
-        {
-          title: "Giá rẻ",
-          icon: <Ionicons name="pricetags-outline" size={24} color="black" />,
-        },
-        {
-          title: "7.5",
-          icon: <AntDesign name="star" size={16} color="orange" />,
-        },
-      ],
+      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+      title: "Tesla Model X",
+      img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
+      discount: 20,
+      star: 3,
+      location: "Đống Đa, Hà Nội",
+      historicalCost: 1620370,
+      pricingDecreased: 1215000,
+      ratedNumber: 14,
+      feature: "Free breakfast",
+      rated: "7.5 Very good",
     },
     {
-      id: "room2",
-      area: 2018,
-      bedNumber: 1,
-      name: "Lamborghini Veneno Roadster",
-      price: 1200000,
-      images: [
-        "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-        "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-        "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-        "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-      ],
-      features: [
-        {
-          title: "Two single beds",
-          icon: <MaterialIcons name="single-bed" size={18} color="black" />,
-        },
-        {
-          title: "Garden view",
-          icon: <MaterialIcons name="grass" size={18} color="black" />,
-        },
-        {
-          title: "Air conditioning",
-          icon: <MaterialIcons name="ac-unit" size={18} color="black" />,
-        },
-      ],
+      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+      title: "Tesla Model 3",
+      img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
+      discount: 20,
+      star: 3,
+      location: "Cầu giấy, Hà Nội",
+      historicalCost: 1620370,
+      pricingDecreased: 1115000,
+      ratedNumber: 304,
+      feature: "Good location",
+      rated: "8.0 Execllent",
     },
     {
-      id: "room3",
-      area: 2010,
-      bedNumber: 2,
-      name: "Lamborghini Temerario",
-      price: 2000000,
-      images: [
-        "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-        "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-        "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-      ],
-      features: [
-        {
-          title: "King bed",
-          icon: <MaterialIcons name="hotel" size={18} color="black" />,
-        },
-        {
-          title: "Private balcony",
-          icon: <MaterialIcons name="balcony" size={18} color="black" />,
-        },
-        {
-          title: "Mini bar",
-          icon: <MaterialIcons name="local-bar" size={18} color="black" />,
-        },
-      ],
+      id: "58694a0f-3da1-471f-bd96-145571e29d72",
+      title: "Tesla Model 3",
+      img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
+      discount: 25,
+      star: 4,
+      location: "Thanh Xuân, Hà Nội",
+      historicalCost: 1078210,
+      pricingDecreased: 999000,
+      ratedNumber: 106,
+      feature: "Good reviews",
+      rated: "10.0 Exceptional",
     },
   ],
 };
-const DateNow = new Date().toISOString().split("T")[0];
-const Tomorrow = new Date(new Date().setDate(new Date().getDate() + 2))
-  .toISOString()
-  .split("T")[0];
+
 const ProductDetailScreen = ({ route }) => {
-  const [time, setTime] = useState({
-    pickupDate: DateNow,
-    returnDate: Tomorrow,
-    pickupTime: 5,
-    returnTime: 22,
-  });
   const navigation = useNavigation();
+  const { time } = useContext(TimeContext);
+  const [selectedValue, setSelectedValue] = useState("Tôi tự đến lấy xe");
   // Lấy id từ tham số navigation
   const { id } = route.params;
 
@@ -201,14 +158,15 @@ const ProductDetailScreen = ({ route }) => {
       navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
     };
   }, [navigation, route]);
+  // console.log(time);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={{ marginBottom: 100 }}>
+      <ScrollView style={{ marginBottom: 0 }}>
         <HeaderNavigation
           title={data.title}
           navigation={navigation}
-          rightIcon=<Feather name="save" size={24} color="black" />
+          rightIcon=<AntDesign name="hearto" size={24} color="black" />
         />
         <View style={{ backgroundColor: colors.whiteColor, paddingBottom: 0 }}>
           <ImageList images={data?.images}></ImageList>
@@ -244,14 +202,14 @@ const ProductDetailScreen = ({ route }) => {
             <Text style={{}}>
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: 600,
-                  color: "orange",
+                  color: colors.mainColor,
                 }}
               >
-                {formatPrice(data.pricingDecreased)}
-              </Text>{" "}
-              VNĐ/day
+                {formatPrice(data.pricingDecreased)}k
+              </Text>
+              <Text style={{ fontSize: 13 }}>/day</Text>
             </Text>
           </View>
           {/* Star */}
@@ -289,7 +247,7 @@ const ProductDetailScreen = ({ route }) => {
               marginTop: 22,
             }}
           >
-            Host
+            Chủ xe
           </Text>
           <View
             style={{
@@ -345,80 +303,177 @@ const ProductDetailScreen = ({ route }) => {
           </View>
         </View>
 
-        <View
-          style={{ height: 15, backgroundColor: colors.greyBackground }}
-        ></View>
         {/* Trip dates */}
         <View
           style={{
+            // marginHorizontal: 15,
             backgroundColor: colors.whiteColor,
             paddingHorizontal: 15,
-            paddingBottom: 15,
+            paddingBottom: 20,
+            // marginBottom: 8,
           }}
         >
-          <Text
-            style={{
-              fontWeight: 600,
-              fontSize: 17,
-              marginBottom: 16,
-              marginTop: 22,
-            }}
-          >
-            Trip dates
-          </Text>
           <View
             style={{
-              // padding: 10,
-              borderRadius: 16,
-              // backgroundColor: "red",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              borderWidth: 1,
-              borderColor: "#e7e7e7",
-              paddingVertical: 18,
-              paddingHorizontal: 16,
+              // marginHorizontal: 15,
+              backgroundColor: colors.greyBackground,
+              paddingHorizontal: 15,
+              borderRadius: 14,
+              // paddingBottom: 15,
             }}
           >
+            <Text
+              style={{
+                fontWeight: 600,
+                fontSize: 17,
+                marginBottom: 16,
+                marginTop: 22,
+              }}
+            >
+              Thời gian thuê xe
+            </Text>
             <View
               style={{
-                flexDirection: "row",
-                gap: 8,
-                alignItems: "center",
+                // padding: 10,
+                borderRadius: 16,
+                // backgroundColor: "red",
+                // flexDirection: "row",
+
+                borderWidth: 1,
+                borderColor: "#e7e7e7",
+                paddingVertical: 18,
+                paddingHorizontal: 16,
               }}
             >
-              <Ionicons
-                name="calendar-outline"
-                size={24}
-                color={colors.mainColor}
-              />
-              <Text style={{ fontWeight: 500 }}>
-                {formatDate(time.pickupDate)}
-              </Text>
+              <View
+                style={{
+                  width: "100%",
+                  // backgroundColor: "red",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name="calendar-outline"
+                    size={24}
+                    color={colors.mainColor}
+                  />
+                  <Text style={{ fontWeight: 600, fontSize: 15 }}>
+                    {calculateDays(time)} ngày
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                  onPress={() => navigation.navigate("TripDateTimePicker")}
+                >
+                  <Text style={{ fontWeight: 500, color: colors.mainColor }}>
+                    Change
+                  </Text>
+                  <AntDesign name="right" size={16} color={colors.mainColor} />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 12,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                      color: colors.textGray,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Nhận xe
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                    }}
+                  >
+                    {formatTime(time.pickupTime)} {formatDates(time.pickupDate)}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                      color: colors.textGray,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Trả xe
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                    }}
+                  >
+                    {formatTime(time.returnTime)} {formatDates(time.returnDate)}
+                  </Text>
+                </View>
+              </View>
+              {/* <Text style={{ fontWeight: 500 }}>
+                {formatDates(time.pickupDate, time.returnDate)}
+              </Text> */}
             </View>
-            <TouchableOpacity
+            <Text
               style={{
-                flexDirection: "row",
-                gap: 8,
-                alignItems: "center",
+                fontWeight: 600,
+                fontSize: 17,
+                marginBottom: 16,
+                marginTop: 22,
               }}
-              onPress={() =>
-                navigation.navigate("TripDateTimePicker", { time, setTime })
-              }
             >
-              <Text style={{ fontWeight: 500, color: colors.mainColor }}>
-                Change
-              </Text>
-              <AntDesign name="right" size={16} color={colors.mainColor} />
-            </TouchableOpacity>
+              Địa điểm giao nhận xe
+            </Text>
+            <View
+              style={{
+                backgroundColor: colors.greyBackground,
+                paddingBottom: 15,
+                borderRadius: 12,
+              }}
+            >
+              <View>
+                {/* <Text>Tự đến lấy xe</Text> */}
+                <RadioButton
+                  options={[
+                    {
+                      name: "Tôi tự đến lấy xe",
+                      location: data.location,
+                    },
+                    {
+                      name: "Tôi muốn được giao xe tận nơi",
+                      location: data.location,
+                    },
+                  ]}
+                  selected={selectedValue}
+                  onSelect={setSelectedValue}
+                ></RadioButton>
+              </View>
+            </View>
           </View>
         </View>
-        <View
-          style={{ height: 15, backgroundColor: colors.greyBackground }}
-        ></View>
+
         {/* Acommodation Rated */}
         <AccomodationRated
           ratedNumber={data.ratedNumber}
           rated={data.rated}
+          navigation={navigation}
         ></AccomodationRated>
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
@@ -433,28 +488,99 @@ const ProductDetailScreen = ({ route }) => {
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
         ></View>
-        {/* Room List */}
-        {/* <RoomList rooms={data.rooms}></RoomList> */}
-        {/* Room List với onLayout để lấy tọa độ Y */}
-        <View
-        // onLayout={(event) => {
-        //   const { y } = event.nativeEvent.layout;
-        //   setRoomListY(y);
-        // }}
-        >
-          <RoomList rooms={data.rooms}></RoomList>
-        </View>
-        <View
-          style={{ height: 15, backgroundColor: colors.greyBackground }}
-        ></View>
         {/* Acommodation Privacy*/}
         <View
           style={{
             borderRadius: 15,
             backgroundColor: colors.whiteColor,
-            padding: 10,
+            padding: 15,
           }}
         >
+          {/* Giấy tờ */}
+          <View style={{ marginBottom: 30 }}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: 600,
+                marginBottom: 12,
+              }}
+            >
+              Giấy tờ thuê xe
+            </Text>
+            <Text style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
+              Chọn 1 trong 2 hình thức
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
+              <AntDesign
+                name="idcard"
+                size={22}
+                color={colors.textGray}
+                style={{ width: 30 }}
+              />
+              <Text style={{ color: colors.textColor }}>
+                {"GPLX (đối chiếu) & CCCD (đối chiếu VNeID)"}
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <FontAwesome5
+                name="passport"
+                size={22}
+                color={colors.textGray}
+                style={{ width: 30 }}
+              />
+              <Text style={{ color: colors.textColor }}>
+                {"GPLX (đối chiếu) & Passport (Giữ lại)"}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{ height: 1, backgroundColor: "#e7e7e7", marginBottom: 16 }}
+          ></View>
+          <View style={{ marginBottom: 30 }}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: 600,
+                marginBottom: 12,
+              }}
+            >
+              Tài sản thế chấp
+            </Text>
+            <View>
+              <Text
+                style={{
+                  color: colors.ttextColorextGray,
+                  lineHeight: 22,
+                  fontSize: 14,
+                  paddingRight: 30,
+                }}
+              >
+                {"30 triệu (tiền mặt/chuyển khoản cho chủ xe khi nhận xe) "}
+              </Text>
+              <Text
+                style={{
+                  color: colors.textColor,
+                  lineHeight: 22,
+                  fontSize: 14,
+                  paddingRight: 30,
+                }}
+              >
+                {"hoặc xe máy (kèm cà vẹt gốc) trị giá 30 triệu"}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{ height: 1, backgroundColor: "#e7e7e7", marginBottom: 16 }}
+          ></View>
           <Text
             style={{
               fontSize: 17,
@@ -462,106 +588,55 @@ const ProductDetailScreen = ({ route }) => {
               marginBottom: 12,
             }}
           >
-            Chính sách khi thuê xe
+            Điều khoản khác
           </Text>
-          <View style={{ gap: 20, marginBottom: 10 }}>
-            <View>
-              <View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
-                <AntDesign
-                  name="clockcircleo"
-                  size={18}
-                  color={colors.mainColor}
-                />
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                  }}
-                >
-                  Giờ nhận xe, trả xe
-                </Text>
-              </View>
-              <View style={{ gap: 4 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 26,
-                  }}
-                >
-                  <Text>Nhận xe</Text>
-                  <Text>
-                    từ{" "}
-                    <Text style={{ fontWeight: 700 }}>{data.checkInTime}</Text>
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 26,
-                  }}
-                >
-                  <Text>Trả xe</Text>
-                  <Text>
-                    trước{" "}
-                    <Text style={{ fontWeight: 700 }}>{data.checkOutTime}</Text>
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={{}}>
-              <View style={{ flexDirection: "row", gap: 8, marginBottom: 10 }}>
-                <AntDesign
-                  name="clockcircleo"
-                  size={18}
-                  color={colors.mainColor}
-                />
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                  }}
-                >
-                  Giờ nhận xe, trả xe
-                </Text>
-              </View>
-              <View style={{ gap: 4 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 26,
-                  }}
-                >
-                  <Text>Nhận xe</Text>
-                  <Text>
-                    từ{" "}
-                    <Text style={{ fontWeight: 700 }}>{data.checkInTime}</Text>
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 26,
-                  }}
-                >
-                  <Text>Trả xe</Text>
-                  <Text>
-                    trước{" "}
-                    <Text style={{ fontWeight: 700 }}>{data.checkOutTime}</Text>
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
+          <Text
+            style={{ fontSize: 14, color: colors.textColor, lineHeight: 20 }}
+          >
+            Bảo quản xe cẩn thận, không được tự ý sửa chữa, thay đổi kết cấu xe.
+            {"\n"}
+            Đổ nhiên liệu theo đúng loại quy định của nhà sản xuất.{"\n"}
+            Báo ngay cho bên cho thuê nếu xe gặp sự cố, hỏng hóc hoặc tai nạn.
+            {"\n"}
+            Trả xe đúng thời gian, địa điểm và tình trạng như lúc nhận.{"\n"}
+            Hai bên cam kết thực hiện đúng các điều khoản trên, nếu có tranh
+            chấp, sẽ giải quyết bằng thương lượng hoặc theo pháp luật Việt Nam.
+          </Text>
         </View>
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
         ></View>
-
-        <Text>{id}</Text>
+        {/* Room List */}
+        <View
+          style={{
+            paddingVertical: 15,
+            borderRadius: 15,
+            backgroundColor: colors.whiteColor,
+          }}
+        >
+          <Text
+            style={{
+              paddingLeft: 15,
+              fontSize: 17,
+              fontWeight: 600,
+              marginBottom: 14,
+              color: colors.mainColor,
+            }}
+          >
+            Những xe nổi bật khác của Triển
+          </Text>
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={data?.rooms}
+            renderItem={({ item }) => <AccomodationItem data={item} />}
+            keyExtractor={(item) => item.id}
+            style={{ paddingLeft: 5 }}
+          />
+        </View>
+        <View
+          style={{ height: 80, backgroundColor: colors.greyBackground }}
+        ></View>
       </ScrollView>
 
       {/* Fixed Component */}
@@ -572,19 +647,14 @@ const ProductDetailScreen = ({ route }) => {
           right: 0,
           left: 0,
           backgroundColor: colors.whiteColor,
+          borderTopColor: "#e7e7e7",
+          borderTopWidth: 2,
+          paddingBottom: 20,
+          // height: 96,
         }}
       >
         <View
           style={{
-            height: 35,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            backgroundColor: colors.mainColor,
-          }}
-        ></View>
-        <View
-          style={{
-            height: 96,
             flexDirection: "row",
             paddingHorizontal: 20,
             paddingVertical: 16,
@@ -592,21 +662,37 @@ const ProductDetailScreen = ({ route }) => {
             alignItems: "flex-start",
           }}
         >
-          <View>
-            <Text
-              style={{ fontSize: 12, color: colors.textGray, marginBottom: 6 }}
-            >
-              Giá bắt đầu từ
-            </Text>
-            <Text style={{ fontSize: 16, color: "orange", fontWeight: 600 }}>
-              {formatPrice(data.pricingDecreased)} VND
+          <View style={{ gap: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: colors.mainColor,
+                  fontWeight: 600,
+                }}
+              >
+                {formatPrice(data.pricingDecreased)}k
+              </Text>
+              <Text
+                style={{
+                  color: colors.textGray,
+                  fontSize: 12,
+                  marginBottom: 2,
+                }}
+              >
+                /ngày
+              </Text>
+            </View>
+            <Text style={{ fontSize: 12, color: colors.textGray }}>
+              Giá tổng:{" "}
+              {formatPrice(data.pricingDecreased * calculateDays(time))}k
             </Text>
           </View>
           <MyButton
             onPress={() => navigation.navigate("ProductCheckout")}
-            title="Đặt xe"
+            title="Chọn thuê"
             // onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
-            buttonStyle={{ paddingVertical: 16 }}
+            buttonStyle={{ paddingVertical: 12, opacity: 0.8 }}
           ></MyButton>
         </View>
       </View>

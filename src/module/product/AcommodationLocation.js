@@ -1,8 +1,9 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { EvilIcons, FontAwesome5 } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import colors from "../../util/colors";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
+import MapView, { Marker } from "react-native-maps";
 
 const AcommodationLocation = () => {
   const navigation = useNavigation();
@@ -83,11 +84,21 @@ const AcommodationLocation = () => {
     const distance = R * c; // Khoảng cách tính bằng mét
     return Math.round(distance);
   };
+  const location = {
+    coordinates: {
+      latitude: 21.0466,
+      longitude: 105.7841,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    },
+    name: "Trường Đại học Điện lực - Cơ sở 1",
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Tính năng</Text>
+        <Text style={styles.title}>Vị trí xe</Text>
+
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("AcommodationMap", {
@@ -102,8 +113,31 @@ const AcommodationLocation = () => {
           <Text style={styles.mapButtonText}>Xem bản đồ</Text>
         </TouchableOpacity>
       </View>
+      <View style={{ flexDirection: "row", marginBottom: 12 }}>
+        <EvilIcons
+          name="location"
+          style={{ padding: 0, margin: 0 }}
+          size={24}
+          color={colors.mainColor}
+        />
+        <Text style={{ color: "#444" }}>Hà Nội</Text>
+      </View>
+      <MapView
+        style={{ width: "100%", height: 200, borderRadius: 14 }}
+        initialRegion={location.coordinates}
+        scrollEnabled={false}
+        zoomEnabled={false}
+        rotateEnabled={false}
+      >
+        {/* Hiển thị marker với tên địa điểm */}
+        <Marker
+          coordinate={location.coordinates}
+          title={location.name}
+          description="Vị trí được đánh dấu"
+        />
+      </MapView>
 
-      <View style={styles.content}>
+      {/* <View style={styles.content}>
         {loading ? (
           <Text style={styles.loadingText}>Đang tải...</Text>
         ) : nearbyPlaces.length > 0 ? (
@@ -150,7 +184,7 @@ const AcommodationLocation = () => {
             Không tìm thấy địa điểm gần đây.
           </Text>
         )}
-      </View>
+      </View> */}
     </View>
   );
 };

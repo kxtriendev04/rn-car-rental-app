@@ -1,16 +1,14 @@
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../../util/colors";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import { useNavigation } from "@react-navigation/native";
+import { Pressable } from "react-native-gesture-handler";
 
-const SearchInput = () => {
+const SearchInput = ({}) => {
+  const navigation = useNavigation();
+
   return (
     <View>
       <View style={styles.container}>
@@ -45,7 +43,7 @@ const SearchInput = () => {
           }}
         >
           <Fontisto
-            styles={styles.notifiContainer}
+            // style={styles.notifiContainer}
             name="bell"
             size={24}
             color="black"
@@ -77,11 +75,22 @@ const SearchInput = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput
+        <Pressable
+          style={[styles.inputContainer]}
+          onPress={() => navigation.navigate("SearchScreen")}
+        >
+          <View
+            // value={searchValue}
+            // onChangeText={setSearchValue}
+            // onFocus={() => setIsFocused(true)}
+            // onBlur={() => setIsFocused(false)}
             style={styles.input}
-            placeholder="Tìm kiếm điểm đến, nhà hàng..."
-          ></TextInput>
+            // placeholder="Tìm kiếm điểm đến, nhà hàng..."
+          >
+            <Text style={{ color: colors.textGray, fontSize: 15 }}>
+              Tìm kiếm phương tiện, người dùng..
+            </Text>
+          </View>
 
           <AntDesign
             name="search1"
@@ -89,13 +98,27 @@ const SearchInput = () => {
             size={18}
             color="grey"
           />
-          <Ionicons
+          {/* <Ionicons
             style={styles.inputIconRight}
             name="filter"
             size={18}
             color="grey"
-          />
-        </View>
+          /> */}
+          {/* <TouchableOpacity
+            onPress={() => {
+              if (searchValue.trim() !== "")
+                navigation.navigate("SearchScreen");
+            }}
+            style={styles.inputIconRight}
+          >
+            <AntDesign
+              name="swapright"
+              size={20}
+              color="grey"
+              // style={styles.inputIconRight}
+            />
+          </TouchableOpacity> */}
+        </Pressable>
       </View>
     </View>
   );
@@ -119,11 +142,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.greyBackground,
     marginBottom: 16,
   },
+  inputFocused: {
+    zIndex: 9,
+  },
   input: {
-    fontSize: 20,
+    justifyContent: "center",
+    // alignItems: "center",
+    // fontSize: 40,
     height: "90%",
-    fontSize: 12,
+    fontSize: 15,
     paddingLeft: 35,
+    // backgroundColor: "red",
     textAlignVertical: "center",
   },
   inputIconLeft: {
@@ -132,9 +161,20 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 16 }],
   },
   inputIconRight: {
+    // padding: 25,
+    height: "100%",
+    justifyContent: "center",
+    // paddingLeft: 8,
+    alignItems: "center",
+    width: 50,
+    // backgroundColor: colors.greyBackground,
+    // backgroundColor: "red",
+    // borderRadius: 100,
     position: "absolute",
-    right: 10,
-    transform: [{ translateY: 16 }],
+    // right: 10,
+    right: 0,
+    // transform: [{ translateY: 12 }],
+    top: 0,
   },
   notifiContainer: {
     flex: 2,
