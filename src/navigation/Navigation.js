@@ -2,7 +2,6 @@ import React from "react";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,6 +16,7 @@ import colors from "../util/colors";
 import NewFeedStack from "./stack/NewFeedStack";
 import ChatStack from "./stack/ChatStack";
 import { TimeProvider } from "../context/TimeContext";
+import ProfileStack from "./stack/ProfileStack";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -122,7 +122,7 @@ function MainTabs() {
         component={ChatStack}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfileStack"
         options={{
           tabBarLabel: "Tài khoản",
           tabBarIcon: ({ color }) => (
@@ -130,7 +130,7 @@ function MainTabs() {
           ),
           headerShown: false,
         }}
-        component={ProfileScreen}
+        component={ProfileStack}
       />
     </Tab.Navigator>
   );
