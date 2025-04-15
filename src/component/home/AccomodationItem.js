@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Button, Image, TouchableOpacity } from "react-native";
 import colors from "../../util/colors";
 import {
@@ -13,6 +13,12 @@ import { formatPrice } from "../../util/formatValue";
 const AccomodationItem = ({ data, type = "normal" }) => {
   const isNormal = type == "normal";
   const navigation = useNavigation();
+  const [liked, setLiked] = useState(false);
+
+  const toggleLike = () => {
+    setLiked((prev) => !prev);
+  };
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("ProductDetail", { id: data.id })}
@@ -35,20 +41,41 @@ const AccomodationItem = ({ data, type = "normal" }) => {
         isNormal ? { width: 247, marginLeft: 10, marginRight: 5 } : {},
       ]}
     >
-      <Image
-        style={[
-          {
-            // height: 220,
-            borderTopLeftRadius: 22, // Bo góc trên bên trái
-            borderTopRightRadius: 22, // Bo góc trên bên phải
-            //   borderRadius: 12,
-            width: "100%",
-            objectFit: "cover",
-            flex: isNormal ? 3.2 : 2,
-          },
-        ]}
-        source={{ uri: data?.img }}
-      ></Image>
+      <View style={{ position: "relative", flex: isNormal ? 3.2 : 2 }}>
+        <Image
+          style={[
+            {
+              // height: 220,
+              borderTopLeftRadius: 22, // Bo góc trên bên trái
+              borderTopRightRadius: 22, // Bo góc trên bên phải
+              //   borderRadius: 12,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              //flex: isNormal ? 3.2 : 2,
+            },
+          ]}
+          source={{ uri: data?.img }}
+        ></Image>
+        <TouchableOpacity
+          onPress={toggleLike}
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            backgroundColor: colors.whiteColor,
+            borderRadius: 20,
+            padding: 5,
+            opacity: liked ? 0.8 : 0.5,
+          }}
+        >
+          <AntDesign
+            name={liked ? "heart" : "hearto"}
+            size={20}
+            color={liked ? colors.mainColor : "black"}
+          />
+        </TouchableOpacity>
+      </View>
       {false && isNormal && (
         <Text
           style={{

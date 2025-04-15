@@ -2,6 +2,7 @@ import React from "react";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
+import Wishlist from "../screens/host/Wishlist";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -108,7 +109,7 @@ function MainTabs() {
             <AntDesign name="save" size={26} color={color} />
           ),
         }}
-        component={HomeScreen}
+        component={Wishlist}
       />
 
       <Tab.Screen
