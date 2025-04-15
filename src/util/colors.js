@@ -1,7 +1,7 @@
 const colors = {
   mainColor: "#32D34B",
   darkMainColor: "#B0B0B0",
-  lightMainColor: "#E3E4FD",
+  lightMainColor: "#99EBAC",
   lightLightMainColor: "#f5fdf6",
   whiteColor: "#fff",
   textColor: "#101010",

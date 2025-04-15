@@ -7,11 +7,12 @@ const HeaderNavigation = ({
   title = "",
   leftIcon = <AntDesign name="left" size={24} color="black" />,
   rightIcon,
+  headerStyle = {},
   leftOnPress = () => navigation.goBack(),
   rightOnPress = () => {},
 }) => {
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, headerStyle]}>
       <TouchableOpacity
         style={styles.headerButtonContainer}
         onPress={leftOnPress}

@@ -17,6 +17,7 @@ import NewFeedStack from "./stack/NewFeedStack";
 import ChatStack from "./stack/ChatStack";
 import { TimeProvider } from "../context/TimeContext";
 import ProfileStack from "./stack/ProfileStack";
+import { LocationProvider } from "../context/LocationContext";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -142,10 +143,12 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <TimeProvider>
-        <RootStack.Navigator screenOptions={{ headerShown: false }}>
-          <RootStack.Screen name="Auth" component={AuthNavigator} />
-          <RootStack.Screen name="MainTabs" component={MainTabs} />
-        </RootStack.Navigator>
+        <LocationProvider>
+          <RootStack.Navigator screenOptions={{ headerShown: false }}>
+            <RootStack.Screen name="Auth" component={AuthNavigator} />
+            <RootStack.Screen name="MainTabs" component={MainTabs} />
+          </RootStack.Navigator>
+        </LocationProvider>
       </TimeProvider>
     </NavigationContainer>
   );

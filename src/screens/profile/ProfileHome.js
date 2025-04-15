@@ -9,7 +9,7 @@ const ProfileHome = ({ navigation }) => {
       <Text>Địa chỉ của tôi</Text>
       <Button
         title="Địa chỉ"
-        onPress={() => navigation.navigate("profileAddress")}
+        onPress={() => navigation.navigate("AddressScreen")}
       />
     </View>
   );
