@@ -38,7 +38,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
           elevation: 2, // Bóng trên Android
           position: "relative",
         },
-        isNormal ? { width: 247, marginLeft: 10, marginRight: 5 } : {},
+        isNormal ? { width: 247, marginLeft: 10, marginRight: 5 } : {width: "90%", margin: "5%"},
       ]}
     >
       <View style={{ position: "relative", flex: isNormal ? 3.2 : 2 }}>
