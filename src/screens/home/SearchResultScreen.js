@@ -110,16 +110,7 @@ const tabs = ["Liên quan", "Mới nhất", "Giá"];
 const SearchResultScreen = ({ route, navigation }) => {
   const [selectedTab, setSelectedTab] = useState("Liên quan");
   const searchValue = route?.params?.searchValue || "";
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "SearchResultScreen" || !routeName) {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
-    }
 
-    return () => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
-    };
-  }, [navigation, route]);
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: 30, backgroundColor: colors.whiteColor }}
