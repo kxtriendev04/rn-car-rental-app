@@ -30,9 +30,12 @@ const HomeScreen = () => {
     //   style={{ flex: 1 }}
     // >
     // <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* {isFocused && <View style={styles.overlay} />} */}
-      <ScrollView keyboardShouldPersistTaps="handled">
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        style={{ paddingBottom: 0 }}
+      >
         <View style={[styles.header]}>
           <SearchInput
           // isFocused={isFocused}
@@ -49,7 +52,7 @@ const HomeScreen = () => {
         <HomeOthers></HomeOthers>
         <Text>Trang chủ</Text>
       </ScrollView>
-    </SafeAreaView>
+    </View>
     //   </TouchableWithoutFeedback>
     // </KeyboardAvoidingView>
   );
@@ -58,10 +61,13 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // paddingTop: 25,
+    // backgroundColor: "red",
   },
   header: {
+    // marginTop: 25,
     paddingHorizontal: 15,
-    paddingTop: 10,
+    paddingTop: 35,
     backgroundColor: "white",
     marginBottom: 15,
     gap: 15,
