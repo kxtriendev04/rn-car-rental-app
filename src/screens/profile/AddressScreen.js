@@ -10,17 +10,6 @@ import { Pressable } from "react-native";
 
 const AddressScreen = ({ navigation, route }) => {
   const [addresses, setAddresses] = useState([]);
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "AddressScreen" || !routeName) {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
-    }
-
-    return () => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
-    };
-  }, [navigation, route]);
-
   useEffect(() => {
     setAddresses([
       {

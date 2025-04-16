@@ -21,6 +21,7 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import ForgotScreen from "../screens/auth/ForgotScreen";
+import { shouldHideTabBar } from "../util/bottomTabHandle";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -61,83 +62,94 @@ function MainTabs() {
       screenOptions={{
         tabBarActiveTintColor: colors.mainColor, // Màu chữ khi tab được chọn
         tabBarInactiveTintColor: "gray", // Màu chữ khi tab không được chọn
-        tabBarStyle: {},
       }}
       shifting="false"
     >
       <Tab.Screen
         name="HomeStack"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Trang chủ",
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={26} color={color} />
           ),
           headerShown: false,
-        }}
+          tabBarStyle: shouldHideTabBar(route)
+            ? { display: "none" }
+            : undefined,
+        })}
         component={HomeStack}
       />
       <Tab.Screen
         name="Tin tức"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Tin tức",
           tabBarIcon: ({ color }) => (
             <Ionicons name="newspaper-outline" size={26} color={color} />
           ),
           headerShown: false,
-        }}
+          tabBarStyle: shouldHideTabBar(route)
+            ? { display: "none" }
+            : undefined,
+        })}
         component={NewFeedStack}
       />
       <Tab.Screen
         name="Explore"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Explore",
           tabBarIcon: ({ color }) => (
             <AntDesign name="playcircleo" size={24} color={color} />
           ),
-        }}
+        })}
         component={HomeScreen}
       />
       <Tab.Screen
         name="Add"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Xe đã đặt",
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="car-rear" size={22} color={color} />
           ),
-        }}
+        })}
         component={HomeScreen}
       />
       <Tab.Screen
         name="Đã lưu"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Đã lưu",
           tabBarIcon: ({ color }) => (
             <AntDesign name="save" size={26} color={color} />
           ),
-        }}
+        })}
         component={Wishlist}
       />
 
       <Tab.Screen
         name="Chat"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Chat",
           tabBarIcon: ({ color }) => (
             <Fontisto name="hipchat" size={24} color={color} />
           ),
           headerShown: false,
-        }}
+          tabBarStyle: shouldHideTabBar(route)
+            ? { display: "none" }
+            : undefined,
+        })}
         component={ChatStack}
       />
       <Tab.Screen
         name="ProfileStack"
-        options={{
+        options={({ route }) => ({
           tabBarLabel: "Tài khoản",
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color={color} />
           ),
           headerShown: false,
-        }}
+          tabBarStyle: shouldHideTabBar(route)
+            ? { display: "none" }
+            : undefined,
+        })}
         component={ProfileStack}
       />
     </Tab.Navigator>

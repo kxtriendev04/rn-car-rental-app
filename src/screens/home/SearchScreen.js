@@ -14,6 +14,8 @@ import {
 import colors from "../../util/colors";
 import { FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { TouchableWithoutFeedback } from "react-native";
+import { Keyboard } from "react-native";
 
 const suggestionsData = [
   "Toyota Camry",
@@ -33,182 +35,184 @@ const SearchScreen = ({ navigation }) => {
   const inputRef = useRef(null);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, paddingTop: 30, backgroundColor: colors.whiteColor }}
-    >
-      {/* <HeaderNavigation></HeaderNavigation>
-       */}
-      <View
-        style={{
-          //   paddingBottom: 12,
-          borderBottomColor: "#e9e9e9",
-          paddingBottom: 14,
-          borderBottomWidth: 0.5,
-          flexDirection: "row",
-          width: "100%",
-          paddingHorizontal: 15,
-          gap: 12,
-          alignItems: "center",
-        }}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <SafeAreaView
+        style={{ flex: 1, paddingTop: 30, backgroundColor: colors.whiteColor }}
       >
-        <TouchableOpacity
-          style={{
-            // flex: 0.1,
-            padding: 8,
-            borderRadius: 10,
-            backgroundColor: "white",
-            shadowColor: "#999", // Màu bóng
-            shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
-            shadowOpacity: 0.5, // Độ mờ
-            shadowRadius: 2, // Bán kính mờ
-            elevation: 2, // Bóng trên Android
-          }}
-          onPress={() => navigation.goBack()}
-        >
-          <AntDesign name="left" size={24} color="black" />
-          {/* <AntDesign name="left" size={24} color="black" /> */}
-        </TouchableOpacity>
+        {/* <HeaderNavigation></HeaderNavigation>
+         */}
         <View
           style={{
-            flex: 1,
-            backgroundColor: "#e7e7e7",
-            height: 40,
-            borderRadius: 8,
-            padding: 6,
+            //   paddingBottom: 12,
+            borderBottomColor: "#e9e9e9",
+            paddingBottom: 14,
+            borderBottomWidth: 0.5,
+            flexDirection: "row",
+            width: "100%",
+            paddingHorizontal: 15,
+            gap: 12,
+            alignItems: "center",
           }}
         >
-          <TextInput
-            ref={inputRef}
-            value={searchValue}
-            onChangeText={setSearchValue}
-            autoFocus={true}
-            returnKeyType="search"
-            // keyboardType="decimal-pad"
-            placeholder="Tìm kiếm phương tiện, người dùng..."
-            // onSubmitEditing={()=>
-            onSubmitEditing={() => {
-              if (searchValue.trim() !== "") {
-                // Alert.alert("Search");
-                navigation.navigate("SearchResultScreen", {
-                  searchValue: searchValue,
-                });
-              }
-            }}
-            style={{
-              paddingVertical: 6,
-              fontSize: 14,
-              paddingHorizontal: 8,
-              paddingRight: 40,
-              lineHeight: 18,
-            }}
-          />
           <TouchableOpacity
-            onPress={() => {
-              if (searchValue.trim() !== "")
-                navigation.navigate("SearchResultScreen", {
-                  searchValue: searchValue,
-                });
+            style={{
+              // flex: 0.1,
+              padding: 8,
+              borderRadius: 10,
+              backgroundColor: "white",
+              shadowColor: "#999", // Màu bóng
+              shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
+              shadowOpacity: 0.5, // Độ mờ
+              shadowRadius: 2, // Bán kính mờ
+              elevation: 2, // Bóng trên Android
             }}
-            style={styles.inputIconRight}
+            onPress={() => navigation.goBack()}
           >
-            <AntDesign
-              name="swapright"
-              size={20}
-              color="grey"
-              // style={styles.inputIconRight}
-            />
+            <AntDesign name="left" size={24} color="black" />
+            {/* <AntDesign name="left" size={24} color="black" /> */}
           </TouchableOpacity>
-        </View>
-      </View>
-      {!searchValue ? (
-        <View style={{ marginHorizontal: 15, marginTop: 20 }}>
-          {recentSearch && (
-            <FlatList
-              data={recentSearch}
-              keyExtractor={(item) => item}
-              ListHeaderComponent={
-                <Text
-                  style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}
-                >
-                  Gần đây
-                </Text>
-              }
-              keyboardDismissMode="on-drag" //  Ẩn bàn phím khi cuộn
-              keyboardShouldPersistTaps="handled" //  Giữ sự kiện touch trên FlatList
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearchValue(item);
-                    navigation.navigate("SearchResultScreen", {
-                      searchValue: item,
-                    });
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    gap: 12,
-                    paddingVertical: 16,
-                    borderBottomColor: "#e7e7e7",
-                    borderBottomWidth: 1,
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome6 name="clock-four" size={23} color="grey" />
-                  {/* <Feather name="search" size={23} color="grey" /> */}
-                  <Text
-                    style={{ fontSize: 14, color: "grey", fontWeight: 500 }}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              )}
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#e7e7e7",
+              height: 40,
+              borderRadius: 8,
+              padding: 6,
+            }}
+          >
+            <TextInput
+              ref={inputRef}
+              value={searchValue}
+              onChangeText={setSearchValue}
+              autoFocus={true}
+              returnKeyType="search"
+              // keyboardType="decimal-pad"
+              placeholder="Tìm kiếm phương tiện, người dùng..."
+              // onSubmitEditing={()=>
+              onSubmitEditing={() => {
+                if (searchValue.trim() !== "") {
+                  // Alert.alert("Search");
+                  navigation.navigate("SearchResultScreen", {
+                    searchValue: searchValue,
+                  });
+                }
+              }}
+              style={{
+                paddingVertical: 6,
+                fontSize: 14,
+                paddingHorizontal: 8,
+                paddingRight: 40,
+                lineHeight: 18,
+              }}
             />
-          )}
+            <TouchableOpacity
+              onPress={() => {
+                if (searchValue.trim() !== "")
+                  navigation.navigate("SearchResultScreen", {
+                    searchValue: searchValue,
+                  });
+              }}
+              style={styles.inputIconRight}
+            >
+              <AntDesign
+                name="swapright"
+                size={20}
+                color="grey"
+                // style={styles.inputIconRight}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-      ) : (
-        <View style={{ marginHorizontal: 15, marginTop: 20 }}>
-          {suggestionsData && (
-            <FlatList
-              keyboardDismissMode="on-drag" //  Ẩn bàn phím khi cuộn
-              keyboardShouldPersistTaps="handled" //  Giữ sự kiện touch trên FlatList
-              data={suggestionsData}
-              keyExtractor={(item) => item}
-              ListHeaderComponent={
-                <Text
-                  style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}
-                >
-                  Gợi ý
-                </Text>
-              }
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearchValue(item);
-                    navigation.navigate("SearchResultScreen", {
-                      searchValue: item,
-                    });
-                  }}
-                  style={{
-                    flexDirection: "row",
-                    gap: 12,
-                    paddingVertical: 16,
-                    borderBottomColor: "#e7e7e7",
-                    borderBottomWidth: 1,
-                    alignItems: "center",
-                  }}
-                >
-                  <Feather name="search" size={23} color="grey" />
+        {!searchValue ? (
+          <View style={{ marginHorizontal: 15, marginTop: 20 }}>
+            {recentSearch && (
+              <FlatList
+                data={recentSearch}
+                keyExtractor={(item) => item}
+                ListHeaderComponent={
                   <Text
-                    style={{ fontSize: 14, color: "grey", fontWeight: 500 }}
+                    style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}
                   >
-                    {item}
+                    Gần đây
                   </Text>
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-      )}
-    </SafeAreaView>
+                }
+                keyboardDismissMode="on-drag" //  Ẩn bàn phím khi cuộn
+                keyboardShouldPersistTaps="handled" //  Giữ sự kiện touch trên FlatList
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearchValue(item);
+                      navigation.navigate("SearchResultScreen", {
+                        searchValue: item,
+                      });
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      gap: 12,
+                      paddingVertical: 16,
+                      borderBottomColor: "#e7e7e7",
+                      borderBottomWidth: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <FontAwesome6 name="clock-four" size={23} color="grey" />
+                    {/* <Feather name="search" size={23} color="grey" /> */}
+                    <Text
+                      style={{ fontSize: 14, color: "grey", fontWeight: 500 }}
+                    >
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        ) : (
+          <View style={{ marginHorizontal: 15, marginTop: 20 }}>
+            {suggestionsData && (
+              <FlatList
+                keyboardDismissMode="on-drag" //  Ẩn bàn phím khi cuộn
+                keyboardShouldPersistTaps="handled" //  Giữ sự kiện touch trên FlatList
+                data={suggestionsData}
+                keyExtractor={(item) => item}
+                ListHeaderComponent={
+                  <Text
+                    style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}
+                  >
+                    Gợi ý
+                  </Text>
+                }
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearchValue(item);
+                      navigation.navigate("SearchResultScreen", {
+                        searchValue: item,
+                      });
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      gap: 12,
+                      paddingVertical: 16,
+                      borderBottomColor: "#e7e7e7",
+                      borderBottomWidth: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Feather name="search" size={23} color="grey" />
+                    <Text
+                      style={{ fontSize: 14, color: "grey", fontWeight: 500 }}
+                    >
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        )}
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({

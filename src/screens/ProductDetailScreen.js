@@ -148,16 +148,16 @@ const ProductDetailScreen = ({ route }) => {
   // Lấy id từ tham số navigation
   const { id } = route.params;
 
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "ProductDetail" || !routeName) {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
-    }
+  // useLayoutEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route);
+  //   if (routeName === "ProductDetail" || !routeName) {
+  //     navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
+  //   }
 
-    return () => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
-    };
-  }, [navigation, route]);
+  //   return () => {
+  //     navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
+  //   };
+  // }, [navigation, route]);
   // console.log(time);
 
   return (
