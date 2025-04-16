@@ -4,7 +4,7 @@ const colors = {
   lightMainColor: "#99EBAC",
   lightLightMainColor: "#f5fdf6",
   whiteColor: "#fff",
-  textColor: "#101010",
+  textColor: "#333",
   textGray: "#9d9d9d",
   blue: "#5392F9",
   borderColor: "#ededed",

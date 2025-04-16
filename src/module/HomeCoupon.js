@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   notchLeft: {
     position: "absolute",
     left: -10, // Đẩy notch ra khỏi viền
-    top: "55%",
+    top: "52%",
     width: 20,
     height: 20,
     backgroundColor: colors.lightMainColor,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   notchRight: {
     position: "absolute",
     right: -10, // Đẩy notch ra khỏi viền
-    top: "55%",
+    top: "52%",
     width: 20,
     height: 20,
     backgroundColor: colors.lightMainColor,

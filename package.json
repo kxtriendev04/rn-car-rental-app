@@ -9,6 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/be-vietnam-pro": "^0.3.0",
+    "@expo-google-fonts/poppins": "^0.3.0",
+    "@expo-google-fonts/quicksand": "^0.3.0",
     "@expo/vector-icons": "^14.0.4",
     "@gorhom/bottom-sheet": "^5.1.2",
     "@react-native-community/slider": "^4.5.6",
@@ -19,9 +22,11 @@
     "@shopify/flash-list": "^1.6.4",
     "expo": "~52.0.38",
     "expo-clipboard": "^7.0.1",
+    "expo-font": "~13.0.4",
     "expo-status-bar": "~2.0.1",
     "homestay-booking": "file:",
     "react": "18.3.1",
+    "react-hook-form": "^7.55.0",
     "react-native": "0.76.7",
     "react-native-bottom-sheet": "^1.0.3",
     "react-native-calendars": "^1.1310.0",

@@ -1,6 +1,4 @@
 import React from "react";
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
 import Wishlist from "../screens/host/Wishlist";
 import { NavigationContainer } from "@react-navigation/native";
@@ -19,12 +17,21 @@ import ChatStack from "./stack/ChatStack";
 import { TimeProvider } from "../context/TimeContext";
 import ProfileStack from "./stack/ProfileStack";
 import { LocationProvider } from "../context/LocationContext";
+import LoginScreen from "../screens/auth/LoginScreen";
+import RegisterScreen from "../screens/auth/RegisterScreen";
+import WelcomeScreen from "../screens/auth/WelcomeScreen";
+import ForgotScreen from "../screens/auth/ForgotScreen";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
 function AuthNavigator() {
   return (
-    <AuthStack.Navigator initialRouteName="Login">
+    <AuthStack.Navigator initialRouteName="Welcome">
+      <AuthStack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{ headerShown: false }}
+      />
       <AuthStack.Screen
         name="Login"
         component={LoginScreen}
@@ -35,6 +42,11 @@ function AuthNavigator() {
         component={RegisterScreen}
         options={{ headerShown: false }}
       />
+      <AuthStack.Screen
+        name="Forgot"
+        component={ForgotScreen}
+        options={{ headerShown: false }}
+      />
     </AuthStack.Navigator>
   );
 }
@@ -42,12 +54,6 @@ function AuthNavigator() {
 // 📌 Bottom Tab Navigator cho Home & Profile
 const Tab = createBottomTabNavigator();
 function MainTabs() {
-  // return (
-  //   <Tab.Navigator>
-  //     <Tab.Screen name="Home" component={HomeScreen} />
-  //     <Tab.Screen name="Profile" component={ProfileScreen} />
-  //   </Tab.Navigator>
-  // );
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
@@ -145,7 +151,10 @@ export default function Navigation() {
     <NavigationContainer>
       <TimeProvider>
         <LocationProvider>
-          <RootStack.Navigator screenOptions={{ headerShown: false }}>
+          <RootStack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="MainTabs"
+          >
             <RootStack.Screen name="Auth" component={AuthNavigator} />
             <RootStack.Screen name="MainTabs" component={MainTabs} />
           </RootStack.Navigator>
