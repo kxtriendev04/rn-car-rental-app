@@ -69,6 +69,7 @@ const SearchInput = ({}) => {
               backgroundColor: colors.mainColor,
               borderRadius: 10,
             }}
+            onPress={() => navigation.navigate("HostTabs", { screen: "HostHomeScreen" })}
           >
             <Text style={{ fontWeight: 500, color: colors.whiteColor }}>
               Host & Earn

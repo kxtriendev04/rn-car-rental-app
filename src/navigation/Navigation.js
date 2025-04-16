@@ -22,6 +22,7 @@ import RegisterScreen from "../screens/auth/RegisterScreen";
 import WelcomeScreen from "../screens/auth/WelcomeScreen";
 import ForgotScreen from "../screens/auth/ForgotScreen";
 import { shouldHideTabBar } from "../util/bottomTabHandle";
+import HostHomeScreen from "../screens/host/HostHomeScreen";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -121,7 +122,7 @@ function MainTabs() {
             <AntDesign name="save" size={26} color={color} />
           ),
         })}
-        component={Wishlist}
+        component={HomeScreen}
       />
 
       <Tab.Screen
@@ -169,9 +170,44 @@ export default function Navigation() {
           >
             <RootStack.Screen name="Auth" component={AuthNavigator} />
             <RootStack.Screen name="MainTabs" component={MainTabs} />
+            <RootStack.Screen name="HostTabs" component={HostTabs} />
           </RootStack.Navigator>
         </LocationProvider>
       </TimeProvider>
     </NavigationContainer>
+  );
+}
+
+const HostTab = createBottomTabNavigator();
+function HostTabs() {
+  return (
+    <HostTab.Navigator
+      initialRouteName="HostHomeScreen"
+      screenOptions={{
+        tabBarActiveTintColor: colors.mainColor,
+        tabBarInactiveTintColor: "gray",
+      }}
+    >
+      <HostTab.Screen
+        name="HostHomeScreen"
+        component={HostHomeScreen}
+        options={{
+          tabBarLabel: "Quản lý xe",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="car-sport-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <HostTab.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{
+          tabBarLabel: "Danh sách đã lưu",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="hearto" size={24} color={color} />
+          ),
+        }}
+      />
+    </HostTab.Navigator>
   );
 }
