@@ -1,12 +1,18 @@
-import { Alert, Dimensions, FlatList, Image, Text, View } from "react-native";
+import { Alert, Dimensions, FlatList, Image, Text, TouchableOpacity, View,  } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import colors from "../util/colors";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 
 const SearchVehicalCard = ({ room }) => {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get("window").width;
+  const [liked, setLiked] = useState(false);
+  const toggleLike = () => {
+    setLiked((pre) => !pre);
+  }
+
   return (
     <Pressable
       // activeOpacity={1}
@@ -59,6 +65,24 @@ const SearchVehicalCard = ({ room }) => {
             )}
             keyExtractor={(item, index) => index.toString()}
           />
+          <TouchableOpacity
+            onPress={toggleLike}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 25,
+              backgroundColor: colors.whiteColor,
+              borderRadius: 20,
+              padding: 5,
+              opacity: liked ? 0.8 : 0.5,
+            }}
+          >
+            <AntDesign
+              name={liked ? "heart" : "hearto"}
+              size={20}
+              color={liked ? colors.mainColor : "black"}
+            />
+          </TouchableOpacity>
         </View>
         <Image
           source={{
