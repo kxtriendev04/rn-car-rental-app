@@ -1,10 +1,17 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const OrderCard = ({ data }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("ManageRented", { id: data.id });
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handlePress} activeOpacity={0.8}>
       <Image source={{ uri: data.carImage }} style={styles.image} />
 
       <View style={styles.infoContainer}>
@@ -23,9 +30,13 @@ const OrderCard = ({ data }) => {
       </View>
 
       <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>{data.status}</Text>
+        <Text style={styles.statusText}>{data.status === "pending" 
+          ? "Chờ duyệt" : (data.status === "approved" 
+            ? "Đã duyệt" : (data.status === "rejected" 
+              ? "Từ chối" : "Hoàn thánh")
+           )}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -46,7 +57,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   image: {
-    width: 80,
+    width: 95,
     height: 80,
     borderRadius: 12,
     marginRight: 12,

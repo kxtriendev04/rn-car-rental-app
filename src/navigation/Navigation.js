@@ -9,6 +9,7 @@ import {
   FontAwesome6,
   Fontisto,
   Ionicons,
+  Entypo
 } from "@expo/vector-icons";
 import HomeStack from "./stack/HomeStack";
 import colors from "../util/colors";
@@ -24,6 +25,7 @@ import ForgotScreen from "../screens/auth/ForgotScreen";
 import { shouldHideTabBar } from "../util/bottomTabHandle";
 import HostHomeScreen from "../screens/host/HostHomeScreen";
 import TabBar from "../component/TabBar";
+import ManageRented from "../screens/host/ManageRented";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -258,6 +260,16 @@ function HostTabs() {
           tabBarLabel: "Xe đã thích",
           tabBarIcon: ({ color }) => (
             <AntDesign name="hearto" size={24} color={color} />
+          ),
+        }}
+      />
+      <HostTab.Screen
+        name="Đơn thuê"
+        component={ManageRented}
+        options={{
+          tabBarLabel: "Đơn thuê xe",
+          tabBarIcon: ({ color }) => (
+            <Entypo name="list" size={24} color={color} />
           ),
         }}
       />
