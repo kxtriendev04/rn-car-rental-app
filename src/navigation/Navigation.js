@@ -192,17 +192,18 @@ function HostTabs() {
         name="HostHomeScreen"
         component={HostHomeScreen}
         options={{
-          tabBarLabel: "Quản lý xe",
+          tabBarLabel: "Trang chủ",
           tabBarIcon: ({ color }) => (
             <Ionicons name="car-sport-outline" size={24} color={color} />
           ),
+          headerShown: false,
         }}
       />
       <HostTab.Screen
-        name="Wishlist"
+        name="Xe yêu thích"
         component={Wishlist}
         options={{
-          tabBarLabel: "Danh sách đã lưu",
+          tabBarLabel: "Xe đã thích",
           tabBarIcon: ({ color }) => (
             <AntDesign name="hearto" size={24} color={color} />
           ),
