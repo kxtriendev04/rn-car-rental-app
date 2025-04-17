@@ -1,6 +1,7 @@
 import {
   AntDesign,
   Entypo,
+  EvilIcons,
   FontAwesome5,
   FontAwesome6,
   Fontisto,
@@ -265,8 +266,10 @@ const NewFeedScreen = () => {
                 />
                 <Text style={{ fontSize: 15 }}>What's new?</Text>
               </View>
-              <FontAwesome5 name="file-image" size={20} color="#333" />
+              {/* <FontAwesome5 name="file-image" size={20} color="#333" /> */}
+              <EvilIcons name="image" size={30} color="#333" />
             </View>
+            <View style={{ padding: 8, backgroundColor: "#f2f2f2" }}></View>
           </View>
         }
         ListFooterComponent={
@@ -299,106 +302,113 @@ const FeedItem = ({ post }) => {
     ]).start(() => setLove(!love)); // Sau khi hiệu ứng xong thì đổi trạng thái
   };
   return (
-    <View
-      style={{
-        marginTop: 16,
-        paddingHorizontal: 15,
-        paddingVertical: 16,
-        backgroundColor: colors.whiteColor,
-      }}
-    >
-      {/* Header */}
+    <>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
+          // marginTop: 16,
+          paddingHorizontal: 15,
+          paddingVertical: 16,
+          backgroundColor: colors.whiteColor,
         }}
       >
-        <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-          <Image
-            source={{ uri: post?.avatar }} // Đường dẫn đến ảnh
-            style={{ width: 48, height: 48, borderRadius: 50 }} // Kích thước ảnh
-          />
-          <View>
-            <Text style={{ fontWeight: 600, fontSize: 18 }}>{post.author}</Text>
-            <Text style={{ color: colors.textGray, fontSize: 12 }}>
-              {post.date}
-            </Text>
-          </View>
-        </View>
-        <View>
-          <Entypo name="dots-three-vertical" size={20} color="black" />
-        </View>
-      </View>
-      <View style={{}}>
-        <Text
-          ellipsizeMode="tail"
-          numberOfLines={3}
-          style={{ fontSize: 15, lineHeight: 20, paddingVertical: 16 }}
-        >
-          {post.content}
-        </Text>
-        <Image
-          source={{
-            uri: post.image,
-          }}
-          style={{
-            height: 220,
-            width: "100%",
-            objectFit: "cover",
-            borderRadius: 12,
-          }}
-        />
-      </View>
-      {/*  */}
-      <View>
+        {/* Header */}
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 12,
-            marginBottom: 6,
           }}
         >
+          <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+            <Image
+              source={{ uri: post?.avatar }} // Đường dẫn đến ảnh
+              style={{ width: 48, height: 48, borderRadius: 50 }} // Kích thước ảnh
+            />
+            <View>
+              <Text style={{ fontWeight: 600, fontSize: 18 }}>
+                {post.author}
+              </Text>
+              <Text style={{ color: colors.textGray, fontSize: 12 }}>
+                {post.date}
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Entypo name="dots-three-vertical" size={20} color="black" />
+          </View>
+        </View>
+        <View style={{}}>
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={3}
+            style={{ fontSize: 15, lineHeight: 20, paddingVertical: 16 }}
+          >
+            {post.content}
+          </Text>
+          <Image
+            source={{
+              uri: post.image,
+            }}
+            style={{
+              height: 220,
+              width: "100%",
+              objectFit: "cover",
+              borderRadius: 12,
+            }}
+          />
+        </View>
+        {/*  */}
+        <View>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              gap: 16,
-              paddingHorizontal: 4,
+              marginTop: 12,
+              marginBottom: 6,
             }}
           >
-            <TouchableOpacity onPress={handleLoveItem}>
-              <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                {love ? (
-                  <AntDesign name="heart" size={24} color="red" />
-                ) : (
-                  <AntDesign name="hearto" size={24} color="#333" />
-                )}
-              </Animated.View>
-            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 16,
+                paddingHorizontal: 4,
+              }}
+            >
+              <TouchableOpacity onPress={handleLoveItem}>
+                <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                  {love ? (
+                    <AntDesign name="heart" size={24} color="red" />
+                  ) : (
+                    <AntDesign name="hearto" size={24} color="#333" />
+                  )}
+                </Animated.View>
+              </TouchableOpacity>
 
-            <FontAwesome6 name="comment-alt" size={21} color="#333" />
+              <FontAwesome6 name="comment-alt" size={21} color="#333" />
+            </View>
+            <FontAwesome5 name="share-square" size={22} color="#333" />
           </View>
-          <FontAwesome5 name="share-square" size={22} color="#333" />
+          <Text
+            style={{
+              color: colors.textGray,
+              fontSize: 12,
+              paddingHorizontal: 4,
+              marginBottom: 2,
+            }}
+          >
+            Liked by{" "}
+            {love
+              ? "you and " + post.likes + " others"
+              : post.likes + " people"}
+          </Text>
+          <OverlappingAvatars comments={post.comments}></OverlappingAvatars>
         </View>
-        <Text
-          style={{
-            color: colors.textGray,
-            fontSize: 12,
-            paddingHorizontal: 4,
-            marginBottom: 2,
-          }}
-        >
-          Liked by{" "}
-          {love ? "you and " + post.likes + " others" : post.likes + " people"}
-        </Text>
-        <OverlappingAvatars comments={post.comments}></OverlappingAvatars>
       </View>
-    </View>
+      <View style={{ padding: 8, backgroundColor: "#f2f2f2" }}></View>
+    </>
   );
 };
 
@@ -406,6 +416,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
+    backgroundColor: "white",
   },
 });
 
