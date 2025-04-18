@@ -7,7 +7,55 @@ const OrderCard = ({ data }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate("ManageRented", { id: data.id });
+    navigation.navigate('HostStackNavigator', {
+      screen: 'OrderDetail',
+      params: { data: data },
+    })
+  };
+  
+  const getStatusText = (status) => {
+    switch (status) {
+      case "pending":
+        return "Chờ duyệt";
+      case "approved":
+        return "Đã duyệt";
+      case "rejected":
+        return "Từ chối";
+      case "completed":
+        return "Hoàn thành";
+      default:
+        return "Không xác định";
+    }
+  };
+  
+  const getStatusBackgroundColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "#FFF3CD"; 
+      case "approved":
+        return "#D4EDDA"; 
+      case "rejected":
+        return "#F8D7DA"; 
+      case "completed":
+        return "#D1ECF1"; 
+      default:
+        return "#FFF";
+    }
+  };
+  
+  const getStatusTextColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "#856404"; 
+      case "approved":
+        return "#155724"; 
+      case "rejected":
+        return "#721c24"; 
+      case "completed":
+        return "#0c5460"; 
+      default:
+        return "#333";
+    }
   };
 
   return (
@@ -16,11 +64,11 @@ const OrderCard = ({ data }) => {
 
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{data.carName}</Text>
-        <Text style={styles.dueDate}>Due on {data.dueDate}</Text>
+        <Text style={styles.dueDate}>Ngày tạo {data.createdAt}</Text>
 
         <View style={styles.row}>
           <Ionicons name="person-outline" size={16} color="gray" />
-          <Text style={styles.text}>{data.userName}</Text>
+          <Text style={styles.text}>{data.renter}</Text>
         </View>
 
         <View style={styles.row}>
@@ -29,12 +77,20 @@ const OrderCard = ({ data }) => {
         </View>
       </View>
 
-      <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>{data.status === "pending" 
-          ? "Chờ duyệt" : (data.status === "approved" 
-            ? "Đã duyệt" : (data.status === "rejected" 
-              ? "Từ chối" : "Hoàn thánh")
-           )}</Text>
+      <View
+        style={[
+          styles.statusContainer,
+          { backgroundColor: getStatusBackgroundColor(data.status) }
+        ]}
+      >
+        <Text
+          style={[
+            styles.statusText,
+            { color: getStatusTextColor(data.status) }
+          ]}
+        >
+          {getStatusText(data.status)}
+        </Text>
       </View>
     </TouchableOpacity>
   );

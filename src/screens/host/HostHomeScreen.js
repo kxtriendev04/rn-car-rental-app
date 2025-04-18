@@ -2,7 +2,7 @@ import { Fontisto, Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../../util/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import AccomodationItem from "../../component/home/AccomodationItem";
 import OrderCard from "../../module/Order/OrderCard";
 import { useNavigation } from '@react-navigation/native';
@@ -46,118 +46,152 @@ const cars = [
   },
 ];
 
-const orders = [
+const rentalOrders = [
   {
-    id: "1",
+    id: "ORD001",
+    owner: "Nguyễn Văn A",
+    renter: "Trần Thị B",
+    createdAt: "2025-04-01",
+    start: "2025-04-05",
+    end: "2025-04-10",
+    original: 5000000,
+    discount: 500000,
+    total: 4500000,
     carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
-    carName: "Tesla Roadster",
-    dueDate: "11 Sep, 2023",
-    userName: "Chris",
-    phoneNumber: "+1202-555-0877",
-    status: "pending"
+    carName: "Maserati MC20",
+    phoneNumber: "0901234567",
+    location: "123 Nguyễn Trãi, Hà Nội",
+    status: "pending",
+    pay: "cash",
   },
   {
-    id: "2",
+    id: "ORD002",
+    owner: "Lê Hữu C",
+    renter: "Phạm Văn D",
+    createdAt: "2025-04-03",
+    start: "2025-04-06",
+    end: "2025-04-08",
+    original: 3000000,
+    discount: 300000,
+    total: 2700000,
     carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
-    carName: "Tesla Roadster",
-    dueDate: "11 Sep, 2023",
-    userName: "Chris",
-    phoneNumber: "+1202-555-0877",
-    status: "approved"
+    carName: "Maserati MC20",
+    phoneNumber: "0902345678",
+    location: "456 Lê Lợi, Đà Nẵng",
+    status: "approved",
+    pay: "cash",
   },
   {
-    id: "3",
+    id: "ORD003",
+    owner: "Đặng Thị E",
+    renter: "Ngô Quốc F",
+    createdAt: "2025-04-02",
+    start: "2025-04-07",
+    end: "2025-04-09",
+    original: 4000000,
+    discount: 0,
+    total: 4000000,
     carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
-    carName: "Tesla Roadster",
-    dueDate: "11 Sep, 2023",
-    userName: "Chris",
-    phoneNumber: "+1202-555-0877",
-    status: "rejected"
+    carName: "Maserati MC20",
+    phoneNumber: "0903456789",
+    location: "789 Trường Chinh, TP.HCM",
+    status: "completed",
+    pay: "cash",
   },
   {
-    id: "4",
+    id: "ORD004",
+    owner: "Phan Minh G",
+    renter: "Hoàng Mai H",
+    createdAt: "2025-04-04",
+    start: "2025-04-10",
+    end: "2025-04-15",
+    original: 6000000,
+    discount: 1000000,
+    total: 5000000,
     carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
-    carName: "Tesla Roadster",
-    dueDate: "11 Sep, 2023",
-    userName: "Chris",
-    phoneNumber: "+1202-555-0877",
-    status: "completed"
-  },
+    carName: "Maserati MC20",
+    phoneNumber: "0904567890",
+    location: "321 Cách Mạng Tháng 8, Cần Thơ",
+    status: "rejected",
+    pay: "cash",
+  }
 ];
 
 const HostHomeScreen = () => {
   const navigation = useNavigation();
   return(
-    <SafeAreaView style={{paddingHorizontal: 15, backgroundColor: colors.whiteColor}}>
-      <View style={styles.container}>
-        <View style={{ marginBottom: 10 }}>
-          <Text
-            style={{ marginBottom: 8, fontWeight: 500, color: colors.textGray }}
-          >
-            Current location
-          </Text>
-          <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
-            <Ionicons
-              name="location-outline"
-              size={20}
-              color={colors.mainColor}
-            />
-            <Text style={{ fontWeight: 600, fontSize: 16 }}>
-              Bắc Từ Liêm, Hà Nội
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.whiteColor }} edges={['top']}>
+      <ScrollView style={{ paddingHorizontal: 15 }}>
+        <View style={styles.container}>
+          <View style={{ marginBottom: 10 }}>
+            <Text
+              style={{ marginBottom: 8, fontWeight: 500, color: colors.textGray }}
+            >
+              Current location
             </Text>
+            <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.mainColor}
+              />
+              <Text style={{ fontWeight: 600, fontSize: 16 }}>
+                Bắc Từ Liêm, Hà Nội
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              padding: 8,
+              paddingHorizontal: 10,
+              borderRadius: 10,
+              backgroundColor: "white",
+              shadowColor: "#999", // Màu bóng
+              shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
+              shadowOpacity: 0.5, // Độ mờ
+              shadowRadius: 2, // Bán kính mờ
+              elevation: 2, // Bóng trên Android
+            }}
+          >
+            <Fontisto
+              name="bell"
+              size={24}
+              color="black"
+            />
           </View>
         </View>
-        <View
-          style={{
-            padding: 8,
-            paddingHorizontal: 10,
-            borderRadius: 10,
-            backgroundColor: "white",
-            shadowColor: "#999", // Màu bóng
-            shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
-            shadowOpacity: 0.5, // Độ mờ
-            shadowRadius: 2, // Bán kính mờ
-            elevation: 2, // Bóng trên Android
-          }}
-        >
-          <Fontisto
-            name="bell"
-            size={24}
-            color="black"
-          />
+        <View style={styles.container}>
+          <Text style={{fontWeight: 600, fontSize: 16}}>Xe của tôi</Text>
+          <TouchableOpacity>
+            <Text style={{color: colors.mainColor, fontWeight: 600, fontSize: 16}}>+ thêm xe của bạn</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.container}>
-        <Text style={{fontWeight: 600, fontSize: 16}}>Xe của tôi</Text>
-        <TouchableOpacity>
-          <Text style={{color: colors.mainColor, fontWeight: 600, fontSize: 16}}>+ thêm xe của bạn</Text>
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data = {cars}
-        renderItem={({item}) => (
-          <AccomodationItem data={item}/>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text>Bạn chưa có xe nào cả</Text>}
-        horizontal={true}
-      />
-      <View style={styles.container}>
-        <Text style={{fontWeight: 600, fontSize: 16}}>Đơn hàng của bạn</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Đơn thuê")}>
-          <Text style={{color: "darkgrey", fontWeight: 600, fontSize: 16}}>Xem tất cả</Text>
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data = {orders}
-        renderItem={({item}) => (
-          <OrderCard data={item}/>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text>Bạn chưa có xe nào cả</Text>}
-        style={{padding: 5}}
-      />
+        <FlatList
+          data = {cars}
+          renderItem={({item}) => (
+            <AccomodationItem data={item}/>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          ListEmptyComponent={<Text>Bạn chưa có xe nào cả</Text>}
+          horizontal={true}
+        />
+        <View style={styles.container}>
+          <Text style={{fontWeight: 600, fontSize: 16}}>Đơn hàng của bạn</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Đơn thuê")}>
+            <Text style={{color: "darkgrey", fontWeight: 600, fontSize: 16}}>Xem tất cả</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ padding: 5 }}>
+          {rentalOrders.length > 0 ? (
+            rentalOrders.slice(0, 3).map((item) => (
+              <OrderCard key={item.id.toString()} data={item} />
+            ))
+          ) : (
+            <Text>Bạn chưa có đơn hàng nào</Text>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 };

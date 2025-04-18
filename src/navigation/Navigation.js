@@ -26,6 +26,7 @@ import { shouldHideTabBar } from "../util/bottomTabHandle";
 import HostHomeScreen from "../screens/host/HostHomeScreen";
 import TabBar from "../component/TabBar";
 import ManageRented from "../screens/host/ManageRented";
+import OrderDetail from "../screens/host/OrderDetail";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -225,6 +226,7 @@ export default function Navigation() {
             <RootStack.Screen name="Auth" component={AuthNavigator} />
             <RootStack.Screen name="MainTabs" component={MainTabs} />
             <RootStack.Screen name="HostTabs" component={HostTabs} />
+            <RootStack.Screen name="HostStackNavigator" component={HostStackNavigator} />
           </RootStack.Navigator>
         </LocationProvider>
       </TimeProvider>
@@ -254,7 +256,7 @@ function HostTabs() {
         }}
       />
       <HostTab.Screen
-        name="Xe yêu thích"
+        name="Wishlist"
         component={Wishlist}
         options={{
           tabBarLabel: "Xe đã thích",
@@ -264,7 +266,7 @@ function HostTabs() {
         }}
       />
       <HostTab.Screen
-        name="Đơn thuê"
+        name="ManageRented"
         component={ManageRented}
         options={{
           tabBarLabel: "Đơn thuê xe",
@@ -274,5 +276,15 @@ function HostTabs() {
         }}
       />
     </HostTab.Navigator>
+  );
+}
+
+const HostStack = createStackNavigator();
+function HostStackNavigator() {
+  return (
+    <HostStack.Navigator screenOptions={{ headerShown: false }}>
+      <HostStack.Screen name="HostTabs" component={HostTabs} />
+      <HostStack.Screen name="OrderDetail" component={OrderDetail} />
+    </HostStack.Navigator>
   );
 }
