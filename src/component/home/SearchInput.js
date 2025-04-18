@@ -47,6 +47,7 @@ const SearchInput = ({}) => {
             name="bell"
             size={24}
             color="black"
+            onPress={() => {navigation.navigate('UserStackNavigator', {screen: 'Notification'})}}
           />
         </View>
       </View>

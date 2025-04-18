@@ -27,6 +27,7 @@ import HostHomeScreen from "../screens/host/HostHomeScreen";
 import TabBar from "../component/TabBar";
 import ManageRented from "../screens/host/ManageRented";
 import OrderDetail from "../screens/host/OrderDetail";
+import Notification from "../screens/Notification";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -212,6 +213,32 @@ const MainTabs = () => {
   );
 };
 
+const UserStack = createStackNavigator();
+function UserStackNavigator() {
+  return (
+    <UserStack.Navigator screenOptions={{ headerShown: false }}>
+      <UserStack.Screen name="HostTabs" component={HostTabs} />
+      <UserStack.Screen 
+        name="Notification" 
+        component={Notification}
+        options={{
+          headerShown: true, 
+          title: "Thông báo", 
+          headerBackTitleVisible: false, 
+          headerBackTitle: "", 
+          headerTintColor: colors.mainColor, 
+          headerStyle: {
+            backgroundColor: "#fff", 
+          },
+          headerTitleStyle: {
+            fontWeight: "bold", 
+          },
+        }}
+      />
+    </UserStack.Navigator>
+  );
+}
+
 // 📌 Root Stack Navigator để quản lý Auth & MainTabs
 const RootStack = createStackNavigator();
 export default function Navigation() {
@@ -227,6 +254,7 @@ export default function Navigation() {
             <RootStack.Screen name="MainTabs" component={MainTabs} />
             <RootStack.Screen name="HostTabs" component={HostTabs} />
             <RootStack.Screen name="HostStackNavigator" component={HostStackNavigator} />
+            <RootStack.Screen name="UserStackNavigator" component={UserStackNavigator} />
           </RootStack.Navigator>
         </LocationProvider>
       </TimeProvider>
