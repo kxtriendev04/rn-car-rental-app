@@ -22,7 +22,7 @@
     "@react-navigation/stack": "^7.1.2",
     "@shopify/flash-list": "^1.6.4",
     "expo": "~52.0.38",
-    "expo-clipboard": "^7.0.1",
+    "expo-clipboard": "~7.0.1",
     "expo-font": "~13.0.4",
     "expo-status-bar": "~2.0.1",
     "homestay-booking": "file:",

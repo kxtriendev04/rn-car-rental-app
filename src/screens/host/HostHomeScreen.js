@@ -63,6 +63,7 @@ const rentalOrders = [
     location: "123 Nguyễn Trãi, Hà Nội",
     status: "pending",
     pay: "cash",
+    delivery: "self"
   },
   {
     id: "ORD002",
@@ -80,6 +81,7 @@ const rentalOrders = [
     location: "456 Lê Lợi, Đà Nẵng",
     status: "approved",
     pay: "cash",
+    delivery: "self"
   },
   {
     id: "ORD003",
@@ -97,6 +99,7 @@ const rentalOrders = [
     location: "789 Trường Chinh, TP.HCM",
     status: "completed",
     pay: "cash",
+    delivery: "delivery"
   },
   {
     id: "ORD004",
@@ -114,6 +117,25 @@ const rentalOrders = [
     location: "321 Cách Mạng Tháng 8, Cần Thơ",
     status: "rejected",
     pay: "cash",
+    delivery: "delivery"
+  },
+  {
+    id: "ORD005",
+    owner: "Phan Minh G",
+    renter: "Hoàng Mai H",
+    createdAt: "2025-04-04",
+    start: "2025-04-10",
+    end: "2025-04-15",
+    original: 6000000,
+    discount: 1000000,
+    total: 5000000,
+    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carName: "Maserati MC20",
+    phoneNumber: "0904567890",
+    location: "321 Cách Mạng Tháng 8, Cần Thơ",
+    status: "delivering",
+    pay: "cash",
+    delivery: "delivery"
   }
 ];
 

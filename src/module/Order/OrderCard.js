@@ -9,7 +9,7 @@ const OrderCard = ({ data }) => {
   const handlePress = () => {
     navigation.navigate('HostStackNavigator', {
       screen: 'OrderDetail',
-      params: { data: data },
+      params: data,
     })
   };
   
@@ -18,11 +18,13 @@ const OrderCard = ({ data }) => {
       case "pending":
         return "Chờ duyệt";
       case "approved":
-        return "Đã duyệt";
+        return "Đã giao";
       case "rejected":
         return "Từ chối";
       case "completed":
         return "Hoàn thành";
+      case "delivering":
+        return "Đang giao"
       default:
         return "Không xác định";
     }
@@ -38,6 +40,8 @@ const OrderCard = ({ data }) => {
         return "#F8D7DA"; 
       case "completed":
         return "#D1ECF1"; 
+      case "delivering":
+        return "lightblue"
       default:
         return "#FFF";
     }
@@ -53,6 +57,8 @@ const OrderCard = ({ data }) => {
         return "#721c24"; 
       case "completed":
         return "#0c5460"; 
+      case "delivering":
+        return "#black"
       default:
         return "#333";
     }

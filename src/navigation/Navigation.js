@@ -284,7 +284,23 @@ function HostStackNavigator() {
   return (
     <HostStack.Navigator screenOptions={{ headerShown: false }}>
       <HostStack.Screen name="HostTabs" component={HostTabs} />
-      <HostStack.Screen name="OrderDetail" component={OrderDetail} />
+      <HostStack.Screen 
+        name="OrderDetail" 
+        component={OrderDetail}
+        options={{
+          headerShown: true, 
+          title: "Chi tiết đơn hàng", 
+          headerBackTitleVisible: false, 
+          headerBackTitle: "", 
+          headerTintColor: colors.mainColor, 
+          headerStyle: {
+            backgroundColor: "#fff", 
+          },
+          headerTitleStyle: {
+            fontWeight: "bold", 
+          },
+        }}
+      />
     </HostStack.Navigator>
   );
 }
