@@ -22,6 +22,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
     "AcommodationMap",
     "AddressScreen",
     "AddressAddition",
+    "chatscreen",
   ];
 
   if (hiddenScreens.includes(routeName)) {

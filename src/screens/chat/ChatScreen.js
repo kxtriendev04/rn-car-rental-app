@@ -13,12 +13,9 @@ import {
   Keyboard,
   SafeAreaView,
 } from "react-native";
-import {
-  getFocusedRouteNameFromRoute,
-  useNavigation,
-} from "@react-navigation/native";
 import colors from "../../util/colors";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import HeaderNavigation from "../../component/HeaderNavigation";
 
 const ChatScreen = ({ navigation, route }) => {
   const [messages, setMessages] = useState([
@@ -36,45 +33,41 @@ const ChatScreen = ({ navigation, route }) => {
   const [inputText, setInputText] = useState("");
   const flatListRef = useRef(null);
 
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "ProductDetail" || !routeName) {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
-    }
-    return () => {
-      navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
-    };
-  }, [navigation, route]);
-
   const sendMessage = () => {
     if (!inputText.trim()) return;
-  
+
     const userMessage = {
       id: String(messages.length + 1),
       text: inputText,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       sender: "me",
     };
-  
+
     const botReply = botHandle(inputText);
-  
+
     const botMessage = {
       id: String(messages.length + 2),
       text: "",
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       sender: "other",
       avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     };
-  
+
     // Thêm tin nhắn user và bot (trống) vào list
     setMessages((prev) => [...prev, userMessage, botMessage]);
-  
+
     setInputText("");
-  
+
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
     }, 100);
-  
+
     typeMessage(botReply, (currentText) => {
       setMessages((prevMessages) => {
         return prevMessages.map((msg) =>
@@ -87,18 +80,18 @@ const ChatScreen = ({ navigation, route }) => {
   const typeMessage = (fullText, callback) => {
     let currentText = "";
     let i = 0;
-  
+
     const interval = setInterval(() => {
       currentText += fullText[i];
       i++;
-  
+
       if (i === fullText.length) {
         clearInterval(interval);
-        callback(currentText); 
+        callback(currentText);
       } else {
-        callback(currentText); 
+        callback(currentText);
       }
-    }, Math.floor(Math.random() * (100 - 10 + 1)) + 10); 
+    }, Math.floor(Math.random() * (100 - 10 + 1)) + 10);
   };
 
   const carData = {
@@ -108,89 +101,96 @@ const ChatScreen = ({ navigation, route }) => {
         seats: 4,
         owner: "Nguyễn Văn A",
         location: "Hà Nội",
-        price: "1.000.000 VNĐ"
+        price: "1.000.000 VNĐ",
       },
       vf8: {
         name: "VF8",
         seats: 7,
         owner: "Nguyễn Thị B",
         location: "Hà Nội",
-        price: "1.500.000 VNĐ"
+        price: "1.500.000 VNĐ",
       },
       vf9: {
         name: "VF9",
         seats: 7,
         owner: "Nguyễn Văn C",
         location: "Hà Nội",
-        price: "2.000.000 VNĐ"
-      }
-    }
+        price: "2.000.000 VNĐ",
+      },
+    },
   };
 
   const botHandle = (inputText) => {
     const text = inputText.trim().toLowerCase();
-  
+
     switch (true) {
       case /xin chào|chào|tạm biệt/.test(text):
         return "Chào bạn 👋! Tôi có thể giúp gì cho bạn?";
-  
+
       case /(cách|hướng dẫn|làm thế nào).*(đặt|thuê).*xe/.test(text):
-        return 'Sau đây là hướng dẫn các bước chi tiết:\n' + 
-          '1. Đi tới giao diện trang chủ 🏠\n' +
-          '2. Lướt tìm xe mình yêu thích ❤️\n' +
-          '3. Chọn xe mình thích 👉👈\n' +
-          '4. Điền đầy đủ thông tin về đơn thuê 📋\n' +
-          '5. Thanh toán và chờ người chủ xe duyệt đơn 💵\n' +
-          'Vậy là bạn đã hoàn thành việc đặt hàng rùi nè 🥰';
-  
+        return (
+          "Sau đây là hướng dẫn các bước chi tiết:\n" +
+          "1. Đi tới giao diện trang chủ 🏠\n" +
+          "2. Lướt tìm xe mình yêu thích ❤️\n" +
+          "3. Chọn xe mình thích 👉👈\n" +
+          "4. Điền đầy đủ thông tin về đơn thuê 📋\n" +
+          "5. Thanh toán và chờ người chủ xe duyệt đơn 💵\n" +
+          "Vậy là bạn đã hoàn thành việc đặt hàng rùi nè 🥰"
+        );
+
       case /vf|vinfast/.test(text):
         return botHandle2nd(text);
-  
+
       default:
         return "Mình chưa hiểu ý của bạn. Bạn nhắn rõ ràng hơn để mình hiểu nhé!";
     }
   };
-  
+
   const botHandle2nd = (text) => {
     switch (true) {
-      case /(vf|vinfast).*7/.test(text):  
-        return "Đây là thông tin về xe: \n" +
-          '1. Tên xe: VF7\n' +
-          '2. Số chỗ ngồi: 4 chỗ\n' +
-          '3. Chủ xe: Nguyễn Văn A\n' +
-          '4. Địa điểm chủ xe: Hà Nội\n' +
-          '5. Giá thuê 1 ngày: 1.000.000 VNĐ\n' +
-          'Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo ' +
-          'mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và ' +
-          'bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!' +
-          'Đây là số điện thoại của chủ xe: 0123456789 🥰';
-      case /(vf|vinfast).*8/.test(text):  
-        return "Đây là thông tin về xe: \n" +
-          '1. Tên xe: VF8\n' +
-          '2. Số chỗ ngồi: 7 chỗ\n' +
-          '3. Chủ xe: Nguyễn Thị B\n' +
-          '4. Địa điểm chủ xe: Hà Nội\n' +
-          '5. Giá thuê 1 ngày: 1.500.000 VNĐ\n' +
-          'Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo ' +
-          'mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và ' +
-          'bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!' +
-          'Đây là số điện thoại của chủ xe: 0123456789 🥰';
-      case /(vf|vinfast).*9/.test(text):  
-        return "Đây là thông tin về xe: \n" +
-          '1. Tên xe: VF9\n' +
-          '2. Số chỗ ngồi: 7 chỗ\n' +
-          '3. Chủ xe: Nguyễn Văn C\n' +
-          '4. Địa điểm chủ xe: Hà Nội\n' +
-          '5. Giá thuê 1 ngày: 2.000.000 VNĐ\n' +
-          'Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo ' +
-          'mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và ' +
-          'bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!' +
-          'Đây là số điện thoại của chủ xe: 0123456789 🥰';
-      default: 
+      case /(vf|vinfast).*7/.test(text):
+        return (
+          "Đây là thông tin về xe: \n" +
+          "1. Tên xe: VF7\n" +
+          "2. Số chỗ ngồi: 4 chỗ\n" +
+          "3. Chủ xe: Nguyễn Văn A\n" +
+          "4. Địa điểm chủ xe: Hà Nội\n" +
+          "5. Giá thuê 1 ngày: 1.000.000 VNĐ\n" +
+          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
+          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
+          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
+          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
+        );
+      case /(vf|vinfast).*8/.test(text):
+        return (
+          "Đây là thông tin về xe: \n" +
+          "1. Tên xe: VF8\n" +
+          "2. Số chỗ ngồi: 7 chỗ\n" +
+          "3. Chủ xe: Nguyễn Thị B\n" +
+          "4. Địa điểm chủ xe: Hà Nội\n" +
+          "5. Giá thuê 1 ngày: 1.500.000 VNĐ\n" +
+          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
+          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
+          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
+          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
+        );
+      case /(vf|vinfast).*9/.test(text):
+        return (
+          "Đây là thông tin về xe: \n" +
+          "1. Tên xe: VF9\n" +
+          "2. Số chỗ ngồi: 7 chỗ\n" +
+          "3. Chủ xe: Nguyễn Văn C\n" +
+          "4. Địa điểm chủ xe: Hà Nội\n" +
+          "5. Giá thuê 1 ngày: 2.000.000 VNĐ\n" +
+          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
+          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
+          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
+          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
+        );
+      default:
         return "Hiện tại trang web thuê xe đang có những dòng xe như VF7, VF8, VF9. Bạn muốn tìm hiểu về xe nào nhỉ? 😉";
     }
   };
-  
 
   const renderMessage = ({ item }) => (
     <View style={item.sender === "me" ? styles.myMessage : styles.otherMessage}>
@@ -202,7 +202,7 @@ const ChatScreen = ({ navigation, route }) => {
           styles.messageBox,
           item.sender === "me"
             ? { backgroundColor: colors.mainColor }
-            : { backgroundColor: "#f0f0f0" },
+            : { backgroundColor: "white" },
         ]}
       >
         <Text style={styles.messageText}>{item.text}</Text>
@@ -213,28 +213,26 @@ const ChatScreen = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      // keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      // style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.headerButtonContainer}
-            >
-              <AntDesign name="left" size={24} color="black" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Chatbot</Text>
-          </View>
+          <HeaderNavigation
+            title="Chatbox"
+            navigation={navigation}
+            headerStyle={{ height: 70 }}
+          />
           <FlatList
             ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={renderMessage}
             style={styles.chatContainer}
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ paddingBottom: 20, marginTop: 8 }}
             onContentSizeChange={() =>
               flatListRef.current?.scrollToEnd({ animated: true })
             }
@@ -261,10 +259,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 10
+    paddingTop: 10,
   },
   innerContainer: {
     flex: 1,
+    marginTop: 20,
+    backgroundColor: "#f2f2f2",
+    // marginBottom: 20,
   },
   chatContainer: {
     flex: 1,
@@ -295,6 +296,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+    backgroundColor: "red",
   },
   messageText: {
     fontSize: 16,
@@ -313,6 +315,7 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
     alignItems: "center",
     backgroundColor: "#fff",
+    paddingBottom: 26,
   },
   input: {
     flex: 1,
