@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import colors from "../util/colors";
 import OverlappingAvatars from "../component/OverlappingAvatars";
+import { useNavigation } from "@react-navigation/native";
 const posts = [
   {
     id: 1,
@@ -301,8 +302,21 @@ const FeedItem = ({ post }) => {
       }),
     ]).start(() => setLove(!love)); // Sau khi hiệu ứng xong thì đổi trạng thái
   };
+
+  const navigation = useNavigation();
+  const handlePress = () => {
+    navigation.navigate("PostDetail", { post });
+  };
   return (
-    <>
+    <TouchableOpacity
+      style={{
+        paddingHorizontal: 15,
+        paddingVertical: 16,
+        backgroundColor: colors.whiteColor,
+      }}
+      onPress={handlePress}
+      activeOpacity={0.8}
+    >
       <View
         style={{
           // marginTop: 16,
@@ -408,7 +422,7 @@ const FeedItem = ({ post }) => {
         </View>
       </View>
       <View style={{ padding: 8, backgroundColor: "#f2f2f2" }}></View>
-    </>
+    </TouchableOpacity>
   );
 };
 

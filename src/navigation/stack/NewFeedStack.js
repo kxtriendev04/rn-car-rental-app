@@ -5,6 +5,7 @@ import HomeScreen from "../../screens/HomeScreen";
 import ProductDetailScreen from "../../screens/ProductDetailScreen";
 import AcommodationMap from "../../screens/AcommodationMap";
 import NewFeedScreen from "../../screens/NewFeedScreen";
+import PostDetailScreen from "../../screens/PostDetail";
 
 const Stack = createStackNavigator();
 const NewFeedStack = () => {
@@ -15,16 +16,16 @@ const NewFeedStack = () => {
         component={NewFeedScreen}
         options={{ headerShown: false }}
       ></Stack.Screen>
-      {/* <Stack.Screen
-        name="ProductDetail"
-        component={ProductDetailScreen}
+      <Stack.Screen
+        name="PostDetail"
+        component={PostDetailScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AcommodationMap"
         component={AcommodationMap}
         options={{ headerShown: false }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 };

@@ -4,6 +4,7 @@ import ProfileHome from "../../screens/profile/ProfileHome";
 import AddressScreen from "../../screens/profile/AddressScreen";
 import AddressAddition from "../../screens/profile/AddressAddition";
 import LocationPicker from "../../screens/profile/LocationPicker";
+import Wishlist from "../../screens/host/Wishlist";
 
 const Stack = createStackNavigator();
 const ProfileStack = () => {
