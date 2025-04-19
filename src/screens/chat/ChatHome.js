@@ -6,27 +6,9 @@ import { useNavigation } from "@react-navigation/native";
 const messages = [
   {
     id: "1",
-    name: "Midala Hu...",
-    message: "Good morning, did you sleep well?",
+    name: "Chat bot hỗ trợ",
+    message: "Xin chào, tôi có thể giúp gì cho bạn?",
     time: "Today",
-    unread: 1,
-    avatar:
-      "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg?region=240%2C0%2C1440%2C1080",
-  },
-  {
-    id: "2",
-    name: "Raki Devon",
-    message: "How is it going?",
-    time: "17/6",
-    unread: 0,
-    avatar:
-      "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg?region=240%2C0%2C1440%2C1080",
-  },
-  {
-    id: "3",
-    name: "Erlan Sadewa",
-    message: "Aight, noted",
-    time: "17/6",
     unread: 1,
     avatar:
       "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg?region=240%2C0%2C1440%2C1080",

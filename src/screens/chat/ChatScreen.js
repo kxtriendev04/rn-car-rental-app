@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,44 +11,31 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  SafeAreaView,
 } from "react-native";
-
 import {
   getFocusedRouteNameFromRoute,
   useNavigation,
 } from "@react-navigation/native";
 import colors from "../../util/colors";
-import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const ChatScreen = ({ navigation, route }) => {
   const [messages, setMessages] = useState([
     {
       id: "1",
-      text: "Hello! Jhon abraham",
-      time: "09:25 AM",
-      sender: "me",
-    },
-    {
-      id: "2",
-      text: "Hello! Nazrul How are you?",
-      time: "09:25 AM",
-      sender: "other",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: "3",
-      text: "You did your job well!",
-      time: "09:25 AM",
-      sender: "me",
-    },
-    {
-      id: "4",
-      text: "Have a great working week!!",
-      time: "09:25 AM",
+      text: "Xin chào! Tôi là chatbot của bạn.",
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       sender: "other",
       avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
   ]);
+  const [inputText, setInputText] = useState("");
+  const flatListRef = useRef(null);
 
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
@@ -60,23 +47,38 @@ const ChatScreen = ({ navigation, route }) => {
     };
   }, [navigation, route]);
 
-  const [inputText, setInputText] = useState("");
-
   const sendMessage = () => {
     if (inputText.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: String(prevMessages.length + 1),
-          text: inputText,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          sender: "me",
-        },
-      ]);
+      // Thêm tin nhắn người dùng
+      const userMessage = {
+        id: String(messages.length + 1),
+        text: inputText,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        sender: "me",
+      };
+
+      // Thêm tin nhắn chatbot
+      const botMessage = {
+        id: String(messages.length + 2),
+        text: "Đã phản hồi",
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        sender: "other",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+      };
+
+      setMessages((prevMessages) => [...prevMessages, userMessage, botMessage]);
       setInputText("");
+
+      // Cuộn đến tin nhắn mới nhất
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     }
   };
 
@@ -89,7 +91,7 @@ const ChatScreen = ({ navigation, route }) => {
         style={[
           styles.messageBox,
           item.sender === "me"
-            ? { backgroundColor: "#66DD7A" }
+            ? { backgroundColor: colors.mainColor }
             : { backgroundColor: "#f0f0f0" },
         ]}
       >
@@ -103,6 +105,7 @@ const ChatScreen = ({ navigation, route }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.innerContainer}>
@@ -113,24 +116,29 @@ const ChatScreen = ({ navigation, route }) => {
             >
               <AntDesign name="left" size={24} color="black" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Name</Text>
-            <View style={{ padding: 8 }}></View>
+            <Text style={styles.headerTitle}>Chatbot</Text>
           </View>
           <FlatList
+            ref={flatListRef}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={renderMessage}
             style={styles.chatContainer}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            onContentSizeChange={() =>
+              flatListRef.current?.scrollToEnd({ animated: true })
+            }
           />
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
               value={inputText}
               onChangeText={setInputText}
-              placeholder="Write your message"
+              placeholder="Nhập tin nhắn..."
+              placeholderTextColor="#888"
             />
             <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-              <MaterialCommunityIcons name="send" size={20} color="white" />
+              <MaterialCommunityIcons name="send" size={24} color="white" />
             </TouchableOpacity>
           </View>
         </View>
@@ -140,80 +148,110 @@ const ChatScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  innerContainer: { flex: 1 },
-  chatContainer: { flex: 1, padding: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    marginTop: 10
+  },
+  innerContainer: {
+    flex: 1,
+  },
+  chatContainer: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
   myMessage: {
     alignSelf: "flex-end",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 5,
+    marginVertical: 8,
     maxWidth: "70%",
   },
   otherMessage: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
+    alignItems: "flex-start",
+    marginVertical: 8,
+    maxWidth: "70%",
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     marginRight: 10,
   },
   messageBox: {
-    padding: 10,
-    borderRadius: 10,
-    maxWidth: "70%",
+    padding: 12,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  messageText: { fontSize: 16 },
-  time: { fontSize: 12, color: "gray", marginTop: 5, alignSelf: "flex-end" },
+  messageText: {
+    fontSize: 16,
+    color: "#000",
+  },
+  time: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 5,
+    alignSelf: "flex-end",
+  },
   inputContainer: {
     flexDirection: "row",
-    padding: 15,
+    padding: 10,
     borderTopWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#eee",
     alignItems: "center",
-    marginBottom: 20,
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
-    padding: 10,
+    padding: 12,
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 20,
+    borderRadius: 25,
     marginRight: 10,
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
   },
   sendButton: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.mainColor,
-    padding: 10,
-    paddingLeft: 12,
-    borderRadius: 20,
+    padding: 12,
+    borderRadius: 25,
   },
   header: {
     marginTop: 22,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 80,
+    height: 60,
     backgroundColor: "white",
     paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 18,
+    fontWeight: "600",
+    position: "absolute",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    zIndex: 1,
   },
   headerButtonContainer: {
     padding: 8,
     borderRadius: 10,
     backgroundColor: "white",
-    shadowColor: "#999", // Màu bóng
-    shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
-    shadowOpacity: 0.5, // Độ mờ
-    shadowRadius: 2, // Bán kính mờ
-    elevation: 2, // Bóng trên Android
+    shadowColor: "#999",
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2,
   },
 });
 
