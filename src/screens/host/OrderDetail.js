@@ -174,135 +174,139 @@ const renderButtons = (status) => {
 }
 
 const OrderDetail = () => {
-    const route = useRoute();
-    const data = route.params;
-    const [isExpanded, setIsExpanded] = useState(false);
-    const handleToggle = () => {
-        setIsExpanded(!isExpanded);
-    };
+  const route = useRoute();
+  const data = route.params;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const handleToggle = () => {
+      setIsExpanded(!isExpanded);
+  };
 
-    const handleCopy = async () => {
-        try {
-          await Clipboard.setStringAsync(data.id);
-          Alert.alert("Đã sao chép", "Mã đơn hàng đã được sao chép vào clipboard.");
-        } catch (error) {
-          Alert.alert("Lỗi", "Không thể sao chép mã đơn hàng.");
-        }
-    };
+  const handleCopy = async () => {
+    try {
+      await Clipboard.setStringAsync(data.id);
+      Alert.alert("Đã sao chép", "Mã đơn hàng đã được sao chép vào clipboard.");
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể sao chép mã đơn hàng.");
+    }
+  };
 
-    return(
-        <SafeAreaView style={{flex: 1}} edges={['top']}>
-            <ScrollView style={{flex: 1, paddingHorizontal: 15}}>
-                <View style={styles.container}>
-                    <View style={{
-                        backgroundColor: getStatusBackgroundColor(data.status), 
-                        paddingHorizontal: 10,
-                        paddingVertical: 15,
-                        borderTopLeftRadius: 15,
-                        borderTopRightRadius: 15}}
-                    >
-                        <Text style={{
-                            color: getStatusTextColor(data.status), 
-                            fontSize: 18,
-                            fontWeight: 600 }}>Trạng thái: {getStatusText(data.status)}
-                        </Text>
-                    </View>
-                    <View style={{backgroundColor: colors.whiteColor, paddingHorizontal: 15, paddingTop: 15, marginBottom: 10}}>
-                        <Text style={{fontWeight: 600, fontSize: 16.5}}>Thông tin vận chuyển</Text>
-                        <View style={{flexDirection: "row", paddingTop: 15, alignItems: "center"}}>
-                            <MaterialCommunityIcons name="truck-delivery-outline" color={getStatusTextColor(data.status)} size={25}/>
-                            <Text style={{fontSize: 15, paddingLeft: 15}}>{getDeliveryText(data.delivery)}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.subContainer}>
-                        <Text style={{fontWeight: 600, fontSize: 16.5}}>Địa chỉ người thuê</Text>
-                        <View style={{flexDirection: "row", paddingTop: 15, alignItems: "center"}}>
-                            <MaterialIcons name="location-on" color={getStatusTextColor(data.status)} size={25}/>
-                            <View style={{flexDirection: "column"}}>
-                                <View style={{flexDirection: "row"}}>
-                                    <Text style={{fontSize: 16, paddingLeft: 15}}>{data.renter}</Text>
-                                    <Text style={{fontSize: 15, paddingLeft: 15, color: colors.textGray}}>{data.phoneNumber}</Text>
-                                </View>
-                                <Text style={{fontSize: 15, paddingLeft: 15, paddingTop: 3, color: "#666"}}>{data.location}</Text>
-                            </View>
-                        </View>
-                    </View>
+  return(
+    <SafeAreaView style={{flex: 1}} edges={['top']}>
+      <ScrollView style={{flex: 1, paddingHorizontal: 15}}>
+        <View style={styles.container}>
+          <View style={{
+              backgroundColor: getStatusBackgroundColor(data.status), 
+              paddingHorizontal: 10,
+              paddingVertical: 15,
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15}}
+          >
+            <Text style={{
+                color: getStatusTextColor(data.status), 
+                fontSize: 18,
+                fontWeight: 600 }}>Trạng thái: {getStatusText(data.status)}
+            </Text>
+          </View>
+          <View style={{backgroundColor: colors.whiteColor, paddingHorizontal: 15, paddingTop: 15, marginBottom: 10}}>
+            <Text style={{fontWeight: 600, fontSize: 16.5}}>Thông tin vận chuyển</Text>
+            <View style={{flexDirection: "row", paddingTop: 15, alignItems: "center"}}>
+              <MaterialCommunityIcons name="truck-delivery-outline" color={getStatusTextColor(data.status)} size={25}/>
+              <Text style={{fontSize: 15, paddingLeft: 15}}>{getDeliveryText(data.delivery)}</Text>
+            </View>
+          </View>
+          <View style={styles.subContainer}>
+            <Text style={{fontWeight: 600, fontSize: 16.5}}>Thông tin người thuê</Text>
+            <View style={{flexDirection: "row", paddingTop: 15, alignItems: "center"}}>
+              <MaterialIcons name="location-on" color={getStatusTextColor(data.status)} size={25}/>
+              <View style={{flexDirection: "column"}}>
+                <View style={{flexDirection: "row"}}>
+                  <Text style={{fontSize: 16, paddingLeft: 15}}>{data.renter}</Text>
+                  <Text style={{fontSize: 15, paddingLeft: 15, color: colors.textGray}}>{data.phoneNumber}</Text>
                 </View>
-                <View style={styles.container}>
-                    <View style={{flexDirection: "row", padding: 15}}>
-                        <Image source={{ uri: data.carImage }} style={styles.image} />
-                        <View style={{flexDirection: "column", justifyContent: "space-between", flex: 1}}>
-                            <View style={{flexDirection: "column"}}>
-                                <Text style={{fontSize: 16}}>{data.carName}</Text>
-                                <Text style={{fontSize: 14.5, paddingTop: 2.5, color: colors.textGray}}>Ngày tạo: {data.createdAt}</Text>
-                            </View>
-                            <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
-                                <Text>{formatCurrencyVND(data.original)}</Text>
-                            </View>
-                        </View>
-                    </View>
+                <Text style={{fontSize: 15, paddingLeft: 15, paddingTop: 3, color: "#666"}}>{data.location}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={styles.container}>
+          <View style={{flexDirection: "row", padding: 15}}>
+            <Image source={{ uri: data.carImage }} style={styles.image} />
+            <View style={{flexDirection: "column", justifyContent: "space-between", flex: 1}}>
+              <View style={{flexDirection: "column"}}>
+                <Text style={{fontSize: 16}}>{data.carName}</Text>
+                <Text style={{fontSize: 14.5, paddingTop: 2.5, color: colors.textGray}}>Ngày tạo: {data.createdAt}</Text>
+              </View>
+              <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
+                <Text>{formatCurrencyVND(data.original)}</Text>
+              </View>
+            </View>
+          </View>
 
-                    {isExpanded && (
-                        <View style={styles.subContainer}>
-                            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                                <Text>Tổng tiền thuê xe</Text>
-                                <Text>{formatCurrencyVND(data.original)}</Text>
-                            </View>
-                            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                                <Text>Tổng tiền giảm giá</Text>
-                                <Text> - {formatCurrencyVND(data.discount)}</Text>
-                            </View>
-                        </View>
-                    )}
-                    <TouchableOpacity onPress={handleToggle} activeOpacity={0.8}>
-                        <View style={styles.subContainer}>
-                            <View style={{flexDirection: "row", justifyContent: "flex-end", paddingBottom: 12.5}}>
-                                <Text style={{fontSize: 15}}>Tổng thanh toán: </Text>
-                                <Text style={{fontSize: 15}}>{formatCurrencyVND(data.original)}</Text>
-                                <AntDesign name="down" color={colors.textGray} size={15}/>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.container}>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5, paddingTop: 15, paddingHorizontal: 15, alignItems: "center"}}>
-                        <Text style={{fontWeight: 600, fontSize: 16}}>Mã đơn hàng</Text>
-                        <View style={{flexDirection: "row", alignItems: "center"}}>
-                            <Text style={{color: colors.textGray, paddingRight: 10}}>{data.id}</Text>
-                            <TouchableOpacity style={{borderWidth: 1, padding: 5, borderRadius: 10, borderColor: colors.textGray}} onPress={handleCopy}>
-                                <Text>SAO CHÉP</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5, paddingHorizontal: 15}}>
-                        <Text>Phương thức thanh toán</Text>
-                        <Text style={{color: colors.textGray}}>{data.pay}</Text>
-                    </View>
-                    <View style={styles.subContainer}>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                            <Text>Thời gian tạo đơn</Text>
-                            <Text style={{color: colors.textGray}}>{data.createdAt}</Text>
-                        </View>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                            <Text>Dự kiến giao xe</Text>
-                            <Text style={{color: colors.textGray}}>{data.start}</Text>
-                        </View>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                            <Text>Dự kiến trả xe</Text>
-                            <Text style={{color: colors.textGray}}>{data.end}</Text>
-                        </View>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
-                            <Text>Thời gian kết thúc</Text>
-                            <Text style={{color: colors.textGray}}>{data.end}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.buttonContainer}>
-                    {renderButtons(data.status)}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+          {isExpanded && (
+            <View style={styles.subContainer}>
+              <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+                <Text>Tổng tiền thuê xe</Text>
+                <Text>{formatCurrencyVND(data.original)}</Text>
+              </View>
+              <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+                <Text>Tổng tiền giảm giá</Text>
+                <Text> - {formatCurrencyVND(data.discount)}</Text>
+              </View>
+            </View>
+          )}
+          <TouchableOpacity onPress={handleToggle} activeOpacity={0.8}>
+            <View style={styles.subContainer}>
+              <View style={{flexDirection: "row", justifyContent: "flex-end", paddingBottom: 12.5}}>
+                <Text style={{fontSize: 15}}>Tổng thanh toán: </Text>
+                <Text style={{fontSize: 15}}>{formatCurrencyVND(data.original)}</Text>
+                <AntDesign name="down" color={colors.textGray} size={15}/>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5, paddingTop: 15, paddingHorizontal: 15, alignItems: "center"}}>
+            <Text style={{fontWeight: 600, fontSize: 16}}>Mã đơn hàng</Text>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Text style={{color: colors.textGray, paddingRight: 10}}>{data.id}</Text>
+              <TouchableOpacity style={{borderWidth: 1, padding: 5, borderRadius: 10, borderColor: colors.textGray}} onPress={handleCopy}>
+                <Text>SAO CHÉP</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5, paddingHorizontal: 15}}>
+            <Text>Phương thức thanh toán</Text>
+            <Text style={{color: colors.textGray}}>{data.pay}</Text>
+          </View>
+          <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5, paddingHorizontal: 15}}>
+            <Text>Đặt cọc:</Text>
+            <Text style={{color: colors.textGray}}>{data.pay}</Text>
+          </View>
+          <View style={styles.subContainer}>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+              <Text>Thời gian tạo đơn</Text>
+              <Text style={{color: colors.textGray}}>{data.createdAt}</Text>
+            </View>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+              <Text>Dự kiến giao xe</Text>
+              <Text style={{color: colors.textGray}}>{data.start}</Text>
+            </View>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+              <Text>Dự kiến trả xe</Text>
+              <Text style={{color: colors.textGray}}>{data.end}</Text>
+            </View>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingBottom: 12.5}}>
+              <Text>Thời gian kết thúc</Text>
+              <Text style={{color: colors.textGray}}>{data.end}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          {renderButtons(data.status)}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
 export default OrderDetail;
