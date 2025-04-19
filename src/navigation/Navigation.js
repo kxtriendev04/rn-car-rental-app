@@ -161,7 +161,7 @@ const Tab = createBottomTabNavigator();
 //     </Tab.Navigator>
 //   );
 // }
-const MainTabs = () => {
+export const MainTabs = () => {
   return (
     <Tab.Navigator
       tabBar={(props) => <TabBar {...props} />} // 👉 dùng custom TabBar
@@ -217,7 +217,7 @@ const UserStack = createStackNavigator();
 function UserStackNavigator() {
   return (
     <UserStack.Navigator screenOptions={{ headerShown: false }}>
-      <UserStack.Screen name="HostTabs" component={HostTabs} />
+      <UserStack.Screen name="MainTabs" component={MainTabs} />
       <UserStack.Screen 
         name="Notification" 
         component={Notification}
@@ -255,6 +255,7 @@ export default function Navigation() {
             <RootStack.Screen name="HostTabs" component={HostTabs} />
             <RootStack.Screen name="HostStackNavigator" component={HostStackNavigator} />
             <RootStack.Screen name="UserStackNavigator" component={UserStackNavigator} />
+            <RootStack.Screen name="NewFeedStack" component={NewFeedStack} />
           </RootStack.Navigator>
         </LocationProvider>
       </TimeProvider>

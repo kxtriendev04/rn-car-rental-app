@@ -177,6 +177,7 @@ const components = [
 ];
 
 const NewFeedScreen = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -236,6 +237,7 @@ const NewFeedScreen = () => {
                   name="bell"
                   size={24}
                   color="#555"
+                  onPress={() => {navigation.navigate("Notification")}}
                 />
               </View>
             </View>
