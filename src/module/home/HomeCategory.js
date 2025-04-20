@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import colors from "../../util/colors";
 import AccomodationItem from "../../component/home/AccomodationItem";
+import api from "../../util/api";
 
 const categories = [
   {
@@ -36,53 +37,25 @@ const categories = [
     url: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
   },
 ];
-const itemList = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Tesla Model X",
-    img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
-    discount: 20,
-    star: 3,
-    location: "Đống Đa, Hà Nội",
-    historicalCost: 1620370,
-    pricingDecreased: 1215000,
-    ratedNumber: 14,
-    feature: "Free breakfast",
-    rated: "7.5 Very good",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Tesla Model 3",
-    img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
-    discount: 20,
-    star: 3,
-    location: "Cầu giấy, Hà Nội",
-    historicalCost: 1620370,
-    pricingDecreased: 1115000,
-    ratedNumber: 304,
-    feature: "Good location",
-    rated: "8.0 Execllent",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Tesla Model 3",
-    img: "https://i.vietgiaitri.com/2022/12/2/loat-xe-o-to-pho-thong-gia-re-cong-nghe-dinh-cao-dang-mua-nhat-don-nam-moi-2023-731-6773678.jpg",
-    discount: 25,
-    star: 4,
-    location: "Thanh Xuân, Hà Nội",
-    historicalCost: 1078210,
-    pricingDecreased: 999000,
-    ratedNumber: 106,
-    feature: "Good reviews",
-    rated: "10.0 Exceptional",
-  },
-];
-
 const HomeCategory = () => {
   const [selectedCate, setSelectedCate] = useState("");
+  const [vehicles, setVehicles] = useState([]);
   useEffect(() => {
     setSelectedCate(categories[0].title);
   }, []);
+
+  const fetchingData = async () => {
+    try {
+      const response = await api.get("/vehicles/brand?brand=" + selectedCate);
+      setVehicles(response.data.results);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    fetchingData();
+  }, [selectedCate]);
+
   return (
     <View
       style={{
@@ -111,7 +84,7 @@ const HomeCategory = () => {
               color: colors.textColor,
             }}
           >
-            Top brand
+            Hãng xe nổi bật
           </Text>
           <Text style={{ paddingHorizontal: 15, color: colors.textGray }}>
             View All {">"}
@@ -145,13 +118,12 @@ const HomeCategory = () => {
           color: colors.textColor,
         }}
       >
-        {/* Popular {selectedCate} in your location */}
-        Top Rated Cars
+        Những chiếc xe tốt nhất
       </Text>
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={itemList}
+        data={vehicles}
         renderItem={({ item }) => <AccomodationItem data={item} />}
         keyExtractor={(item) => item.id}
         style={{ paddingLeft: 5 }}

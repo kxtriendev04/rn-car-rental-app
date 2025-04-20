@@ -40,7 +40,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
         },
         isNormal && type !== "masonry"
           ? { width: 247, marginLeft: 10, marginRight: 5 }
-          : { width: "90%", margin: "5%" },
+          : { width: "100%" },
       ]}
     >
       <View style={{ position: "relative", flex: isNormal ? 3.2 : 2 }}>
@@ -57,7 +57,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
               //flex: isNormal ? 3.2 : 2,
             },
           ]}
-          source={{ uri: data?.img }}
+          source={{ uri: data?.images?.[0]?.imageUrl }}
         ></Image>
         <TouchableOpacity
           onPress={toggleLike}
@@ -95,9 +95,15 @@ const AccomodationItem = ({ data, type = "normal" }) => {
       <View style={{ padding: 10, gap: 6, flex: 1.5 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
-            style={{ fontWeight: 500, fontSize: 16, color: colors.textColor }}
+            style={{
+              fontWeight: 500,
+              fontSize: 16,
+              color: colors.textColor,
+              maxWidth: "80%",
+            }}
+            numberOfLines={1}
           >
-            {data.title}
+            {data?.name}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <AntDesign name="star" size={16} color={colors.mainColor} />
@@ -109,7 +115,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
         </View>
 
         <Text style={{ color: colors.textGray, fontSize: 15 }}>
-          Available Now
+          {data?.status == "Available" ? "Sẵn sàng cho thuê" : "Không có sẵn"}
         </Text>
         <View
           style={{
@@ -121,8 +127,13 @@ const AccomodationItem = ({ data, type = "normal" }) => {
           }}
         >
           <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
-            <MaterialCommunityIcons
+            {/* <MaterialCommunityIcons
               name="seat-outline"
+              size={18}
+              color={colors.mainColor}
+            /> */}
+            <MaterialCommunityIcons
+              name="globe-model"
               size={18}
               color={colors.mainColor}
             />
@@ -132,7 +143,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
                 letterSpacing: -1,
               }}
             >
-              4 seats
+              {data?.year}
             </Text>
           </View>
           <View style={{ flexDirection: "row", gap: 0, alignItems: "center" }}>
@@ -147,7 +158,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
                 letterSpacing: -1,
               }}
             >
-              {formatPrice(data?.pricingDecreased)}k
+              {data?.pricePerDay}k
             </Text>
           </View>
           {/* <Text

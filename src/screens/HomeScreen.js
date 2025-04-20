@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,18 +18,27 @@ import HomeList from "../module/home/HomeList";
 import HomeCategory from "../module/home/HomeCategory";
 import HomeOthers from "../module/home/HomeOthers";
 import HomeCoupon from "../module/HomeCoupon";
+import api from "../util/api";
+import { AuthContext } from "../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { height, width } = Dimensions.get("window");
 const HomeScreen = () => {
-  // const [isFocused, setIsFocused] = useState(false);
-  // const navigation = useNavigation();
+  const [data, setData] = useState([]);
+  // const fetchingData = async () => {
+  //   try {
+  //     const response = await api.get("/users");
+  //     console.log(response.data.results);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+  // useEffect(() => {
+  //   console.log(123);
+  //   fetchingData();
+  // }, []);
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
-    //   style={{ flex: 1 }}
-    // >
-    // <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
     <View style={styles.container}>
       {/* {isFocused && <View style={styles.overlay} />} */}
       <ScrollView

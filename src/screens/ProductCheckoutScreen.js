@@ -36,11 +36,16 @@ const car = {
 const ProductCheckoutScreen = ({ route }) => {
   const navigation = useNavigation();
   const { time } = useContext(TimeContext);
+  const { data } = route.params;
+  // console.log(data);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <HeaderNavigation title="Resquest to book" navigation={navigation} />
+        <HeaderNavigation
+          title="Kiểm tra lại đơn đặt"
+          navigation={navigation}
+        />
         {/* <ProductDetailHeader title="Resquest to book" navigation={navigation} /> */}
         {/* Product info */}
         <View
@@ -68,15 +73,15 @@ const ProductCheckoutScreen = ({ route }) => {
             }}
           >
             <View>
-              <Text style={{ fontSize: 18, fontWeight: 500 }}>
-                Tesla Roadster
-              </Text>
+              <Text style={{ fontSize: 18, fontWeight: 500 }}>{data.name}</Text>
               <Text>
                 <AntDesign name="star" size={16} color={colors.mainColor} />{" "}
-                {car.star} • 179 Trips
+                {data.star} • {data.brand}
               </Text>
             </View>
-            <Text style={{ fontSize: 16, fontWeight: 600 }}>$26.32/h</Text>
+            <Text style={{ fontSize: 16, fontWeight: 600 }}>
+              {data.pricePerDay} vnđ
+            </Text>
           </View>
         </View>
         {/* Date */}
@@ -158,7 +163,7 @@ const ProductCheckoutScreen = ({ route }) => {
             <Text>Cầu Giấy, Hà Nội</Text>
           </View>
         </CheckoutSection>
-        <CheckoutSection title="Coupon">
+        <CheckoutSection title="Phiếu giảm giá">
           <View style={{ flexDirection: "row", gap: 6 }}>
             <TextInput
               placeholder="Enter your coupon"
@@ -182,7 +187,7 @@ const ProductCheckoutScreen = ({ route }) => {
             style={{
               fontSize: 15,
               fontWeight: 500,
-              color: colors.textGray,
+              color: colors.textColor,
               marginBottom: 10,
             }}
           >
@@ -200,7 +205,7 @@ const ProductCheckoutScreen = ({ route }) => {
             placeholder="Nhập nội dung nhắn cho chủ xe"
           ></TextInput>
         </View>
-        <CheckoutSection title="Payment">
+        <CheckoutSection title="Thanh toán">
           <View
             style={{
               backgroundColor: colors.greyBackground,
@@ -248,7 +253,7 @@ const ProductCheckoutScreen = ({ route }) => {
               }}
             >
               <Text style={{ fontSize: 14, color: colors.textGray }}>
-                Discount
+                Giảm giá
               </Text>
               <Text style={{ fontWeight: 500, fontSize: 14 }}>-</Text>
             </View>
@@ -282,7 +287,7 @@ const ProductCheckoutScreen = ({ route }) => {
             marginTop: 28,
             paddingVertical: 16,
           }}
-          title="Check out"
+          title="Đặt xe"
           textStyle={{ fontWeight: 800 }}
         ></MyButton>
       </ScrollView>

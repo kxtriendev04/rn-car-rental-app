@@ -5,7 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import AccomodationItem from "../../component/home/AccomodationItem";
 import OrderCard from "../../module/Order/OrderCard";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import api from "../../util/api";
 
 const cars = [
   {
@@ -57,13 +59,14 @@ const rentalOrders = [
     original: 5000000,
     discount: 500000,
     total: 4500000,
-    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carImage:
+      "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
     carName: "Maserati MC20",
     phoneNumber: "0901234567",
     location: "123 Nguyễn Trãi, Hà Nội",
     status: "pending",
     pay: "cash",
-    delivery: "self"
+    delivery: "self",
   },
   {
     id: "ORD002",
@@ -75,13 +78,14 @@ const rentalOrders = [
     original: 3000000,
     discount: 300000,
     total: 2700000,
-    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carImage:
+      "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
     carName: "Maserati MC20",
     phoneNumber: "0902345678",
     location: "456 Lê Lợi, Đà Nẵng",
     status: "approved",
     pay: "cash",
-    delivery: "self"
+    delivery: "self",
   },
   {
     id: "ORD003",
@@ -93,13 +97,14 @@ const rentalOrders = [
     original: 4000000,
     discount: 0,
     total: 4000000,
-    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carImage:
+      "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
     carName: "Maserati MC20",
     phoneNumber: "0903456789",
     location: "789 Trường Chinh, TP.HCM",
     status: "completed",
     pay: "cash",
-    delivery: "delivery"
+    delivery: "delivery",
   },
   {
     id: "ORD004",
@@ -111,13 +116,14 @@ const rentalOrders = [
     original: 6000000,
     discount: 1000000,
     total: 5000000,
-    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carImage:
+      "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
     carName: "Maserati MC20",
     phoneNumber: "0904567890",
     location: "321 Cách Mạng Tháng 8, Cần Thơ",
     status: "rejected",
     pay: "cash",
-    delivery: "delivery"
+    delivery: "delivery",
   },
   {
     id: "ORD005",
@@ -129,29 +135,51 @@ const rentalOrders = [
     original: 6000000,
     discount: 1000000,
     total: 5000000,
-    carImage: "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
+    carImage:
+      "https://carwow-uk-wp-3.imgix.net/18015-MC20BluInfinito-scaled-e1707920217641.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460",
     carName: "Maserati MC20",
     phoneNumber: "0904567890",
     location: "321 Cách Mạng Tháng 8, Cần Thơ",
     status: "delivering",
     pay: "cash",
-    delivery: "delivery"
-  }
+    delivery: "delivery",
+  },
 ];
 
 const HostHomeScreen = () => {
   const navigation = useNavigation();
-  return(
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.whiteColor }} edges={['top']}>
+  const [data, setData] = useState([]);
+  const fetchingData = async () => {
+    try {
+      const response = await api.get("/vehicles");
+      setData(response.data.results);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    fetchingData();
+  }, []);
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: colors.whiteColor }}
+      edges={["top"]}
+    >
       <ScrollView style={{ paddingHorizontal: 15 }}>
         <View style={styles.container}>
           <View style={{ marginBottom: 10 }}>
             <Text
-              style={{ marginBottom: 8, fontWeight: 500, color: colors.textGray }}
+              style={{
+                marginBottom: 8,
+                fontWeight: 500,
+                color: colors.textGray,
+              }}
             >
               Current location
             </Text>
-            <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
+            <View
+              style={{ flexDirection: "row", gap: 4, alignItems: "center" }}
+            >
               <Ionicons
                 name="location-outline"
                 size={20}
@@ -175,49 +203,50 @@ const HostHomeScreen = () => {
               elevation: 2, // Bóng trên Android
             }}
           >
-            <Fontisto
-              name="bell"
-              size={24}
-              color="black"
-            />
+            <Fontisto name="bell" size={24} color="black" />
           </View>
         </View>
         <View style={styles.container}>
-          <Text style={{fontWeight: 600, fontSize: 16}}>Xe của tôi</Text>
+          <Text style={{ fontWeight: 600, fontSize: 16 }}>Xe của tôi</Text>
           <TouchableOpacity>
-            <Text style={{color: colors.mainColor, fontWeight: 600, fontSize: 16}}>+ thêm xe của bạn</Text>
+            <Text
+              style={{ color: colors.mainColor, fontWeight: 600, fontSize: 16 }}
+            >
+              + thêm xe của bạn
+            </Text>
           </TouchableOpacity>
         </View>
         <FlatList
-          data = {cars}
-          renderItem={({item}) => (
-            <AccomodationItem data={item}/>
-          )}
+          data={data}
+          renderItem={({ item }) => <AccomodationItem data={item} />}
           keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={<Text>Bạn chưa có xe nào cả</Text>}
           horizontal={true}
         />
         <View style={styles.container}>
-          <Text style={{fontWeight: 600, fontSize: 16}}>Đơn hàng của bạn</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Đơn thuê")}>
-            <Text style={{color: "darkgrey", fontWeight: 600, fontSize: 16}}>Xem tất cả</Text>
+          <Text style={{ fontWeight: 600, fontSize: 16 }}>
+            Đơn hàng của bạn
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Đơn thuê")}>
+            <Text style={{ color: "darkgrey", fontWeight: 600, fontSize: 16 }}>
+              Xem tất cả
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={{ padding: 5 }}>
           {rentalOrders.length > 0 ? (
-            rentalOrders.slice(0, 3).map((item) => (
-              <OrderCard key={item.id.toString()} data={item} />
-            ))
+            rentalOrders
+              .slice(0, 3)
+              .map((item) => <OrderCard key={item.id.toString()} data={item} />)
           ) : (
             <Text>Bạn chưa có đơn hàng nào</Text>
           )}
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
+  );
 };
-  
+
 export default HostHomeScreen;
 
 const styles = StyleSheet.create({
@@ -230,4 +259,4 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
   },
-})
+});

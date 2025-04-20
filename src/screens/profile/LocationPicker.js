@@ -20,7 +20,7 @@ const TABS = ["Tỉnh/Thành Phố", "Quận/Huyện", "Phường/Xã", "Đườ
 
 const LocationPicker = ({ navigation, route }) => {
   const currentLocation = route?.params?.item;
-  console.log("currentLocation: ", currentLocation);
+  // console.log("currentLocation: ", currentLocation);
   const [activeTab, setActiveTab] = useState(0);
   //   const [searchText, setSearchText] = useState("");
   const [location, setLocation] = useState({

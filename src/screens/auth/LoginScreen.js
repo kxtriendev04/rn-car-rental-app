@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
+import React, { useContext, useState } from "react";
+import { View, Text, Alert } from "react-native";
 import MyInput from "../../component/MyInput";
 import { SafeAreaView } from "react-native";
 import colors from "../../util/colors";
@@ -11,17 +11,26 @@ import { Platform } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import { ScrollView } from "react-native";
+import { AuthContext } from "../../context/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
   const [isPasswordShow, setIsPasswordShow] = useState(false);
+  const { login, user } = useContext(AuthContext);
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data) => {
+    // console.log("Form Data:", data);
+    try {
+      await login(data.email, data.password);
+      navigation.replace("MainTabs");
+    } catch {
+      Alert.alert("Thông tin đăng nhập không hợp lệ!!!");
+    }
+    console.log("user: ", user);
     // navigation.replace("MainTabs")
   };
   return (

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
+import { AuthContext } from "../../context/AuthContext";
 
 const menu = [
   {
@@ -35,20 +36,9 @@ const menu = [
   },
 ];
 const ProfileHome = ({ navigation }) => {
+  const { user } = useContext(AuthContext);
   return (
     <ScrollView style={{ flex: 1 }}>
-      {/* <View
-        style={{
-          height: 180,
-          backgroundColor: colors.lightMainColor,
-          borderBottomRightRadius: 36,
-          borderBottomLeftRadius: 36,
-          position: "relative",
-          // justifyContent: "center",
-          alignItems: "center",
-        }}
-      > */}
-
       {/* </View> */}
       <View style={{ marginTop: 80, marginHorizontal: 24 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
@@ -63,7 +53,11 @@ const ProfileHome = ({ navigation }) => {
             }}
           >
             <Image
-              source={require("../../../assets/defaultAvatar.jpg")}
+              source={
+                user.avatarUrl
+                  ? { uri: user.avatarUrl }
+                  : require("../../../assets/defaultAvatar.jpg")
+              }
               style={{
                 width: 65,
                 height: 65,
@@ -80,14 +74,14 @@ const ProfileHome = ({ navigation }) => {
                 color: colors.textColor,
               }}
             >
-              Khúc Xuân Triển
+              {user.fullName || "Vui lòng đăng nhập"}
             </Text>
             <Text
               style={{
                 color: colors.mainColor,
               }}
             >
-              khuctrien@gmail.com
+              {user.email || ""}
             </Text>
           </View>
         </View>

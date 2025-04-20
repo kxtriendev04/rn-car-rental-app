@@ -5,12 +5,13 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 
 const ImageList = ({ images = [] }) => {
   const screenWidth = Dimensions.get("window").width;
-  const [currentItem, setCurrentItem] = useState(images[0]);
   const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
+
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
-      setCurrentItem(viewableItems[0].item);
+      setCurrentIndex(viewableItems[0].index);
     }
   }).current;
   return (
@@ -34,7 +35,7 @@ const ImageList = ({ images = [] }) => {
             }}
           >
             <Image
-              source={{ uri: item.uri }} // Dùng ảnh sản phẩm làm background
+              source={{ uri: item.imageUrl }} // Dùng ảnh sản phẩm làm background
               style={{
                 flex: 1,
                 borderRadius: 30,
@@ -46,7 +47,7 @@ const ImageList = ({ images = [] }) => {
         keyExtractor={(item, index) => index.toString()}
       />
       {/* Star */}
-      <View
+      {/* <View
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -69,7 +70,7 @@ const ImageList = ({ images = [] }) => {
             <AntDesign name="star" size={16} color="orange" />
           </View>
         ))}
-      </View>
+      </View> */}
       <View
         style={{
           position: "absolute",
@@ -99,7 +100,7 @@ const ImageList = ({ images = [] }) => {
             fontSize: 13,
           }}
         >
-          {currentItem?.id}/{images.length}
+          {currentIndex + 1}/{images.length}
         </Text>
       </View>
     </View>

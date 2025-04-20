@@ -53,7 +53,7 @@ const AccomodationRated = ({ rated = 1, ratedNumber = 1, navigation }) => {
             color: "white",
           }}
         >
-          {rated}
+          {!rated || "5.0"}
         </Text>
         <View>
           <Text

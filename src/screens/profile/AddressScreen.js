@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { View, Text, Button, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,36 +7,28 @@ import colors from "../../util/colors";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Pressable } from "react-native";
+import { AuthContext } from "../../context/AuthContext";
+import api from "../../util/api";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 const AddressScreen = ({ navigation, route }) => {
   const [addresses, setAddresses] = useState([]);
-  useEffect(() => {
-    setAddresses([
-      {
-        name: "Nhà riêng",
-        province: "TP. Hà Nội",
-        district: "Quận Cầu Giấy",
-        ward: "Phường Dịch Vọng",
-        road: "Đường Xuân Thủy",
-        latitude: 21.0466,
-        longitude: 105.7841,
-      },
-      {
-        name: "Nhà riêng",
-        province: "Hà Nội",
-        district: "Quân Cầu Giấy",
-        ward: "Cổ Nhuế 2",
-        road: "Trần Cung",
-      },
-      {
-        name: "Nhà riêng",
-        province: "Hà Nội",
-        district: "Quân Cầu Giấy",
-        ward: "Cổ Nhuế 2",
-        road: "Trần Cung",
-      },
-    ]);
-  }, []);
+  const { user } = useContext(AuthContext);
+  const fetchingData = async () => {
+    try {
+      const response = await api.get("/addresses/user/" + user.id);
+      setAddresses(response.data.results);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      fetchingData();
+    }, [])
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <HeaderNavigation title="Địa chỉ của tôi" navigation={navigation} />
@@ -101,18 +93,20 @@ const AddressScreen = ({ navigation, route }) => {
                         <Text style={{ fontSize: 15, fontWeight: 600 }}>
                           {item?.name}
                         </Text>
-                        <Text
-                          style={{
-                            borderRadius: 12,
-                            fontSize: 10,
-                            fontWeight: 500,
-                            backgroundColor: colors.lightMainColor,
-                            paddingHorizontal: 10,
-                            paddingVertical: 5,
-                          }}
-                        >
-                          Mặc định
-                        </Text>
+                        {item.defaultAddress && (
+                          <Text
+                            style={{
+                              borderRadius: 12,
+                              fontSize: 10,
+                              fontWeight: 500,
+                              backgroundColor: colors.lightMainColor,
+                              paddingHorizontal: 10,
+                              paddingVertical: 5,
+                            }}
+                          >
+                            Mặc định
+                          </Text>
+                        )}
                       </View>
                       <Text
                         style={

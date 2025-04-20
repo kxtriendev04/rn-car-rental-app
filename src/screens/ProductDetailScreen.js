@@ -8,12 +8,19 @@ import {
   Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
+  FontAwesome,
 } from "@expo/vector-icons";
 import {
   getFocusedRouteNameFromRoute,
   useNavigation,
 } from "@react-navigation/native";
-import React, { useContext, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -45,6 +52,7 @@ import {
 import { TimeContext } from "../context/TimeContext";
 import RadioButton from "../component/RadioButton";
 import AccomodationItem from "../component/home/AccomodationItem";
+import api from "../util/api";
 
 // Giả sử bạn có danh sách dữ liệu để lấy chi tiết sản phẩm
 
@@ -145,26 +153,27 @@ const ProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { time } = useContext(TimeContext);
   const [selectedValue, setSelectedValue] = useState("Tôi tự đến lấy xe");
+  const [data, setData] = useState({});
+  const [img, setimg] = useState([]);
   // Lấy id từ tham số navigation
   const { id } = route.params;
-
-  // useLayoutEffect(() => {
-  //   const routeName = getFocusedRouteNameFromRoute(route);
-  //   if (routeName === "ProductDetail" || !routeName) {
-  //     navigation.getParent()?.setOptions({ tabBarStyle: { display: "none" } });
-  //   }
-
-  //   return () => {
-  //     navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
-  //   };
-  // }, [navigation, route]);
-  // console.log(time);
+  const fetchingData = async () => {
+    try {
+      const response = await api.get("/vehicles/" + id);
+      setData(response.data.results);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    fetchingData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ marginBottom: 0 }}>
         <HeaderNavigation
-          title={data.title}
+          title={data.name}
           navigation={navigation}
           rightIcon=<AntDesign name="hearto" size={24} color="black" />
         />
@@ -173,7 +182,7 @@ const ProductDetailScreen = ({ route }) => {
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={data.feature}
+            data={data.features}
             renderItem={({ item }) => <FeatureItem feature={item} />}
             keyExtractor={(item, index) => index.toString()} // Tránh cảnh báo key
             contentContainerStyle={{ paddingVertical: 10 }} // Đảm bảo không bị cắt trên/dưới
@@ -195,7 +204,7 @@ const ProductDetailScreen = ({ route }) => {
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: 500, paddingRight: 50 }}>
-              {data.title}
+              {data.name}
             </Text>
 
             {/* <Text style={{ fontSize: 13, color: colors.textGray }}></Text> */}
@@ -207,16 +216,19 @@ const ProductDetailScreen = ({ route }) => {
                   color: colors.mainColor,
                 }}
               >
-                {formatPrice(data.pricingDecreased)}k
+                {data.pricePerDay}vnđ
               </Text>
-              <Text style={{ fontSize: 13 }}>/day</Text>
+              <Text style={{ fontSize: 13 }}>/ngày</Text>
             </Text>
           </View>
           {/* Star */}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {Array.from({ length: data.star }, (_, index) => (
-              <AntDesign key={index} name="star" size={14} color="orange" />
+              <FontAwesome key={index} name="star" size={14} color="orange" />
             ))}
+            {data.star % 1 === 0.5 && (
+              <FontAwesome name="star-half" size={14} color="orange" />
+            )}
           </View>
           <View style={{ flexDirection: "row" }}>
             <EvilIcons
@@ -225,7 +237,7 @@ const ProductDetailScreen = ({ route }) => {
               size={24}
               color={colors.mainColor}
             />
-            <Text>{data.location}</Text>
+            <Text>{data?.address || "Xe chưa có địa chỉ"}</Text>
           </View>
         </View>
         <View
@@ -279,17 +291,25 @@ const ProductDetailScreen = ({ route }) => {
                   style={{ width: 56, height: 56, borderRadius: 100 }}
                 />
                 <View style={{ flexDirection: "row", gap: 4 }}>
-                  <AntDesign name="star" size={16} color={colors.mainColor} />
-                  <Text>{data.star}</Text>
+                  {/* <AntDesign name="star" size={16} color={colors.mainColor} /> */}
+                  <Text>{data.owner?.tripCount} chuyến</Text>
                 </View>
               </View>
               <View style={{ paddingVertical: 10 }}>
                 <Text
                   style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}
                 >
-                  Khúc Triển
+                  {data.owner?.fullName}
                 </Text>
-                <Text>179 Trips • Joined Sep 2020</Text>
+                <Text>
+                  • Tham gia vào{" "}
+                  {new Date(data.owner?.createdAt)
+                    .toLocaleDateString("en-GB", {
+                      month: "2-digit",
+                      year: "numeric",
+                    })
+                    .replace("/", "-")}
+                </Text>
               </View>
             </View>
             <View style={{ flexDirection: "row", gap: 10, padding: 5 }}>
@@ -541,6 +561,19 @@ const ProductDetailScreen = ({ route }) => {
                 {"GPLX (đối chiếu) & Passport (Giữ lại)"}
               </Text>
             </View>
+            {/* <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <FontAwesome5
+                name="passport"
+                size={22}
+                color={colors.textGray}
+                style={{ width: 30 }}
+              />
+              <Text style={{ color: colors.textColor }}>
+                {"GPLX (đối chiếu) & Passport (Giữ lại)"}
+              </Text>
+            </View> */}
           </View>
           <View
             style={{ height: 1, backgroundColor: "#e7e7e7", marginBottom: 16 }}
@@ -576,6 +609,16 @@ const ProductDetailScreen = ({ route }) => {
               >
                 {"hoặc xe máy (kèm cà vẹt gốc) trị giá 30 triệu"}
               </Text>
+              <Text
+                style={{
+                  color: colors.textColor,
+                  lineHeight: 22,
+                  fontSize: 14,
+                  paddingRight: 30,
+                }}
+              >
+                {data.collateral}
+              </Text>
             </View>
           </View>
           <View
@@ -601,6 +644,11 @@ const ProductDetailScreen = ({ route }) => {
             Trả xe đúng thời gian, địa điểm và tình trạng như lúc nhận.{"\n"}
             Hai bên cam kết thực hiện đúng các điều khoản trên, nếu có tranh
             chấp, sẽ giải quyết bằng thương lượng hoặc theo pháp luật Việt Nam.
+          </Text>
+          <Text
+            style={{ fontSize: 14, color: colors.textColor, lineHeight: 20 }}
+          >
+            {data.term}
           </Text>
         </View>
         <View
@@ -671,7 +719,7 @@ const ProductDetailScreen = ({ route }) => {
                   fontWeight: 600,
                 }}
               >
-                {formatPrice(data.pricingDecreased)}k
+                {data.pricePerDay}vnđ
               </Text>
               <Text
                 style={{
@@ -684,12 +732,14 @@ const ProductDetailScreen = ({ route }) => {
               </Text>
             </View>
             <Text style={{ fontSize: 12, color: colors.textGray }}>
-              Giá tổng:{" "}
-              {formatPrice(data.pricingDecreased * calculateDays(time))}k
+              Giá tổng: {data.pricePerDay * calculateDays(time)}k
             </Text>
           </View>
           <MyButton
-            onPress={() => navigation.navigate("ProductCheckout")}
+            onPress={() => {
+              // console.log("data: ", data);
+              navigation.navigate("ProductCheckout", { data: data });
+            }}
             title="Chọn thuê"
             // onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
             buttonStyle={{ paddingVertical: 12, opacity: 0.8 }}

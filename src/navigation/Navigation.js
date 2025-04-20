@@ -9,7 +9,7 @@ import {
   FontAwesome6,
   Fontisto,
   Ionicons,
-  Entypo
+  Entypo,
 } from "@expo/vector-icons";
 import HomeStack from "./stack/HomeStack";
 import colors from "../util/colors";
@@ -28,6 +28,7 @@ import TabBar from "../component/TabBar";
 import ManageRented from "../screens/host/ManageRented";
 import OrderDetail from "../screens/host/OrderDetail";
 import Notification from "../screens/Notification";
+import { AuthProvider } from "../context/AuthContext";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -218,20 +219,20 @@ function UserStackNavigator() {
   return (
     <UserStack.Navigator screenOptions={{ headerShown: false }}>
       <UserStack.Screen name="MainTabs" component={MainTabs} />
-      <UserStack.Screen 
-        name="Notification" 
+      <UserStack.Screen
+        name="Notification"
         component={Notification}
         options={{
-          headerShown: true, 
-          title: "Thông báo", 
-          headerBackTitleVisible: false, 
-          headerBackTitle: "", 
-          headerTintColor: colors.mainColor, 
+          headerShown: true,
+          title: "Thông báo",
+          headerBackTitleVisible: false,
+          headerBackTitle: "",
+          headerTintColor: colors.mainColor,
           headerStyle: {
-            backgroundColor: "#fff", 
+            backgroundColor: "#fff",
           },
           headerTitleStyle: {
-            fontWeight: "bold", 
+            fontWeight: "bold",
           },
         }}
       />
@@ -244,21 +245,29 @@ const RootStack = createStackNavigator();
 export default function Navigation() {
   return (
     <NavigationContainer>
-      <TimeProvider>
-        <LocationProvider>
-          <RootStack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="MainTabs"
-          >
-            <RootStack.Screen name="Auth" component={AuthNavigator} />
-            <RootStack.Screen name="MainTabs" component={MainTabs} />
-            <RootStack.Screen name="HostTabs" component={HostTabs} />
-            <RootStack.Screen name="HostStackNavigator" component={HostStackNavigator} />
-            <RootStack.Screen name="UserStackNavigator" component={UserStackNavigator} />
-            <RootStack.Screen name="NewFeedStack" component={NewFeedStack} />
-          </RootStack.Navigator>
-        </LocationProvider>
-      </TimeProvider>
+      <AuthProvider>
+        <TimeProvider>
+          <LocationProvider>
+            <RootStack.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName="MainTabs"
+            >
+              <RootStack.Screen name="Auth" component={AuthNavigator} />
+              <RootStack.Screen name="MainTabs" component={MainTabs} />
+              <RootStack.Screen name="HostTabs" component={HostTabs} />
+              <RootStack.Screen
+                name="HostStackNavigator"
+                component={HostStackNavigator}
+              />
+              <RootStack.Screen
+                name="UserStackNavigator"
+                component={UserStackNavigator}
+              />
+              <RootStack.Screen name="NewFeedStack" component={NewFeedStack} />
+            </RootStack.Navigator>
+          </LocationProvider>
+        </TimeProvider>
+      </AuthProvider>
     </NavigationContainer>
   );
 }
@@ -313,20 +322,20 @@ function HostStackNavigator() {
   return (
     <HostStack.Navigator screenOptions={{ headerShown: false }}>
       <HostStack.Screen name="HostTabs" component={HostTabs} />
-      <HostStack.Screen 
-        name="OrderDetail" 
+      <HostStack.Screen
+        name="OrderDetail"
         component={OrderDetail}
         options={{
-          headerShown: true, 
-          title: "Chi tiết đơn hàng", 
-          headerBackTitleVisible: false, 
-          headerBackTitle: "", 
-          headerTintColor: colors.mainColor, 
+          headerShown: true,
+          title: "Chi tiết đơn hàng",
+          headerBackTitleVisible: false,
+          headerBackTitle: "",
+          headerTintColor: colors.mainColor,
           headerStyle: {
-            backgroundColor: "#fff", 
+            backgroundColor: "#fff",
           },
           headerTitleStyle: {
-            fontWeight: "bold", 
+            fontWeight: "bold",
           },
         }}
       />

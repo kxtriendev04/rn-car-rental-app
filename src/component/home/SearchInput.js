@@ -1,14 +1,28 @@
 import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import colors from "../../util/colors";
 import Fontisto from "@expo/vector-icons/Fontisto";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native-gesture-handler";
+import { AuthContext } from "../../context/AuthContext";
 
 const SearchInput = ({}) => {
   const navigation = useNavigation();
+  const { user, getCurrentUser } = useContext(AuthContext);
+  const [prevEmail, setPrevEmail] = useState(null); // State lưu email trước đó
 
+  useFocusEffect(
+    useCallback(() => {
+      // Kiểm tra xem email có thay đổi hay không
+      if (user && user.email !== prevEmail) {
+        console.log("user: ", user);
+        // Cập nhật lại email trước đó và gọi lại getCurrentUser
+        setPrevEmail(user.email);
+        getCurrentUser(true, user.email);
+      }
+    }, [user, prevEmail, getCurrentUser]) // Chỉ gọi lại nếu email thay đổi
+  );
   return (
     <View>
       <View style={styles.container}>
@@ -16,7 +30,7 @@ const SearchInput = ({}) => {
           <Text
             style={{ marginBottom: 8, fontWeight: 500, color: colors.textGray }}
           >
-            Current location
+            Địa chỉ hiện tại
           </Text>
           <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
             <Ionicons
@@ -25,7 +39,9 @@ const SearchInput = ({}) => {
               color={colors.mainColor}
             />
             <Text style={{ fontWeight: 600, fontSize: 16 }}>
-              Cầu Giấy, Hà Nội
+              {user?.defaultAddress.district +
+                ", " +
+                user?.defaultAddress.province}
             </Text>
           </View>
         </View>
@@ -47,7 +63,11 @@ const SearchInput = ({}) => {
             name="bell"
             size={24}
             color="black"
-            onPress={() => {navigation.navigate('UserStackNavigator', {screen: 'Notification'})}}
+            onPress={() => {
+              navigation.navigate("UserStackNavigator", {
+                screen: "Notification",
+              });
+            }}
           />
         </View>
       </View>
@@ -61,7 +81,7 @@ const SearchInput = ({}) => {
           }}
         >
           <Text style={{ fontWeight: 600, fontSize: 18 }}>
-            Rent a Car anytime
+            Thuê xe mọi lúc mọi nơi
           </Text>
           <TouchableOpacity
             style={{
@@ -70,10 +90,12 @@ const SearchInput = ({}) => {
               backgroundColor: colors.mainColor,
               borderRadius: 10,
             }}
-            onPress={() => navigation.navigate("HostTabs", { screen: "HostHomeScreen" })}
+            onPress={() =>
+              navigation.navigate("HostTabs", { screen: "HostHomeScreen" })
+            }
           >
             <Text style={{ fontWeight: 500, color: colors.whiteColor }}>
-              Host & Earn
+              Cho thuê xe
             </Text>
           </TouchableOpacity>
         </View>

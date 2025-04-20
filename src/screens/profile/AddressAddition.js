@@ -18,6 +18,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LocationContext } from "../../context/LocationContext";
 import { ScrollView } from "react-native";
 import { Switch } from "react-native";
+import api from "../../util/api";
+import { AuthContext } from "../../context/AuthContext";
 
 const AddressAddition = ({ navigation, route }) => {
   const currentLocation = route?.params?.currentLocation;
@@ -25,9 +27,10 @@ const AddressAddition = ({ navigation, route }) => {
   const [addressType, setAddressType] = useState("Nhà riêng");
   const [addressName, setAddressName] = useState("");
   const [isEnabled, setIsEnabled] = useState(false);
+  console.log(currentLocation);
   useEffect(() => {
-    console.log("currentLocation", currentLocation);
     if (currentLocation) {
+      setIsEnabled(currentLocation.defaultAddress);
       setSelectedLocation(currentLocation);
     } else {
       setSelectedLocation({
@@ -45,12 +48,11 @@ const AddressAddition = ({ navigation, route }) => {
     setAddressType(title);
     setAddressName(title);
   };
-
-  console.log("Location in Add: ", selectedLocation);
+  const { user, getCurrentUser } = useContext(AuthContext);
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     // Hiển thị hộp thoại xác nhận trước khi xóa
     Alert.alert(
       "Xác nhận xóa",
@@ -63,15 +65,57 @@ const AddressAddition = ({ navigation, route }) => {
         },
         {
           text: "Xóa",
-          onPress: () => {
-            // Xử lý xóa địa chỉ
-            navigation.goBack();
-            console.log("Địa chỉ đã được xóa");
+          onPress: async () => {
+            try {
+              await api.delete("/addresses/" + currentLocation.id);
+              Alert.alert("Xóa địa chỉ thành công!!!");
+              navigation.goBack();
+            } catch (e) {
+              Alert.alert("Xóa địa chỉ thất bại!!!");
+              console.log(e);
+            }
           },
         },
       ],
       { cancelable: false } // Không thể tắt hộp thoại khi bấm ngoài màn hình
     );
+  };
+  const handleSaveAddress = async () => {
+    if (!selectedLocation.road.trim()) {
+      Alert.alert("Vui lòng nhập đủ thông tin !!!");
+      return;
+    }
+    const addressPost = {
+      name: addressName,
+      district: selectedLocation.district,
+      ward: selectedLocation.ward,
+      road: selectedLocation.road,
+      province: selectedLocation.province,
+      latitude: selectedLocation.latitude,
+      longitude: selectedLocation.longitude,
+      defaultAddress: isEnabled,
+    };
+    try {
+      if (currentLocation) {
+        //update
+        // addressPost = { ...addressPost, default: selectedLocation.default };
+        await api.put(
+          "/addresses/" + user.id + "/" + currentLocation.id,
+          addressPost
+        );
+      } else {
+        // Add
+        await api.post("/addresses/user/" + user.id, addressPost);
+      }
+      await getCurrentUser(true, user.email);
+      navigation.goBack();
+      Alert.alert("Thành công!!!");
+    } catch (e) {
+      Alert.alert("Thất bại!!!");
+      console.log(e);
+    }
+    // console.log(addressName);
+    // console.log(selectedLocation);
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -266,13 +310,15 @@ const AddressAddition = ({ navigation, route }) => {
                 }}
               />
             </View>
-            <TouchableOpacity
-              onPress={handleDelete}
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            >
-              <Feather name="trash-2" size={20} color="red" />
-              <Text style={{ color: "red" }}>Xóa địa chỉ</Text>
-            </TouchableOpacity>
+            {currentLocation?.id && (
+              <TouchableOpacity
+                onPress={handleDelete}
+                style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+              >
+                <Feather name="trash-2" size={20} color="red" />
+                <Text style={{ color: "red" }}>Xóa địa chỉ</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <TouchableOpacity
@@ -284,7 +330,7 @@ const AddressAddition = ({ navigation, route }) => {
             borderRadius: 12,
             marginHorizontal: 15,
           }}
-          onPress={() => navigation.navigate("AddressAddition")}
+          onPress={handleSaveAddress}
         >
           <Text style={{ color: "white", fontSize: 16 }}>Lưu</Text>
         </TouchableOpacity>

@@ -1,5 +1,6 @@
 import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
+import FeatureIcon from "./FeatureIcon";
 
 const FeatureItem = ({ feature }) => {
   return (
@@ -16,7 +17,12 @@ const FeatureItem = ({ feature }) => {
         paddingVertical: 11,
       }}
     >
-      {feature.icon}
+      <FeatureIcon
+        library={feature.library}
+        name={feature.name}
+        size={19}
+        color="black"
+      />
       <Text
         style={{
           flexShrink: 1,
@@ -25,7 +31,7 @@ const FeatureItem = ({ feature }) => {
           color: "black",
         }}
       >
-        {feature.title}
+        {feature.name}
       </Text>
     </TouchableOpacity>
   );
