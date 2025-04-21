@@ -1,38 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // hoặc react-native-vector-icons/Ionicons
+import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
-
-const mockData = [
-  {
-    id: 1,
-    tieuDe: "Thông báo mới",
-    moTa: "Bạn có đơn hàng cần xác nhận.",
-    thoiGian: "2025-04-18T08:00:00Z",
-    status: "Chưa đọc",
-  },
-  {
-    id: 2,
-    tieuDe: "Cập nhật",
-    moTa: "Đơn hàng đã giao thành công.",
-    thoiGian: "2025-04-17T15:30:00Z",
-    status: "Đã đọc",
-  },
-];
+import api from "../util/api";
+import { AuthContext } from "../context/AuthContext";
 
 const Notification = () => {
-  const [data, setData] = useState(mockData);
+  const { user } = useContext(AuthContext);
+  const [data, setData] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [filter, setFilter] = useState("Gần đây");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const toggleExpand = (id) => {
+  const toggleExpand = async (id) => {
     setExpandedId((prevId) => (prevId === id ? null : id));
+    const notification = data.find((item) => item.notification.id === id);
+    if (!notification || notification.status === "Đã đọc") return;
+
+    try {
+      const response = await api.put(`/notifications/${id}/read/${user.id}`);
+      if (response.status === 200) {
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.notification.id === id ? { ...item, status: "Đã đọc" } : item
+          )
+        );
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể đánh dấu thông báo là đã đọc");
+      console.log("Mã lỗi: ", error);
+    }
+  };
+
+  const fetchNotification = async (pageNumber = 0, append = false) => {
+    try {
+      const response = await api.get(
+        `/notifications/user/${user.id}?page=${pageNumber}&size=5`
+      );
+      if (response.status === 200) {
+        const content = response.data.results.content;
+        setData((prev) => (append ? [...prev, ...content] : content));
+        setHasMore(!response.data.results.last);
+      }
+    } catch (error) {
+      Alert.alert("Lấy thông báo thất bại, hãy thử lại sau ít phút");
+      console.log("Mã lỗi: ", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotification();
+  }, []);
+
+  const filterNotifications = (newFilter) => {
+    setFilter(newFilter);
+    setPage(0);
+    setData([]);
+    setHasMore(true);
+    fetchNotification(0);
+  };
+
+  const loadMore = async () => {
+    if (!hasMore || isLoadingMore) return;
+    setIsLoadingMore(true);
+    const nextPage = page + 1;
+    await fetchNotification(nextPage, true);
+    setPage(nextPage);
   };
 
   const filteredData = data.filter((item) => {
@@ -49,18 +93,20 @@ const Notification = () => {
     return (
       <TouchableOpacity
         style={[styles.item, { backgroundColor: bgColor }]}
-        onPress={() => toggleExpand(item.id)}
+        onPress={() => toggleExpand(item.notification.id)}
       >
         <View style={styles.iconWrapper}>
           <Ionicons name="notifications-outline" size={20} color={iconColor} />
         </View>
-
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{item.tieuDe}</Text>
-          <Text style={styles.desc}>{item.moTa}</Text>
-          {expandedId === item.id && (
+          <Text style={styles.title}>{item.notification.tieuDe}</Text>
+          <Text style={styles.desc}>{item.notification.moTa}</Text>
+          {expandedId === item.notification.id && (
             <Text style={styles.time}>
-              Thời gian: {moment(item.thoiGian).format("HH:mm:ss - DD/MM/YYYY")}
+              Thời gian:{" "}
+              {moment(item.notification.thoiGian).format(
+                "HH:mm:ss - DD/MM/YYYY"
+              )}
             </Text>
           )}
         </View>
@@ -75,7 +121,7 @@ const Notification = () => {
         {["Gần đây", "Chưa đọc", "Đã đọc"].map((option) => (
           <TouchableOpacity
             key={option}
-            onPress={() => setFilter(option)}
+            onPress={() => filterNotifications(option)}
             style={[
               styles.filterButton,
               filter === option && styles.activeFilterButton,
@@ -96,9 +142,17 @@ const Notification = () => {
       {/* Danh sách */}
       <FlatList
         data={filteredData}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.notification.id.toString()}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, minHeight: "100%" }}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.05}
+        bounces={true}
+        ListFooterComponent={
+          isLoadingMore ? (
+            <Text style={{ textAlign: "center" }}>Đang tải thêm...</Text>
+          ) : null
+        }
       />
     </View>
   );
@@ -133,12 +187,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 17,
     marginBottom: 4,
     color: "#333",
   },
   desc: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#555",
   },
   time: {
