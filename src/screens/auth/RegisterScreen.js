@@ -11,6 +11,8 @@ import { useForm, Controller } from "react-hook-form";
 import { KeyboardAvoidingView } from "react-native";
 import { Platform } from "react-native";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
+import api from "../../util/api";
+import { Alert } from "react-native";
 
 const RegisterScreen = ({ navigation }) => {
   // const [username, setUsername] = useState("");
@@ -23,9 +25,17 @@ const RegisterScreen = ({ navigation }) => {
     watch,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    navigation.replace("MainTabs");
+  const onSubmit = async (data) => {
+    try{
+      console.log("Form Data:", data);
+      const respone = await api.post("/users", data)
+      if(respone.status === 201)
+        Alert.alert("Bạn đã đăng kí thành công");
+      navigation.replace("MainTabs");
+    }catch (error){
+      Alert.alert("Bạn đã đăng kí thất bại");
+      console.error('Lỗi khi tạo user:', error.response?.data || error.message);
+    }
   };
   return (
     <KeyboardAvoidingView
