@@ -59,7 +59,7 @@ const HomeScreen = () => {
         <HomeList></HomeList>
         <View style={{ height: 15 }}></View>
         <HomeOthers></HomeOthers>
-        <Text>Trang chủ</Text>
+        <View style={{ height: 100 }}></View>
       </ScrollView>
     </View>
     //   </TouchableWithoutFeedback>
@@ -71,13 +71,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingTop: 25,
-    // backgroundColor: "white",
   },
   header: {
     // marginTop: 25,
     paddingHorizontal: 15,
     paddingTop: 35,
     backgroundColor: "white",
+    // backgroundColor: "#f2f2f2",
     marginBottom: 15,
     gap: 15,
   },

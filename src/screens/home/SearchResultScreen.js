@@ -1,5 +1,5 @@
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -19,98 +19,46 @@ import {
 } from "@expo/vector-icons";
 import colors from "../../util/colors";
 import SearchVehicalCard from "../../component/SearchVehicalCard";
-
-const searchResult = [
-  {
-    id: "room1",
-    area: 2007,
-    bedNumber: 2,
-    name: "Lamborghini Revuelto",
-    price: 1500000,
-    images: [
-      "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-      "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-      "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-    ],
-    features: [
-      {
-        title: "Không gian thoải mái",
-        icon: <Foundation name="social-myspace" size={20} color="grey" />,
-      },
-      {
-        title: "Số tự động",
-        icon: <EvilIcons name="gear" size={20} color="grey" />,
-      },
-      {
-        title: "Giá rẻ",
-        icon: <Ionicons name="pricetags-outline" size={20} color="grey" />,
-      },
-      {
-        title: "7.5",
-        icon: <AntDesign name="star" size={16} color="orange" />,
-      },
-    ],
-  },
-  {
-    id: "room2",
-    area: 2018,
-    bedNumber: 1,
-    name: "Lamborghini Veneno Roadster",
-    price: 1200000,
-    images: [
-      "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-      "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-      "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-      "https://xehay.vn/uploads/images/2023/7/03/xehay-Lamborghini-150623-2.jpg",
-    ],
-    features: [
-      {
-        title: "Two single beds",
-        icon: <MaterialIcons name="single-bed" size={18} color="grey" />,
-      },
-      {
-        title: "Garden view",
-        icon: <MaterialIcons name="grass" size={18} color="grey" />,
-      },
-      {
-        title: "Air conditioning",
-        icon: <MaterialIcons name="ac-unit" size={18} color="grey" />,
-      },
-    ],
-  },
-  {
-    id: "room3",
-    area: 2010,
-    bedNumber: 2,
-    name: "Lamborghini Temerario",
-    price: 2000000,
-    images: [
-      "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-      "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-      "https://cdn2.tuoitre.vn/thumb_w/1200/471584752817336320/2024/4/4/lamborghini-veneno-roadster-16-2-17122329042051523283468-323-130-1206-1816-crop-171223293068827755609.jpg",
-    ],
-    features: [
-      {
-        title: "King bed",
-        icon: <MaterialIcons name="hotel" size={18} color="grey" />,
-      },
-      {
-        title: "Private balcony",
-        icon: <MaterialIcons name="balcony" size={18} color="grey" />,
-      },
-      {
-        title: "Mini bar",
-        icon: <MaterialIcons name="local-bar" size={18} color="grey" />,
-      },
-    ],
-  },
-];
+import api from "../../util/api";
 
 const tabs = ["Liên quan", "Mới nhất", "Giá"];
 const SearchResultScreen = ({ route, navigation }) => {
   const [selectedTab, setSelectedTab] = useState("Liên quan");
+  const [searchResult, setSearchResult] = useState([]);
   const searchValue = route?.params?.searchValue || "";
 
+  const fetchingData = async () => {
+    try {
+      const res = await api.get(`/vehicles/search?name=${searchValue}`);
+      setSearchResult(res.data.results);
+    } catch (err) {
+      console.log("Lỗi gợi ý: ", err);
+    }
+  };
+  useEffect(() => {
+    fetchingData();
+  }, []);
+  // Sorting functions
+  const sortByNewest = () => {
+    const sorted = [...searchResult].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    setSearchResult(sorted);
+  };
+
+  const sortByPrice = () => {
+    const sorted = [...searchResult].sort((a, b) => a.price - b.price);
+    setSearchResult(sorted);
+  };
+
+  // Handle tab selection
+  useEffect(() => {
+    if (selectedTab === "Mới nhất") {
+      sortByNewest();
+    } else if (selectedTab === "Giá") {
+      sortByPrice();
+    }
+  }, [selectedTab]);
   return (
     <SafeAreaView
       style={{ flex: 1, paddingTop: 30, backgroundColor: colors.whiteColor }}
@@ -241,7 +189,7 @@ const SearchResultScreen = ({ route, navigation }) => {
         showsHorizontalScrollIndicator={false}
         // pagingEnabled
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <SearchVehicalCard room={item} />}
+        renderItem={({ item }) => <SearchVehicalCard data={item} />}
       />
     </SafeAreaView>
   );

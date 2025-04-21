@@ -53,6 +53,7 @@ import { TimeContext } from "../context/TimeContext";
 import RadioButton from "../component/RadioButton";
 import AccomodationItem from "../component/home/AccomodationItem";
 import api from "../util/api";
+import { AuthContext } from "../context/AuthContext";
 
 // Giả sử bạn có danh sách dữ liệu để lấy chi tiết sản phẩm
 
@@ -155,7 +156,7 @@ const ProductDetailScreen = ({ route }) => {
   const [selectedValue, setSelectedValue] = useState("Tôi tự đến lấy xe");
   const [data, setData] = useState({});
   const [img, setimg] = useState([]);
-  // Lấy id từ tham số navigation
+  const { user } = useContext(AuthContext);
   const { id } = route.params;
   const fetchingData = async () => {
     try {
@@ -208,7 +209,7 @@ const ProductDetailScreen = ({ route }) => {
             </Text>
 
             {/* <Text style={{ fontSize: 13, color: colors.textGray }}></Text> */}
-            <Text style={{}}>
+            <View style={{ alignItems: "flex-end" }}>
               <Text
                 style={{
                   fontSize: 18,
@@ -216,10 +217,10 @@ const ProductDetailScreen = ({ route }) => {
                   color: colors.mainColor,
                 }}
               >
-                {data.pricePerDay}vnđ
+                {formatPrice(data.pricePerDay)} VNĐ
               </Text>
               <Text style={{ fontSize: 13 }}>/ngày</Text>
-            </Text>
+            </View>
           </View>
           {/* Star */}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -474,11 +475,11 @@ const ProductDetailScreen = ({ route }) => {
                   options={[
                     {
                       name: "Tôi tự đến lấy xe",
-                      location: data.location,
+                      location: data?.address || "Xe chưa có địa chỉ",
                     },
                     {
                       name: "Tôi muốn được giao xe tận nơi",
-                      location: data.location,
+                      location: `${user.defaultAddress.road}, ${user.defaultAddress.ward}`,
                     },
                   ]}
                   selected={selectedValue}
@@ -719,7 +720,7 @@ const ProductDetailScreen = ({ route }) => {
                   fontWeight: 600,
                 }}
               >
-                {data.pricePerDay}vnđ
+                {formatPrice(data.pricePerDay)} VNĐ
               </Text>
               <Text
                 style={{
@@ -728,11 +729,13 @@ const ProductDetailScreen = ({ route }) => {
                   marginBottom: 2,
                 }}
               >
+                {" "}
                 /ngày
               </Text>
             </View>
             <Text style={{ fontSize: 12, color: colors.textGray }}>
-              Giá tổng: {data.pricePerDay * calculateDays(time)}k
+              Giá tổng: {formatPrice(data.pricePerDay * calculateDays(time))}{" "}
+              VNĐ
             </Text>
           </View>
           <MyButton

@@ -1,22 +1,32 @@
-import { Alert, Dimensions, FlatList, Image, Text, TouchableOpacity, View,  } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import colors from "../util/colors";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import FeatureIcon from "./FeatureIcon";
+import { formatPrice } from "../util/formatValue";
 
-const SearchVehicalCard = ({ room }) => {
+const SearchVehicalCard = ({ data }) => {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get("window").width;
   const [liked, setLiked] = useState(false);
   const toggleLike = () => {
     setLiked((pre) => !pre);
-  }
+  };
 
   return (
     <Pressable
       // activeOpacity={1}
-      onPress={() => navigation.navigate("ProductDetail", { id: room.id })}
+      onPress={() => navigation.navigate("ProductDetail", { id: data.id })}
       // onPress={() => {
       //   Alert.alert("Click!"); // Hiển thị thông báo khi nhấn
       // }}
@@ -41,20 +51,18 @@ const SearchVehicalCard = ({ room }) => {
             // onViewableItemsChanged={onViewableItemsChanged}
             // viewabilityConfig={viewabilityConfig}
             showsHorizontalScrollIndicator={false}
-            data={room?.images}
+            data={data?.images}
             renderItem={({ item, index }) => (
               <View
                 style={{
                   width: screenWidth - 15 - 12,
                   marginTop: 12,
-                  // borderWidth: 1,
-                  // borderColor: "blue",
                   height: 220,
                   paddingHorizontal: 15,
                 }}
               >
                 <Image
-                  source={{ uri: room?.images[index] }} // Dùng ảnh sản phẩm làm background
+                  source={{ uri: item?.imageUrl }} // Dùng ảnh sản phẩm làm background
                   style={{
                     flex: 1,
                     borderRadius: 18,
@@ -86,7 +94,9 @@ const SearchVehicalCard = ({ room }) => {
         </View>
         <Image
           source={{
-            uri: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
+            uri:
+              data?.owner?.avatarUrl ||
+              "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
           }}
           style={{
             width: 42,
@@ -111,27 +121,32 @@ const SearchVehicalCard = ({ room }) => {
           fontWeight: 500,
         }}
       >
-        {room?.name}
+        {data?.name}
       </Text>
       <View>
         <FlatList
           style={{ marginBottom: 6, marginRight: 15 }}
           horizontal
-          data={room?.features}
+          data={data?.features}
           renderItem={({ item }) => (
             <View
               style={{
                 flexDirection: "row",
                 marginLeft: 15,
                 alignItems: "center",
-                // backgroundColor: "#E0E0E0",
                 paddingHorizontal: 4,
                 paddingVertical: 1.5,
                 borderRadius: 12,
                 gap: 4,
               }}
             >
-              {item.icon}
+              <FeatureIcon
+                library={item?.library}
+                name={item?.name}
+                size={20}
+                color="grey"
+              />
+              {/* {item.icon} */}
               <Text
                 style={{
                   fontSize: 10,
@@ -139,7 +154,7 @@ const SearchVehicalCard = ({ room }) => {
                   color: "#A0A0A0",
                 }}
               >
-                {item.title}
+                {item.title || item?.name}
               </Text>
             </View>
           )}
@@ -159,7 +174,9 @@ const SearchVehicalCard = ({ room }) => {
       >
         <Entypo name="location-pin" size={20} color="orange" />
         <Text style={{ fontWeight: 500, color: colors.textGray, fontSize: 12 }}>
-          Quận Cầu Giấy
+          {data?.address
+            ? data?.address?.ward + ", " + data?.address?.district
+            : "Xe chưa có địa chỉ"}
         </Text>
       </View>
       <View
@@ -186,8 +203,7 @@ const SearchVehicalCard = ({ room }) => {
           <Text
             style={{ marginRight: 8, fontSize: 12, color: colors.textGray }}
           >
-            {" "}
-            5
+            {" " + data.star}
           </Text>
           <Text
             style={{ fontSize: 16, fontWeight: 600, color: colors.textGray }}
@@ -200,7 +216,7 @@ const SearchVehicalCard = ({ room }) => {
             style={{ marginRight: 8, fontSize: 12, color: colors.textGray }}
           >
             {" "}
-            25 chuyến
+            {data.tripCount || 0} chuyến
           </Text>
         </View>
         <View
@@ -214,7 +230,7 @@ const SearchVehicalCard = ({ room }) => {
               letterSpacing: -1,
             }}
           >
-            {room?.price}k
+            {formatPrice(data?.pricePerDay)} VNĐ
           </Text>
           <Text
             style={{

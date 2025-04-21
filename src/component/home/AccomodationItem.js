@@ -158,7 +158,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
                 letterSpacing: -1,
               }}
             >
-              {data?.pricePerDay}k
+              {formatPrice(data?.pricePerDay)} VNĐ
             </Text>
           </View>
           {/* <Text

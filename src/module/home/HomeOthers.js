@@ -19,7 +19,7 @@ const HomeOthers = () => {
   }, []);
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Explore more Cars in your City</Text>
+      <Text style={styles.headerText}>Tất cả xe có sẵn, bạn có thể thuê</Text>
       <View style={styles.masonryContainer}>
         {data.map((item, index) => (
           <View
@@ -37,6 +37,7 @@ const HomeOthers = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
+    // backgroundColor: "#f2f2f2",
     paddingBottom: 8,
     flex: 1,
   },
