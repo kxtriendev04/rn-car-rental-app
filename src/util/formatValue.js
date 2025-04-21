@@ -10,7 +10,8 @@ export const formatDates = (dateString1) => {
 export const formatPrice = (price) => {
   if (!price) return "Null";
   // return price.toLocaleString("vi-VN");
-  return (price / 1000).toLocaleString("vi-VN");
+  // return (price / 1000).toLocaleString("vi-VN");
+  return price.toLocaleString("vi-VN");
 };
 
 export const formatTime = (value) => {

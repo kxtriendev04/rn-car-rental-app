@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import colors from "../util/colors";
+import { EvilIcons } from "@expo/vector-icons";
 
 const RadioButton = ({ options, selected, onSelect }) => {
   return (
@@ -48,7 +49,16 @@ const RadioButton = ({ options, selected, onSelect }) => {
           </View>
           <View>
             <Text style={{ marginBottom: 6, fontSize: 14 }}>{option.name}</Text>
-            <Text style={{ marginBottom: 6, fontSize: 15, fontWeight: 500 }}>
+
+            <Text
+              style={{
+                marginBottom: 6,
+                fontSize: 15,
+                fontWeight: 500,
+                marginRight: 20,
+              }}
+            >
+              <EvilIcons name="location" size={20} color={colors.mainColor} />
               {option.location}
             </Text>
           </View>

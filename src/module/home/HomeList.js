@@ -50,12 +50,13 @@ const DATA = [
   },
 ];
 
-const HomeList = ({ title = "Limited time sale in Hanoi" }) => {
+const HomeList = ({ title = "Xe đang được giảm giá tại Hà Nội" }) => {
   return (
     <View
       style={{
         backgroundColor: "white",
         paddingBottom: 8,
+        borderRadius: 16,
       }}
     >
       <Text

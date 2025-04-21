@@ -24,7 +24,12 @@ const SearchInput = ({}) => {
     }, [user, prevEmail, getCurrentUser]) // Chỉ gọi lại nếu email thay đổi
   );
   return (
-    <View>
+    <View
+      style={{
+        borderRadius: 16,
+        overflow: "hidden",
+      }}
+    >
       <View style={styles.container}>
         <View style={{ marginBottom: 10 }}>
           <Text

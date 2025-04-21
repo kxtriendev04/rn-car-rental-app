@@ -62,6 +62,7 @@ const HomeCategory = () => {
         backgroundColor: "white",
         paddingBottom: 8,
         paddingTop: 4,
+        borderRadius: 16,
       }}
     >
       <View>

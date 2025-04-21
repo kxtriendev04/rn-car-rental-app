@@ -16,6 +16,7 @@ import { FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
+import api from "../../util/api";
 
 const suggestionsData = [
   "Toyota Camry",
@@ -32,7 +33,26 @@ const recentSearch = ["Khúc Triển", "Lambogini", "Toyota"];
 
 const SearchScreen = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const inputRef = useRef(null);
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!searchValue.trim()) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        const res = await api.get(`/vehicles/search?name=${searchValue}`);
+        setSuggestions(res.data.results);
+      } catch (err) {
+        console.log("Lỗi gợi ý: ", err);
+      }
+    };
+
+    const timeout = setTimeout(fetchSuggestions, 300); // debounce 300ms
+    return () => clearTimeout(timeout);
+  }, [searchValue]);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -95,6 +115,7 @@ const SearchScreen = ({ navigation }) => {
                   navigation.navigate("SearchResultScreen", {
                     searchValue: searchValue,
                   });
+                  // setSearchValue(searchValue);
                 }
               }}
               style={{
@@ -169,12 +190,12 @@ const SearchScreen = ({ navigation }) => {
           </View>
         ) : (
           <View style={{ marginHorizontal: 15, marginTop: 20 }}>
-            {suggestionsData && (
+            {suggestions && (
               <FlatList
                 keyboardDismissMode="on-drag" //  Ẩn bàn phím khi cuộn
                 keyboardShouldPersistTaps="handled" //  Giữ sự kiện touch trên FlatList
-                data={suggestionsData}
-                keyExtractor={(item) => item}
+                data={suggestions}
+                keyExtractor={(item, index) => `${item} + ${index.toString()}`}
                 ListHeaderComponent={
                   <Text
                     style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}
@@ -187,7 +208,7 @@ const SearchScreen = ({ navigation }) => {
                     onPress={() => {
                       setSearchValue(item);
                       navigation.navigate("SearchResultScreen", {
-                        searchValue: item,
+                        searchValue: item?.name,
                       });
                     }}
                     style={{
@@ -203,7 +224,7 @@ const SearchScreen = ({ navigation }) => {
                     <Text
                       style={{ fontSize: 14, color: "grey", fontWeight: 500 }}
                     >
-                      {item}
+                      {item?.name}
                     </Text>
                   </TouchableOpacity>
                 )}

@@ -10,6 +10,8 @@ import {
 import colors from "../util/colors";
 import { FontAwesome6 } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import { useEffect, useState } from "react";
+import api from "../util/api";
 
 const coupons = [
   {
@@ -85,10 +87,20 @@ const coupons = [
 ];
 
 const HomeCoupon = () => {
+  const [data, setData] = useState([]);
+  const fetchingData = async () => {
+    try {
+      const response = await api.get("/vouchers");
+      setData(response.data.results);
+    } catch (e) {
+      console.log("Lỗi khi lấy vouchers ", e);
+    }
+  };
+  useEffect(() => {
+    fetchingData();
+  }, []);
   return (
-    <View
-      style={{ backgroundColor: colors.lightMainColor, paddingVertical: 8 }}
-    >
+    <View style={{ backgroundColor: "#f9f9f9" }}>
       <Text
         style={{
           fontSize: 19,
@@ -101,11 +113,11 @@ const HomeCoupon = () => {
           color: colors.textColor,
         }}
       >
-        Special details
+        Ưu đãi giảm giá
       </Text>
       <FlatList
         horizontal
-        data={coupons}
+        data={data}
         showsHorizontalScrollIndicator={false}
         // pagingEnabled
         keyExtractor={(item) => item.id.toString()}
@@ -136,8 +148,10 @@ const CouponCard = ({ coupon }) => {
           }}
         />
         <View style={{ paddingVertical: 8 }}>
-          <Text style={styles.title}>{coupon.title}</Text>
-          <Text style={styles.desc}>{coupon.desc}</Text>
+          <Text style={styles.title}>{coupon.title || "Tiêu đề voucher"}</Text>
+          <Text style={styles.desc}>
+            {coupon.description || "Mô tả voucher"}
+          </Text>
         </View>
       </View>
       <View
@@ -224,7 +238,7 @@ const styles = StyleSheet.create({
     width: 300,
     backgroundColor: "white",
     borderRadius: 8,
-    // padding: 12,
+    paddingBottom: 12,
     margin: 10,
     // paddingHorizontal: 12,
     position: "relative",
@@ -260,19 +274,19 @@ const styles = StyleSheet.create({
   notchLeft: {
     position: "absolute",
     left: -10, // Đẩy notch ra khỏi viền
-    top: "52%",
+    top: "57%",
     width: 20,
     height: 20,
-    backgroundColor: colors.lightMainColor,
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
   },
   notchRight: {
     position: "absolute",
     right: -10, // Đẩy notch ra khỏi viền
-    top: "52%",
+    top: "57%",
     width: 20,
     height: 20,
-    backgroundColor: colors.lightMainColor,
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
   },
 });
