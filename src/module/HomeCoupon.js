@@ -100,9 +100,7 @@ const HomeCoupon = () => {
     fetchingData();
   }, []);
   return (
-    <View
-      style={{ backgroundColor: colors.lightMainColor, paddingVertical: 8 }}
-    >
+    <View style={{ backgroundColor: "#f9f9f9" }}>
       <Text
         style={{
           fontSize: 19,
@@ -279,7 +277,7 @@ const styles = StyleSheet.create({
     top: "57%",
     width: 20,
     height: 20,
-    backgroundColor: colors.lightMainColor,
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
   },
   notchRight: {
@@ -288,7 +286,7 @@ const styles = StyleSheet.create({
     top: "57%",
     width: 20,
     height: 20,
-    backgroundColor: colors.lightMainColor,
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
   },
 });

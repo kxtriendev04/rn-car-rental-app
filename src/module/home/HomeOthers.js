@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
     // backgroundColor: "#f2f2f2",
     paddingBottom: 8,
     flex: 1,
+
+    borderRadius: 16,
   },
   headerText: {
     fontSize: 19,
