@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
+import { AuthContext } from "../../context/AuthContext";
 
 const OrderCard = ({ data }) => {
+  const user = useContext(AuthContext);
+  const checkRole = user.id === data.vehicle.owner.id;
   const navigation = useNavigation();
 
   const handlePress = () => {
-    navigation.navigate('HostStackNavigator', {
-      screen: 'OrderDetail',
+    navigation.navigate("HostStackNavigator", {
+      screen: "OrderDetail",
       params: data,
-    })
+    });
   };
-  
+
   const getStatusText = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "pending":
         return "Chờ duyệt";
       case "approved":
@@ -24,75 +28,92 @@ const OrderCard = ({ data }) => {
       case "completed":
         return "Hoàn thành";
       case "delivering":
-        return "Đang giao"
+        return "Đang giao";
       default:
         return "Không xác định";
     }
   };
-  
+
   const getStatusBackgroundColor = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "pending":
-        return "#FFF3CD"; 
+        return "#FFF3CD";
       case "approved":
-        return "#D4EDDA"; 
+        return "#D4EDDA";
       case "rejected":
-        return "#F8D7DA"; 
+        return "#F8D7DA";
       case "completed":
-        return "#D1ECF1"; 
+        return "#D1ECF1";
       case "delivering":
-        return "lightblue"
+        return "lightblue";
       default:
         return "#FFF";
     }
   };
-  
+
   const getStatusTextColor = (status) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "pending":
-        return "#856404"; 
+        return "#856404";
       case "approved":
-        return "#155724"; 
+        return "#155724";
       case "rejected":
-        return "#721c24"; 
+        return "#721c24";
       case "completed":
-        return "#0c5460"; 
+        return "#0c5460";
       case "delivering":
-        return "#black"
+        return "#black";
       default:
         return "#333";
     }
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress} activeOpacity={0.8}>
-      <Image source={{ uri: data.carImage }} style={styles.image} />
+    <TouchableOpacity
+      style={styles.card}
+      onPress={handlePress}
+      activeOpacity={0.8}
+    >
+      {data.vehicle.images?.length > 0 && (
+        <Image
+          source={{ uri: data.vehicle.images[0].imageUrl }}
+          style={styles.image}
+        />
+      )}
 
       <View style={styles.infoContainer}>
-        <Text style={styles.title}>{data.carName}</Text>
-        <Text style={styles.dueDate}>Ngày tạo {data.createdAt}</Text>
+        <Text style={styles.title}>{data.vehicle.name}</Text>
+        <Text style={styles.dueDate}>
+          Ngày tạo {moment(data.createdAt).format("HH:mm:ss DD/MM/YYYY")}
+        </Text>
 
         <View style={styles.row}>
           <Ionicons name="person-outline" size={16} color="gray" />
-          <Text style={styles.text}>{data.renter}</Text>
+          <Text style={styles.text}>
+            {checkRole ? data.vehicle.owner.fullName : data.renter.fullName}
+          </Text>
         </View>
 
         <View style={styles.row}>
           <Ionicons name="call-outline" size={16} color="green" />
-          <Text style={styles.text}>{data.phoneNumber}</Text>
+          <Text style={styles.text}>
+            {checkRole
+              ? data.vehicle.owner.phoneNumber
+              : data.renter.phoneNumber}
+          </Text>
         </View>
       </View>
 
       <View
         style={[
           styles.statusContainer,
-          { backgroundColor: getStatusBackgroundColor(data.status) }
+          { backgroundColor: getStatusBackgroundColor(data.status) },
         ]}
       >
         <Text
           style={[
             styles.statusText,
-            { color: getStatusTextColor(data.status) }
+            { color: getStatusTextColor(data.status) },
           ]}
         >
           {getStatusText(data.status)}

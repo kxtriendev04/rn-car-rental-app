@@ -6,8 +6,10 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import AccomodationItem from "../../component/home/AccomodationItem";
 import OrderCard from "../../module/Order/OrderCard";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "../../util/api";
+import { AuthContext } from "../../context/AuthContext";
+import { Alert } from "react-native";
 
 const cars = [
   {
@@ -147,19 +149,35 @@ const rentalOrders = [
 ];
 
 const HostHomeScreen = () => {
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const [data, setData] = useState([]);
-  const fetchingData = async () => {
+  const [order, setOrder] = useState([]);
+
+  const fetchingCars = async () => {
     try {
-      const response = await api.get("/vehicles");
+      const response = await api.get(`/vehicles/owner/${user.id}`);
       setData(response.data.results);
     } catch (e) {
       console.log(e);
     }
   };
+
+  const fetchingOrders = async () => {
+    try {
+      const response = await api.get(`/rentals/user/split/${user.id}`);
+      if (response.status === 200) setOrder(response.data.results.content);
+    } catch (e) {
+      console.log("Mã lỗi: ", e);
+      Alert.alert("Không thể lấy dữ liệu đơn hàng");
+    }
+  };
+
   useEffect(() => {
-    fetchingData();
+    fetchingOrders();
+    fetchingCars();
   }, []);
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: colors.whiteColor }}
@@ -203,7 +221,10 @@ const HostHomeScreen = () => {
               elevation: 2, // Bóng trên Android
             }}
           >
-            <Fontisto name="bell" size={24} color="black" 
+            <Fontisto
+              name="bell"
+              size={24}
+              color="black"
               onPress={() => {
                 navigation.navigate("UserStackNavigator", {
                   screen: "Notification",
@@ -239,7 +260,7 @@ const HostHomeScreen = () => {
           <Text style={{ fontWeight: 600, fontSize: 16 }}>
             Đơn hàng của bạn
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               navigation.navigate("UserStackNavigator", {
                 screen: "ManageRented",
@@ -252,8 +273,8 @@ const HostHomeScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={{ padding: 5 }}>
-          {rentalOrders.length > 0 ? (
-            rentalOrders
+          {order.length > 0 ? (
+            order
               .slice(0, 3)
               .map((item) => <OrderCard key={item.id.toString()} data={item} />)
           ) : (
