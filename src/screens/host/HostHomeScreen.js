@@ -6,8 +6,9 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import AccomodationItem from "../../component/home/AccomodationItem";
 import OrderCard from "../../module/Order/OrderCard";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "../../util/api";
+import { AuthContext } from "../../context/AuthContext";
 
 const cars = [
   {
@@ -148,10 +149,11 @@ const rentalOrders = [
 
 const HostHomeScreen = () => {
   const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const fetchingData = async () => {
     try {
-      const response = await api.get("/vehicles");
+      const response = await api.get("/vehicles/owner/" + user.id);
       setData(response.data.results);
     } catch (e) {
       console.log(e);
@@ -167,7 +169,7 @@ const HostHomeScreen = () => {
     >
       <ScrollView style={{ paddingHorizontal: 15 }}>
         <View style={styles.container}>
-          <View style={{ marginBottom: 10 }}>
+          {/* <View style={{ marginBottom: 10 }}>
             <Text
               style={{
                 marginBottom: 8,
@@ -189,8 +191,8 @@ const HostHomeScreen = () => {
                 Bắc Từ Liêm, Hà Nội
               </Text>
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={{
               padding: 8,
               paddingHorizontal: 10,
@@ -203,14 +205,21 @@ const HostHomeScreen = () => {
               elevation: 2, // Bóng trên Android
             }}
           >
-            <Fontisto name="bell" size={24} color="black" 
+            <Fontisto
+              name="bell"
+              size={24}
+              color="black"
               onPress={() => {
                 navigation.navigate("UserStackNavigator", {
                   screen: "Notification",
                 });
               }}
             />
-          </View>
+          </View> */}
+          <Text style={{ fontSize: 18, fontWeight: 600, marginBottom: 20 }}>
+            Xin chào,{" "}
+            <Text style={{ color: colors.mainColor }}>{user.fullName}</Text>
+          </Text>
         </View>
         <View style={styles.container}>
           <Text style={{ fontWeight: 600, fontSize: 16 }}>Xe của tôi</Text>
@@ -239,7 +248,7 @@ const HostHomeScreen = () => {
           <Text style={{ fontWeight: 600, fontSize: 16 }}>
             Đơn hàng của bạn
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               navigation.navigate("UserStackNavigator", {
                 screen: "ManageRented",
@@ -274,7 +283,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    height: 60,
+    // height: 60,
+    marginBottom: 16,
     alignItems: "center",
   },
 });

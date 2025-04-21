@@ -6,14 +6,15 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   Image,
+  Alert,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../util/colors";
 import { useForm, Controller } from "react-hook-form";
 import HeaderNavigation from "../component/HeaderNavigation";
+import api from "../util/api";
 
 const AddCar = ({ navigation }) => {
   const [features, setFeatures] = useState([""]);
@@ -57,14 +58,60 @@ const AddCar = ({ navigation }) => {
     }
   };
 
-  const onSubmit = (data) => {
-    if (features.length > 0 && features.some((f) => !f.trim())) {
-      Alert.alert("Lỗi", "Bạn đang bỏ trống đặc điểm nổi bật");
-      return;
+  const onSubmit = async (data) => {
+    // if (features.length > 0 && features.some((f) => !f.trim())) {
+    //   Alert.alert("Lỗi", "Bạn đang bỏ trống đặc điểm nổi bật");
+    //   return;
+    // }
+    // data.features = features.filter((f) => f.trim());
+    // data.images = images;
+    const requestFeature = [];
+    features.forEach((f) => {
+      requestFeature.push({
+        library: "MaterialCommunityIcons",
+        name: "air-conditioner",
+        title: f.trim(),
+      });
+    });
+    // console.log(requestFeature);
+    // console.log("images: ", images);
+    const request = {
+      name: data.name,
+      brand: data.brand,
+      description: data.description,
+      year: data.year,
+      star: 5,
+      pricePerDay: data.pricePerDay,
+      isPublished: data.isPublished,
+      collateral: data.collateral,
+      term: data.term,
+      status: data.status == "Sẵn xe" ? "Available" : "NotAvailable",
+      owner: {
+        id: data.ownerId,
+      },
+      // images: [
+      //   {
+      //     imageUrl:
+      //       "https://m.atcdn.co.uk/ect/media/%7Bresize%7D/4b14ab0c7868451baf5912779f112f40.jpg",
+      //   },
+      //   {
+      //     imageUrl:
+      //       "https://static.independent.co.uk/2025/02/18/10/40/Kia-EV6.png",
+      //   },
+      // ],
+      features: requestFeature,
+      // "address": {"id": 15}
+    };
+    // console.log(request);
+    try {
+      console.log(123);
+      await api.post("/vehicles", request);
+      // console.log("success");
+      Alert.alert("Thêm xe thành công!!!");
+      navigation.goBack();
+    } catch (e) {
+      Alert.alert("Thêm xe thất bại!!! ", e);
     }
-    data.features = features.filter((f) => f.trim());
-    data.images = images;
-    console.log(data);
   };
 
   const brandOptions = ["Tesla", "Vinfast", "KIA", "Toyota", "Khác"];
@@ -83,6 +130,7 @@ const AddCar = ({ navigation }) => {
           rules={{ required: "Bạn đang bỏ trống tên xe" }}
           render={({ field: { onChange, value } }) => (
             <TextInput
+              placeholder="Nhập tên xe"
               style={styles.input}
               onChangeText={onChange}
               value={value}
@@ -100,6 +148,7 @@ const AddCar = ({ navigation }) => {
             <TextInput
               style={styles.input}
               multiline
+              placeholder="Nhập mô tả"
               numberOfLines={4}
               onChangeText={onChange}
               value={value}
@@ -160,6 +209,7 @@ const AddCar = ({ navigation }) => {
             <TextInput
               style={styles.input}
               keyboardType="numeric"
+              placeholder="Chọn năm sản xuất"
               onChangeText={onChange}
               value={value}
             />
@@ -176,6 +226,7 @@ const AddCar = ({ navigation }) => {
             <TextInput
               style={styles.input}
               keyboardType="numeric"
+              placeholder="Nhập giá cho thuê"
               onChangeText={onChange}
               value={value}
             />
@@ -191,6 +242,7 @@ const AddCar = ({ navigation }) => {
             <TextInput
               style={[styles.input, { flex: 1 }]}
               value={feature}
+              placeholder="Nhập tên đặc điểm"
               onChangeText={(text) => {
                 const newFeatures = [...features];
                 newFeatures[idx] = text;
@@ -331,16 +383,30 @@ const styles = StyleSheet.create({
     backgroundColor: colors.whiteColor,
   },
   label: {
-    fontWeight: "bold",
-    marginTop: 12,
+    // fontWeight: "bold",
+    marginTop: 16,
+    // marginBottom: 12,
+    fontSize: 17,
+    fontFamily: "Quicksand_600SemiBold",
+    marginBottom: 10,
+    color: colors.textColor,
   },
   input: {
+    // borderWidth: 1,
+    // borderColor: "#ccc",
+    // borderRadius: 8,
+    // padding: 10,
+    // marginTop: 4,
+    // marginBottom: 8,
+    fontSize: 15,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 8,
     padding: 10,
-    marginTop: 4,
-    marginBottom: 8,
+    paddingRight: 50,
+    borderRadius: 16,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    width: "100%",
   },
   error: {
     color: "red",
@@ -418,6 +484,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 8,
     marginVertical: 20,
+    marginBottom: 50,
     alignItems: "center",
   },
   buttonText: {
