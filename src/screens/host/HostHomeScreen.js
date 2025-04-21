@@ -203,12 +203,24 @@ const HostHomeScreen = () => {
               elevation: 2, // Bóng trên Android
             }}
           >
-            <Fontisto name="bell" size={24} color="black" />
+            <Fontisto name="bell" size={24} color="black" 
+              onPress={() => {
+                navigation.navigate("UserStackNavigator", {
+                  screen: "Notification",
+                });
+              }}
+            />
           </View>
         </View>
         <View style={styles.container}>
           <Text style={{ fontWeight: 600, fontSize: 16 }}>Xe của tôi</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("HostStackNavigator", {
+                screen: "AddCar",
+              });
+            }}
+          >
             <Text
               style={{ color: colors.mainColor, fontWeight: 600, fontSize: 16 }}
             >
@@ -227,7 +239,13 @@ const HostHomeScreen = () => {
           <Text style={{ fontWeight: 600, fontSize: 16 }}>
             Đơn hàng của bạn
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Đơn thuê")}>
+          <TouchableOpacity 
+            onPress={() => {
+              navigation.navigate("UserStackNavigator", {
+                screen: "ManageRented",
+              });
+            }}
+          >
             <Text style={{ color: "darkgrey", fontWeight: 600, fontSize: 16 }}>
               Xem tất cả
             </Text>

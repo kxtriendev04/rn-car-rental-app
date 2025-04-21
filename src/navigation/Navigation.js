@@ -29,6 +29,7 @@ import ManageRented from "../screens/host/ManageRented";
 import OrderDetail from "../screens/host/OrderDetail";
 import Notification from "../screens/Notification";
 import { AuthProvider } from "../context/AuthContext";
+import AddCar from "../screens/AddCar";
 
 // 📌 Stack Navigator cho phần đăng nhập / đăng ký
 const AuthStack = createStackNavigator();
@@ -236,6 +237,23 @@ function UserStackNavigator() {
           },
         }}
       />
+      <UserStack.Screen
+        name="ManageRented"
+        component={ManageRented}
+        options={{
+          headerShown: true,
+          title: "Đơn thuê xe",
+          headerBackTitleVisible: false,
+          headerBackTitle: "",
+          headerTintColor: colors.mainColor,
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
     </UserStack.Navigator>
   );
 }
@@ -264,6 +282,7 @@ export default function Navigation() {
                 component={UserStackNavigator}
               />
               <RootStack.Screen name="NewFeedStack" component={NewFeedStack} />
+              <RootStack.Screen name="HomeStack" component={HomeStack} />
             </RootStack.Navigator>
           </LocationProvider>
         </TimeProvider>
@@ -328,6 +347,23 @@ function HostStackNavigator() {
         options={{
           headerShown: true,
           title: "Chi tiết đơn hàng",
+          headerBackTitleVisible: false,
+          headerBackTitle: "",
+          headerTintColor: colors.mainColor,
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <HostStack.Screen
+        name="AddCar"
+        component={AddCar}
+        options={{
+          headerShown: true,
+          title: "Thêm xe",
           headerBackTitleVisible: false,
           headerBackTitle: "",
           headerTintColor: colors.mainColor,

@@ -21,7 +21,12 @@ const AccomodationItem = ({ data, type = "normal" }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("ProductDetail", { id: data.id })}
+      onPress={() => {
+        navigation.navigate("HomeStack", {
+          screen: "ProductDetail",
+          
+        });
+      }}
       style={[
         {
           // width: 250,
