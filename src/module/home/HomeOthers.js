@@ -7,11 +7,13 @@ import api from "../../util/api";
 const HomeOthers = () => {
   const [data, setData] = useState([]);
   const fetchingData = async () => {
+    console.log("Fetching");
     try {
       const response = await api.get("/vehicles");
       setData(response.data.results);
+      console.log("data: ", response.data.results);
     } catch (e) {
-      console.log(e);
+      console.log("Lỗi khi lấy danh sách xe ", e);
     }
   };
   useEffect(() => {
@@ -21,7 +23,7 @@ const HomeOthers = () => {
     <View style={styles.container}>
       <Text style={styles.headerText}>Tất cả xe có sẵn, bạn có thể thuê</Text>
       <View style={styles.masonryContainer}>
-        {data.map((item, index) => (
+        {data?.map((item, index) => (
           <View
             key={item.id}
             style={{ width: "50%", paddingHorizontal: 8, marginBottom: 10 }}

@@ -54,7 +54,7 @@ const ProfileHome = ({ navigation }) => {
           >
             <Image
               source={
-                user.avatarUrl
+                user?.avatarUrl
                   ? { uri: user.avatarUrl }
                   : require("../../../assets/defaultAvatar.jpg")
               }

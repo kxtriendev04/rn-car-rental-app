@@ -52,7 +52,6 @@ const HomeCategory = () => {
       console.log(e);
     }
   };
-  console.log("vehicles: ", vehicles);
   useEffect(() => {
     fetchingData();
   }, [selectedCate]);
