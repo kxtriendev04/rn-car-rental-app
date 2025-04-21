@@ -268,7 +268,7 @@ export default function Navigation() {
           <LocationProvider>
             <RootStack.Navigator
               screenOptions={{ headerShown: false }}
-              initialRouteName="MainTabs"
+              initialRouteName="Auth"
             >
               <RootStack.Screen name="Auth" component={AuthNavigator} />
               <RootStack.Screen name="MainTabs" component={MainTabs} />
