@@ -44,7 +44,7 @@ const SearchInput = ({}) => {
               color={colors.mainColor}
             />
             <Text style={{ fontWeight: 600, fontSize: 16 }}>
-              {user?.defaultAddress?.district +
+              {(user?.defaultAddress?.district || "") +
                 ", " +
                 user?.defaultAddress?.province}
             </Text>

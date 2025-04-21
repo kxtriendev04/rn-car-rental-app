@@ -362,7 +362,7 @@ function HostStackNavigator() {
         name="AddCar"
         component={AddCar}
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Thêm xe",
           headerBackTitleVisible: false,
           headerBackTitle: "",

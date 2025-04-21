@@ -18,14 +18,15 @@ const AccomodationItem = ({ data, type = "normal" }) => {
   const toggleLike = () => {
     setLiked((prev) => !prev);
   };
+  // console.log("data in accormodationItem: ", data);
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("HomeStack", {
-          screen: "ProductDetail",
-          
-        });
+        // navigation.navigate("HomeStack", {
+        //   screen: "ProductDetail",
+        // });
+        navigation.navigate("ProductDetail", { id: data.id });
       }}
       style={[
         {

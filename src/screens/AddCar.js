@@ -13,8 +13,9 @@ import Checkbox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../util/colors";
 import { useForm, Controller } from "react-hook-form";
+import HeaderNavigation from "../component/HeaderNavigation";
 
-const AddCar = () => {
+const AddCar = ({ navigation }) => {
   const [features, setFeatures] = useState([""]);
   const [images, setImages] = useState([]);
   const [showBrandOptions, setShowBrandOptions] = useState(false);
@@ -71,240 +72,262 @@ const AddCar = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.label}>ID chủ xe: 1</Text>
+      <HeaderNavigation navigation={navigation} title="Thêm xe của bạn" />
+      <View style={{ marginHorizontal: 16 }}>
+        <Text style={styles.label}>ID chủ xe: 1</Text>
 
-      <Text style={styles.label}>Tên xe *</Text>
-      <Controller
-        control={control}
-        name="name"
-        rules={{ required: "Bạn đang bỏ trống tên xe" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
-
-      <Text style={styles.label}>Mô tả *</Text>
-      <Controller
-        control={control}
-        name="description"
-        rules={{ required: "Bạn đang bỏ trống mô tả" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            multiline
-            numberOfLines={4}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.description && (
-        <Text style={styles.error}>{errors.description.message}</Text>
-      )}
-
-      <Text style={styles.label}>Hãng xe *</Text>
-      <Controller
-        control={control}
-        name="brand"
-        render={({ field: { onChange, value } }) => (
-          <View>
-            <TouchableOpacity
-              style={styles.dropdownButton}
-              onPress={() => setShowBrandOptions(!showBrandOptions)}
-            >
-              <Text style={styles.dropdownButtonText}> {value} </Text>
-              <Text style={[styles.dropdownButtonText, {color: colors.mainColor}]}> ▼ </Text>
-            </TouchableOpacity>
-            {showBrandOptions && (
-              <View style={styles.dropdown}>
-                {brandOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      onChange(option);
-                      setShowBrandOptions(false);
-                    }}
-                  >
-                    <Text style={styles.dropdownText}>{option}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-        )}
-      />
-
-      <Text style={styles.label}>Năm sản xuất *</Text>
-      <Controller
-        control={control}
-        name="year"
-        rules={{ required: "Bạn đang bỏ trống năm sản xuất của xe" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.year && <Text style={styles.error}>{errors.year.message}</Text>}
-
-      <Text style={styles.label}>Giá thuê mỗi ngày (VNĐ) *</Text>
-      <Controller
-        control={control}
-        name="pricePerDay"
-        rules={{ required: "Bạn đang bỏ trống giá thuê" }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-      {errors.pricePerDay && (
-        <Text style={styles.error}>{errors.pricePerDay.message}</Text>
-      )}
-
-      <Text style={styles.label}>Đặc điểm nổi bật</Text>
-      {features.map((feature, idx) => (
-        <View key={idx} style={styles.row}>
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            value={feature}
-            onChangeText={(text) => {
-              const newFeatures = [...features];
-              newFeatures[idx] = text;
-              setFeatures(newFeatures);
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => setFeatures(features.filter((_, i) => i !== idx))}
-          >
-            <TouchableOpacity
-              style={styles.buttonRed}
-              onPress={() => setFeatures(features.filter((_, i) => i !== idx))}
-            >
-              <Text style={styles.buttonText}>Xoá</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-        </View>
-      ))}
-      {features.length < 5 && (
-        <TouchableOpacity
-          style={styles.buttonBlue}
-          onPress={() => setFeatures([...features, ""])}
-        >
-          <Text style={styles.buttonText}>Thêm đặc điểm</Text>
-        </TouchableOpacity>
-      )}
-
-      <Text style={styles.label}>Tài sản thế chấp</Text>
-      <Controller
-        control={control}
-        name="collateral"
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-
-      <Text style={styles.label}>Điều khoản cho thuê</Text>
-      <Controller
-        control={control}
-        name="term"
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-      />
-
-      <View style={styles.rowCheckbox}>
-        <Text style={styles.label}>Công khai</Text>
+        <Text style={styles.label}>Tên xe *</Text>
         <Controller
           control={control}
-          name="isPublished"
-          render={({ field: { value, onChange } }) => (
-            <Checkbox value={value} onValueChange={onChange} />
+          name="name"
+          rules={{ required: "Bạn đang bỏ trống tên xe" }}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              onChangeText={onChange}
+              value={value}
+            />
           )}
         />
-      </View>
+        {errors.name && <Text style={styles.error}>{errors.name.message}</Text>}
 
-      <Text style={styles.label}>Trạng thái *</Text>
-      <Controller
-        control={control}
-        name="status"
-        render={({ field: { onChange, value } }) => (
-          <View>
-            <TouchableOpacity
-              style={styles.dropdownButton}
-              onPress={() => setShowStatusOptions(!showStatusOptions)}
-            >
-              <Text style={styles.dropdownButtonText}> {value} </Text>              
-              <Text style={[styles.dropdownButtonText, {color: colors.mainColor}]}> ▼ </Text>
-            </TouchableOpacity>
-            {showStatusOptions && (
-              <View style={styles.dropdown}>
-                {statusOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      onChange(option);
-                      setShowStatusOptions(false);
-                    }}
-                  >
-                    <Text style={styles.dropdownText}>{option}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
+        <Text style={styles.label}>Mô tả *</Text>
+        <Controller
+          control={control}
+          name="description"
+          rules={{ required: "Bạn đang bỏ trống mô tả" }}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              multiline
+              numberOfLines={4}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.description && (
+          <Text style={styles.error}>{errors.description.message}</Text>
         )}
-      />
 
-      <Text style={styles.label}>Danh sách ảnh</Text>
-      <TouchableOpacity style={styles.buttonBlue} onPress={pickImage}>
-        <Text style={styles.buttonText}>Chọn ảnh</Text>
-      </TouchableOpacity>
+        <Text style={styles.label}>Hãng xe *</Text>
+        <Controller
+          control={control}
+          name="brand"
+          render={({ field: { onChange, value } }) => (
+            <View>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowBrandOptions(!showBrandOptions)}
+              >
+                <Text style={styles.dropdownButtonText}> {value} </Text>
+                <Text
+                  style={[
+                    styles.dropdownButtonText,
+                    { color: colors.mainColor },
+                  ]}
+                >
+                  {" "}
+                  ▼{" "}
+                </Text>
+              </TouchableOpacity>
+              {showBrandOptions && (
+                <View style={styles.dropdown}>
+                  {brandOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        onChange(option);
+                        setShowBrandOptions(false);
+                      }}
+                    >
+                      <Text style={styles.dropdownText}>{option}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+        />
 
-      <ScrollView horizontal>
-        {images.map((img, idx) => (
-          <Image
-            key={idx}
-            source={{ uri: img.uri }}
-            style={{ width: 100, height: 100, margin: 5 }}
-          />
+        <Text style={styles.label}>Năm sản xuất *</Text>
+        <Controller
+          control={control}
+          name="year"
+          rules={{ required: "Bạn đang bỏ trống năm sản xuất của xe" }}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.year && <Text style={styles.error}>{errors.year.message}</Text>}
+
+        <Text style={styles.label}>Giá thuê mỗi ngày (VNĐ) *</Text>
+        <Controller
+          control={control}
+          name="pricePerDay"
+          rules={{ required: "Bạn đang bỏ trống giá thuê" }}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.pricePerDay && (
+          <Text style={styles.error}>{errors.pricePerDay.message}</Text>
+        )}
+
+        <Text style={styles.label}>Đặc điểm nổi bật</Text>
+        {features.map((feature, idx) => (
+          <View key={idx} style={styles.row}>
+            <TextInput
+              style={[styles.input, { flex: 1 }]}
+              value={feature}
+              onChangeText={(text) => {
+                const newFeatures = [...features];
+                newFeatures[idx] = text;
+                setFeatures(newFeatures);
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => setFeatures(features.filter((_, i) => i !== idx))}
+            >
+              <TouchableOpacity
+                style={styles.buttonRed}
+                onPress={() =>
+                  setFeatures(features.filter((_, i) => i !== idx))
+                }
+              >
+                <Text style={styles.buttonText}>Xoá</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         ))}
-      </ScrollView>
+        {features.length < 5 && (
+          <TouchableOpacity
+            style={styles.buttonBlue}
+            onPress={() => setFeatures([...features, ""])}
+          >
+            <Text style={styles.buttonText}>Thêm đặc điểm</Text>
+          </TouchableOpacity>
+        )}
 
-      <TouchableOpacity
-        style={styles.buttonMain}
-        onPress={handleSubmit(onSubmit)}
-      >
-        <Text style={styles.buttonText}>Thêm xe</Text>
-      </TouchableOpacity>
+        <Text style={styles.label}>Tài sản thế chấp</Text>
+        <Controller
+          control={control}
+          name="collateral"
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+
+        <Text style={styles.label}>Điều khoản cho thuê</Text>
+        <Controller
+          control={control}
+          name="term"
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+
+        <View style={styles.rowCheckbox}>
+          <Text style={styles.label}>Công khai</Text>
+          <Controller
+            control={control}
+            name="isPublished"
+            render={({ field: { value, onChange } }) => (
+              <Checkbox value={value} onValueChange={onChange} />
+            )}
+          />
+        </View>
+
+        <Text style={styles.label}>Trạng thái *</Text>
+        <Controller
+          control={control}
+          name="status"
+          render={({ field: { onChange, value } }) => (
+            <View>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowStatusOptions(!showStatusOptions)}
+              >
+                <Text style={styles.dropdownButtonText}> {value} </Text>
+                <Text
+                  style={[
+                    styles.dropdownButtonText,
+                    { color: colors.mainColor },
+                  ]}
+                >
+                  {" "}
+                  ▼{" "}
+                </Text>
+              </TouchableOpacity>
+              {showStatusOptions && (
+                <View style={styles.dropdown}>
+                  {statusOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        onChange(option);
+                        setShowStatusOptions(false);
+                      }}
+                    >
+                      <Text style={styles.dropdownText}>{option}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+        />
+
+        <Text style={styles.label}>Danh sách ảnh</Text>
+        <TouchableOpacity style={styles.buttonBlue} onPress={pickImage}>
+          <Text style={styles.buttonText}>Chọn ảnh</Text>
+        </TouchableOpacity>
+
+        <ScrollView horizontal>
+          {images.map((img, idx) => (
+            <Image
+              key={idx}
+              source={{ uri: img.uri }}
+              style={{ width: 100, height: 100, margin: 5 }}
+            />
+          ))}
+        </ScrollView>
+
+        <TouchableOpacity
+          style={styles.buttonMain}
+          onPress={handleSubmit(onSubmit)}
+        >
+          <Text style={styles.buttonText}>Thêm xe</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    // padding: 16,
+    paddingTop: 20,
     backgroundColor: colors.whiteColor,
   },
   label: {
@@ -349,7 +372,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: "#fff",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   dropdownButtonText: {
     fontSize: 16,
