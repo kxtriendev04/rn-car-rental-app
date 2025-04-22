@@ -156,7 +156,7 @@ const HostHomeScreen = () => {
 
   const fetchingCars = async () => {
     try {
-      const response = await api.get(`/vehicles/owner/${user.id}`);
+      const response = await api.get("/vehicles/owner/" + user.id);
       setData(response.data.results);
     } catch (e) {
       console.log(e);
