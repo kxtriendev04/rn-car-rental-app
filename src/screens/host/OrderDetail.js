@@ -262,12 +262,13 @@ const OrderDetail = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleCopy = async () => {
+  const handleCopy = async (id) => {
     try {
-      await Clipboard.setStringAsync(data.id);
+      await Clipboard.setStringAsync(id.toString());
       Alert.alert("Đã sao chép", "Mã đơn hàng đã được sao chép vào clipboard.");
     } catch (error) {
-      Alert.alert("Lỗi", "Không thể sao chép mã đơn hàng.");
+      console.log("e: ", error)
+      Alert.alert("Lỗi", "Không thể sao chép mã đơn hàng.", error);
     }
   };
 
@@ -516,7 +517,7 @@ const OrderDetail = () => {
                   borderRadius: 10,
                   borderColor: colors.textGray,
                 }}
-                onPress={handleCopy}
+                onPress={() => handleCopy(data.id)}
               >
                 <Text>SAO CHÉP</Text>
               </TouchableOpacity>
