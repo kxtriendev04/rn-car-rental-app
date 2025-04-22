@@ -102,6 +102,12 @@ const OrderDetail = () => {
       );
       if (response.status === 200) {
         Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        const notification = {
+          tieuDe: "Đơn hàng của bạn vừa được chấp nhận",
+          moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} chấp thuận, hãy kiểm tra lại thông tin nhé`,
+          userIds: [data.renter.id]
+        }
+        const notiResponse = await api.post('/notifications', notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -116,6 +122,12 @@ const OrderDetail = () => {
       );
       if (response.status === 200) {
         Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        const notification = {
+          tieuDe: "Đơn hàng của bạn vừa được giao tới cho người thuê",
+          moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} giao tới, hãy kiểm tra lại thông tin nhé`,
+          userIds: [data.renter.id]
+        }
+        const notiResponse = await api.post('/notifications', notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -130,6 +142,12 @@ const OrderDetail = () => {
       );
       if (response.status === 200) {
         Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        const notification = {
+          tieuDe: "Đơn hàng của bạn vừa bị từ chối",
+          moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} từ chối, hãy tiếp tục thuê 1 xe khác nhé`,
+          userIds: [data.renter.id]
+        }
+        const notiResponse = await api.post('/notifications', notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -144,6 +162,12 @@ const OrderDetail = () => {
       );
       if (response.status === 200) {
         Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        const notification = {
+          tieuDe: "Đơn hàng của bạn vừa được hoàn tất",
+          moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} hoàn tất, cảm ơn bạn đã trải nghiệm`,
+          userIds: [data.renter.id]
+        }
+        const notiResponse = await api.post('/notifications', notification);
         navigation.goBack();
       }
     } catch (e) {

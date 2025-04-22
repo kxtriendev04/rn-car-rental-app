@@ -41,7 +41,7 @@ const ManageRented = () => {
   const statusMap = {
     "Chờ duyệt": "PENDING",
     "Đã duyệt": "APPROVED",
-    "Đã giao": "DELIVERED",
+    "Đang dùng": "DELIVERING",
     "Từ chối": "REJECTED",
     "Hoàn thành": "COMPLETED",
   };
