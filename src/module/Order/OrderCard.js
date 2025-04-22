@@ -22,13 +22,13 @@ const OrderCard = ({ data }) => {
       case "pending":
         return "Chờ duyệt";
       case "approved":
-        return "Đã giao";
+        return "Đã duyệt";
       case "rejected":
         return "Từ chối";
       case "completed":
         return "Hoàn thành";
       case "delivering":
-        return "Đang giao";
+        return "Đang dùng";
       default:
         return "Không xác định";
     }

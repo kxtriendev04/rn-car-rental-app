@@ -8,10 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // export const API_URL = "http://10.0.2.2:8080/api";
 
 //Trien
-export const API_URL = "http://172.20.10.5:8080/api";
+// export const API_URL = "http://172.20.10.5:8080/api";
 
 //Viet
 // export const API_URL = "http://192.168.50.164:8080/api";
+export const API_URL = "http://172.20.10.3:8080/api";
 
 // Lưu token
 export const saveTokens = async ({

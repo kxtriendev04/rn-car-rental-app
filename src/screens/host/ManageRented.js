@@ -34,14 +34,13 @@ const Seperate = () => {
 
 const ManageRented = () => {
   const { user } = useContext(AuthContext);
-  const tabs = ["Chờ duyệt", "Đang giao", "Đã giao", "Từ chối", "Hoàn thành"];
+  const tabs = ["Chờ duyệt", "Đang dùng", "Đã duyệt", "Từ chối", "Hoàn thành"];
   const [selectedTab, setSelectedTab] = useState("Chờ duyệt");
   const [order, setOrder] = useState([]);
 
-  // Ánh xạ giữa tab và trạng thái đơn hàng
   const statusMap = {
     "Chờ duyệt": "PENDING",
-    "Đang giao": "IN_PROGRESS",
+    "Đã duyệt": "APPROVED",
     "Đã giao": "DELIVERED",
     "Từ chối": "REJECTED",
     "Hoàn thành": "COMPLETED",

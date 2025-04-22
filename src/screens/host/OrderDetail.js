@@ -13,26 +13,27 @@ import {
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import { Image } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { Alert } from "react-native";
 import moment from "moment";
 import { AuthContext } from "../../context/AuthContext";
+import api from "../../util/api";
 
 const getStatusText = (status) => {
   switch (status.toLowerCase()) {
     case "pending":
       return "Chờ duyệt";
     case "approved":
-      return "Đã giao";
+      return "Đã duyệt";
     case "rejected":
       return "Từ chối";
     case "completed":
       return "Hoàn thành";
     case "delivering":
-      return "Đang giao";
+      return "Đang dùng";
     default:
       return "Không xác định";
   }
@@ -85,144 +86,153 @@ function formatCurrencyVND(number) {
   return number.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 }
 
-const onApprove = async () => {
-  try {
-    const response = await api.put(
-      `/rentals/${data.id}/status?status=APPROVED`
-    );
-    if (response === 200)
-      Alert.alert("Thay đổi trạng thái đơn hàng thành công");
-  } catch (e) {
-    console.log("Mã lỗi: ", e);
-  }
-};
-
-const onDelivered = async () => {
-  try {
-    const response = await api.put(
-      `/rentals/${data.id}/status?status=DELIVERING`
-    );
-    if (response === 200)
-      Alert.alert("Thay đổi trạng thái đơn hàng thành công");
-  } catch (e) {
-    console.log("Mã lỗi: ", e);
-  }
-};
-
-const onReject = async () => {
-  try {
-    const response = await api.put(
-      `/rentals/${data.id}/status?status=REJECTED`
-    );
-    if (response === 200)
-      Alert.alert("Thay đổi trạng thái đơn hàng thành công");
-  } catch (e) {
-    console.log("Mã lỗi: ", e);
-  }
-};
-
-const onReturned = async () => {
-  try {
-    const response = await api.put(
-      `/rentals/${data.id}/status?status=COMPLETED`
-    );
-    if (response === 200)
-      Alert.alert("Thay đổi trạng thái đơn hàng thành công");
-  } catch (e) {
-    console.log("Mã lỗi: ", e);
-  }
-};
-
-const renderButtons = (status) => {
-  switch (status) {
-    case "pending":
-      return (
-        <>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: getStatusBackgroundColor("rejected"),
-              },
-            ]}
-            onPress={onReject}
-          >
-            <Text style={{ color: getStatusTextColor("rejected") }}>
-              Từ chối
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: getStatusBackgroundColor("approved"),
-              },
-            ]}
-            onPress={onApprove}
-          >
-            <Text style={{ color: getStatusTextColor("approved") }}>Duyệt</Text>
-          </TouchableOpacity>
-        </>
-      );
-    case "delivering":
-      return (
-        <>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: getStatusBackgroundColor("rejected"),
-              },
-            ]}
-            onPress={onReject}
-          >
-            <Text style={{ color: getStatusTextColor("rejected") }}>
-              Huỷ đơn
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: getStatusBackgroundColor("approved"),
-              },
-            ]}
-            onPress={onDelivered}
-          >
-            <Text style={{ color: getStatusTextColor("approved") }}>
-              Giao xe
-            </Text>
-          </TouchableOpacity>
-        </>
-      );
-    case "approved":
-      return (
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              backgroundColor: getStatusBackgroundColor("complete"),
-            },
-          ]}
-          onPress={onReturned}
-        >
-          <Text style={{ color: getStatusTextColor("complete") }}>
-            Đã nhận được xe
-          </Text>
-        </TouchableOpacity>
-      );
-    default:
-      return null;
-  }
-};
-
 const OrderDetail = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const user = useContext(AuthContext);
   const data = route.params;
+  const { user } = useContext(AuthContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const checkRole = user.id === data.vehicle.owner.id;
+
+  const onApprove = async () => {
+    try {
+      const response = await api.put(
+        `/rentals/${data.id}/status?status=APPROVED`
+      );
+      if (response.status === 200) {
+        Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        navigation.goBack();
+      }
+    } catch (e) {
+      console.log("Mã lỗi: ", e);
+    }
+  };
+
+  const onDelivered = async () => {
+    try {
+      const response = await api.put(
+        `/rentals/${data.id}/status?status=DELIVERING`
+      );
+      if (response.status === 200) {
+        Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        navigation.goBack();
+      }
+    } catch (e) {
+      console.log("Mã lỗi: ", e);
+    }
+  };
+
+  const onReject = async () => {
+    try {
+      const response = await api.put(
+        `/rentals/${data.id}/status?status=REJECTED`
+      );
+      if (response.status === 200) {
+        Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        navigation.goBack();
+      }
+    } catch (e) {
+      console.log("Mã lỗi: ", e);
+    }
+  };
+
+  const onReturned = async () => {
+    try {
+      const response = await api.put(
+        `/rentals/${data.id}/status?status=COMPLETED`
+      );
+      if (response.status === 200) {
+        Alert.alert("Thay đổi trạng thái đơn hàng thành công");
+        navigation.goBack();
+      }
+    } catch (e) {
+      console.log("Mã lỗi: ", e);
+    }
+  };
+
+  const renderButtons = (status) => {
+    switch (status) {
+      case "pending":
+        return (
+          <>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: getStatusBackgroundColor("rejected"),
+                },
+              ]}
+              onPress={onReject}
+            >
+              <Text style={{ color: getStatusTextColor("rejected") }}>
+                Từ chối
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: getStatusBackgroundColor("approved"),
+                },
+              ]}
+              onPress={onApprove}
+            >
+              <Text style={{ color: getStatusTextColor("approved") }}>Duyệt</Text>
+            </TouchableOpacity>
+          </>
+        );
+      case "approved":
+        return (
+          <>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: getStatusBackgroundColor("rejected"),
+                },
+              ]}
+              onPress={onReject}
+            >
+              <Text style={{ color: getStatusTextColor("rejected") }}>
+                Huỷ đơn
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: getStatusBackgroundColor("approved"),
+                },
+              ]}
+              onPress={onDelivered}
+            >
+              <Text style={{ color: getStatusTextColor("approved") }}>
+                Giao xe
+              </Text>
+            </TouchableOpacity>
+          </>
+        );
+      case "delivering":
+        return (
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                backgroundColor: getStatusBackgroundColor("complete"),
+              },
+            ]}
+            onPress={onReturned}
+          >
+            <Text style={{ color: getStatusTextColor("complete") }}>
+              Đã nhận được xe
+            </Text>
+          </TouchableOpacity>
+        );
+      default:
+        return null;
+    }
+  };
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -362,8 +372,8 @@ const OrderDetail = () => {
                       ? data.vehicle.owner.address
                       : "Chưa rõ địa chỉ"
                     : data.renter.address
-                    ? data.renter.address
-                    : "Chưa rõ địa chỉ"}
+                      ? data.renter.address
+                      : "Chưa rõ địa chỉ"}
                 </Text>
               </View>
             </View>

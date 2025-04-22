@@ -10,7 +10,6 @@ import { useContext, useEffect, useState } from "react";
 import api from "../../util/api";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert } from "react-native";
-import { AuthContext } from "../../context/AuthContext";
 
 const cars = [
   {
@@ -152,14 +151,12 @@ const rentalOrders = [
 const HostHomeScreen = () => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { user } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [order, setOrder] = useState([]);
 
   const fetchingCars = async () => {
     try {
       const response = await api.get(`/vehicles/owner/${user.id}`);
-      const response = await api.get("/vehicles/owner/" + user.id);
       setData(response.data.results);
     } catch (e) {
       console.log(e);
