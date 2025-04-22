@@ -26,7 +26,8 @@ const TabBar = ({ state, descriptors, navigation }) => {
   ];
 
   if (hiddenScreens.includes(routeName)) {
-    return null; // 👉 ẩn toàn bộ tab bar
+    return null;
+    r;
   }
   return (
     <View style={styles.tabbar}>
@@ -39,7 +40,9 @@ const TabBar = ({ state, descriptors, navigation }) => {
             ? options.title
             : route.name;
 
-        if (["_sitemap", "+not-found"].includes(route.name)) return null;
+        {
+          /* if (["_sitemap", "+not-found"].includes(route.name)) return null; */
+        }
 
         const isFocused = state.index === index;
 
@@ -55,19 +58,21 @@ const TabBar = ({ state, descriptors, navigation }) => {
           }
         };
 
-        const onLongPress = () => {
+        {
+          /* const onLongPress = () => {
           navigation.emit({
             type: "tabLongPress",
             target: route.key,
           });
-        };
+        }; */
+        }
 
         return (
           <TabBarButton
             key={route.name}
             style={styles.tabbarItem}
             onPress={onPress}
-            onLongPress={onLongPress}
+            // onLongPress={onLongPress}
             isFocused={isFocused}
             routeName={route.name}
             color={isFocused ? primaryColor : greyColor}

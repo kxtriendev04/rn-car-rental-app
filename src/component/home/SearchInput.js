@@ -44,9 +44,11 @@ const SearchInput = ({}) => {
               color={colors.mainColor}
             />
             <Text style={{ fontWeight: 600, fontSize: 16 }}>
-              {(user?.defaultAddress?.district || "") +
-                ", " +
-                (user?.defaultAddress?.province || "")}
+              {user?.defaultAddress
+                ? user?.defaultAddress?.district +
+                  ", " +
+                  user?.defaultAddress?.province
+                : "Bạn chưa có địa chỉ"}
             </Text>
           </View>
         </View>

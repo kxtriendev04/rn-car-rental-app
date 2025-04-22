@@ -81,12 +81,12 @@ const TabBarButton = ({
   routeName,
   color,
   onPress,
-  onLongPress,
+  // onLongPress,
 }) => {
   return (
     <Pressable
       onPress={onPress}
-      onLongPress={onLongPress}
+      // onLongPress={onLongPress}
       style={styles.container}
     >
       <View style={styles.iconContainer}>

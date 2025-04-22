@@ -26,7 +26,7 @@ const SearchVehicalCard = ({ data }) => {
   return (
     <Pressable
       // activeOpacity={1}
-      onPress={() => navigation.navigate("ProductDetail", { id: data.id })}
+      onPress={() => navigation.navigate("ProductDetail", { id: data?.id })}
       // onPress={() => {
       //   Alert.alert("Click!"); // Hiển thị thông báo khi nhấn
       // }}
@@ -203,7 +203,7 @@ const SearchVehicalCard = ({ data }) => {
           <Text
             style={{ marginRight: 8, fontSize: 12, color: colors.textGray }}
           >
-            {" " + data.star}
+            {" " + data?.star}
           </Text>
           <Text
             style={{ fontSize: 16, fontWeight: 600, color: colors.textGray }}
@@ -216,7 +216,7 @@ const SearchVehicalCard = ({ data }) => {
             style={{ marginRight: 8, fontSize: 12, color: colors.textGray }}
           >
             {" "}
-            {data.tripCount || 0} chuyến
+            {data?.tripCount || 0} chuyến
           </Text>
         </View>
         <View
