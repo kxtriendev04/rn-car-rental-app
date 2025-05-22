@@ -79,6 +79,7 @@ const ProductDetailScreen = ({ route }) => {
 
   const fetchFavoriteStatus = async () => {
     try {
+      console.log(`/favorites/check?userId=${user.id}&vehicleId=${data.id}`);
       const res = await api.get(
         `/favorites/check?userId=${user.id}&vehicleId=${data.id}`
       );
