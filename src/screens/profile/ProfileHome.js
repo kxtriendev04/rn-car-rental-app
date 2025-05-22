@@ -20,6 +20,7 @@ const menu = [
   {
     icon: <AntDesign name="user" size={22} color="black" />,
     title: "Tài khoản của tôi",
+    onPress: (navigation) => navigation.navigate("EditProfileScreen"),
   },
   {
     icon: <AntDesign name="hearto" size={22} color="black" />,
@@ -54,13 +55,14 @@ const ProfileHome = ({ navigation }) => {
           >
             <Image
               source={
-                user?.avatarUrl
+                user.avatarUrl
                   ? { uri: user.avatarUrl }
                   : require("../../../assets/defaultAvatar.jpg")
               }
               style={{
                 width: 65,
                 height: 65,
+                // backgroundColor: "red",
                 borderRadius: 999,
               }}
             ></Image>

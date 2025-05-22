@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,24 +12,30 @@ import {
   Keyboard,
   Platform,
   KeyboardAvoidingView,
+  Button,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import colors from "../util/colors";
 import { useForm, Controller } from "react-hook-form";
 import HeaderNavigation from "../component/HeaderNavigation";
-import api from "../util/api";
+import api, { API_URL } from "../util/api";
+import * as FileSystem from "expo-file-system";
 import {
   RichEditor,
   RichToolbar,
   actions,
 } from "react-native-pell-rich-editor";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const AddCar = ({ navigation }) => {
   const [features, setFeatures] = useState([""]);
   const [images, setImages] = useState([]);
+  const [handledImages, setHandledImages] = useState([]);
   const [showBrandOptions, setShowBrandOptions] = useState(false);
   const [showStatusOptions, setShowStatusOptions] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const richText = useRef();
   const {
@@ -40,7 +46,7 @@ const AddCar = ({ navigation }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      ownerId: 1,
+      ownerId: user.id,
       name: "",
       description: "",
       star: 0,
@@ -48,9 +54,14 @@ const AddCar = ({ navigation }) => {
       year: "",
       pricePerDay: "",
       features: [],
-      collateral: "",
-      term: "",
-      isPublished: false,
+      collateral: "10 triệu tiền mặt khi nhận xe",
+      term: `Bảo quản xe cẩn thận, không được tự ý sửa chữa, thay đổi kết cấu xe.
+Đổ nhiên liệu theo đúng loại quy định của nhà sản xuất.
+Báo ngay cho bên cho thuê nếu xe gặp sự cố, hỏng hóc hoặc tai nạn.
+Trả xe đúng thời gian, địa điểm và tình trạng như lúc nhận.
+Hai bên cam kết thực hiện đúng các điều khoản trên, nếu có tranh chấp, sẽ giải quyết bằng thương lượng hoặc theo pháp luật Việt Nam.
+Tuân thủ luật giao thông Việt Nam.`,
+      isPublished: true,
       status: "Sẵn xe",
       images: [],
     },
@@ -71,12 +82,6 @@ const AddCar = ({ navigation }) => {
   const onSubmit = async (data) => {
     const htmlContent = await richText.current?.getContentHtml();
     console.log("Nội dung HTML:", htmlContent);
-    // if (features.length > 0 && features.some((f) => !f.trim())) {
-    //   Alert.alert("Lỗi", "Bạn đang bỏ trống đặc điểm nổi bật");
-    //   return;
-    // }
-    // data.features = features.filter((f) => f.trim());
-    // data.images = images;
     const requestFeature = [];
     features.forEach((f) => {
       requestFeature.push({
@@ -85,8 +90,9 @@ const AddCar = ({ navigation }) => {
         title: f.trim(),
       });
     });
-    // console.log(requestFeature);
-    // console.log("images: ", images);
+    // const imaged = await handleImage();
+    const uploadedImages = await handleImage();
+    console.log("imaged: ", uploadedImages);
     const request = {
       name: data.name,
       brand: data.brand,
@@ -101,24 +107,16 @@ const AddCar = ({ navigation }) => {
       owner: {
         id: data.ownerId,
       },
-      // images: [
-      //   {
-      //     imageUrl:
-      //       "https://m.atcdn.co.uk/ect/media/%7Bresize%7D/4b14ab0c7868451baf5912779f112f40.jpg",
-      //   },
-      //   {
-      //     imageUrl:
-      //       "https://static.independent.co.uk/2025/02/18/10/40/Kia-EV6.png",
-      //   },
-      // ],
+      images: uploadedImages,
       features: requestFeature,
       // "address": {"id": 15}
     };
     // console.log(request);
     try {
       console.log(123);
+
       await api.post("/vehicles", request);
-      // console.log("success");
+      console.log("req: ", request);
       Alert.alert("Thêm xe thành công!!!");
       navigation.goBack();
     } catch (e) {
@@ -133,6 +131,36 @@ const AddCar = ({ navigation }) => {
     richText.current?.blurContentEditor();
     Keyboard.dismiss(); //
   };
+  const handleImage = async () => {
+    const formData = new FormData();
+    formData.append("folder", "car_image");
+
+    images.forEach((image, index) => {
+      formData.append("files", {
+        uri: image.uri,
+        name: image.fileName || `image_${index}.jpg`,
+        type: image.mimeType || "image/jpeg",
+      });
+    });
+
+    try {
+      const res = await axios.post(API_URL + "/files/multi", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const uploaded = res.data.results.map((url) => ({
+        imageUrl: url,
+      }));
+
+      return uploaded;
+    } catch (err) {
+      Alert.alert("Lỗi upload ảnh!");
+      return [];
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -141,6 +169,7 @@ const AddCar = ({ navigation }) => {
       <TouchableWithoutFeedback onPress={dismissEditor}>
         <ScrollView contentContainerStyle={styles.container}>
           <HeaderNavigation navigation={navigation} title="Thêm xe của bạn" />
+          {/* <Button title="click" onPress={handleImage}></Button> */}
           <View style={{ marginHorizontal: 16 }}>
             {/* <Text style={styles.label}>ID chủ xe: 1</Text> */}
 

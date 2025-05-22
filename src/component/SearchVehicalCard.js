@@ -14,6 +14,7 @@ import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import FeatureIcon from "./FeatureIcon";
 import { formatPrice } from "../util/formatValue";
+import { API_URL_IMG } from "../util/api";
 
 const SearchVehicalCard = ({ data }) => {
   const navigation = useNavigation();
@@ -62,7 +63,7 @@ const SearchVehicalCard = ({ data }) => {
                 }}
               >
                 <Image
-                  source={{ uri: item?.imageUrl }} // Dùng ảnh sản phẩm làm background
+                  source={{ uri: API_URL_IMG + item?.imageUrl }} // Dùng ảnh sản phẩm làm background
                   style={{
                     flex: 1,
                     borderRadius: 18,

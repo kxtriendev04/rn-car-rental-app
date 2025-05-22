@@ -237,7 +237,9 @@ const NewFeedScreen = () => {
                   name="bell"
                   size={24}
                   color="#555"
-                  onPress={() => {navigation.navigate("Notification")}}
+                  onPress={() => {
+                    navigation.navigate("Notification");
+                  }}
                 />
               </View>
             </View>
@@ -312,7 +314,7 @@ const FeedItem = ({ post }) => {
   return (
     <TouchableOpacity
       style={{
-        paddingHorizontal: 15,
+        // paddingHorizontal: 15,
         paddingVertical: 16,
         backgroundColor: colors.whiteColor,
       }}

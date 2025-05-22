@@ -107,7 +107,7 @@ const SearchScreen = ({ navigation }) => {
               autoFocus={true}
               returnKeyType="search"
               // keyboardType="decimal-pad"
-              placeholder="Tìm kiếm phương tiện, người dùng..."
+              placeholder="Tìm kiếm phương tiện..."
               // onSubmitEditing={()=>
               onSubmitEditing={() => {
                 if (searchValue.trim() !== "") {

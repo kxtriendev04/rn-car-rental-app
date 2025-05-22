@@ -7,6 +7,7 @@ import AccomodationItem from "../../component/home/AccomodationItem";
 import OrderCard from "../../module/Order/OrderCard";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import api from "../../util/api";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert } from "react-native";
@@ -153,6 +154,7 @@ const HostHomeScreen = () => {
   const navigation = useNavigation();
   const [data, setData] = useState([]);
   const [order, setOrder] = useState([]);
+  const isFocused = useIsFocused();
 
   const fetchingCars = async () => {
     try {
@@ -173,10 +175,16 @@ const HostHomeScreen = () => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchingOrders();
+  //   fetchingCars();
+  // }, []);
   useEffect(() => {
-    fetchingOrders();
-    fetchingCars();
-  }, []);
+    if (isFocused) {
+      fetchingOrders();
+      fetchingCars();
+    }
+  }, [isFocused]);
 
   return (
     <SafeAreaView

@@ -5,6 +5,7 @@ import AddressScreen from "../../screens/profile/AddressScreen";
 import AddressAddition from "../../screens/profile/AddressAddition";
 import LocationPicker from "../../screens/profile/LocationPicker";
 import Wishlist from "../../screens/host/Wishlist";
+import EditProfileScreen from "../../screens/profile/EditProfileScreen";
 
 const Stack = createStackNavigator();
 const ProfileStack = () => {
@@ -29,6 +30,11 @@ const ProfileStack = () => {
       <Stack.Screen
         name="LocationPicker"
         component={LocationPicker}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>

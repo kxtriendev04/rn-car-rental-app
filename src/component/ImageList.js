@@ -1,19 +1,38 @@
 import { useRef, useState } from "react";
-import { Dimensions, FlatList, Image, Text, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import colors from "../util/colors";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { API_URL_IMG } from "../util/api";
 
 const ImageList = ({ images = [] }) => {
   const screenWidth = Dimensions.get("window").width;
   const viewabilityConfig = { viewAreaCoveragePercentThreshold: 50 };
+  const isLink = images?.[0]?.imageUrl.startsWith("http");
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loadingImages, setLoadingImages] = useState(
+    Array(images.length).fill(true)
+  );
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
     }
   }).current;
+
+  const handleLoadEnd = (index) => {
+    const updated = [...loadingImages];
+    updated[index] = false;
+    setLoadingImages(updated);
+  };
+
   return (
     <View>
       <FlatList
@@ -24,53 +43,43 @@ const ImageList = ({ images = [] }) => {
         viewabilityConfig={viewabilityConfig}
         showsHorizontalScrollIndicator={false}
         data={images}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View
             style={{
               width: screenWidth,
-              // borderWidth: 1,
-              // borderColor: "blue",
               height: 220,
               paddingHorizontal: 15,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
+            {loadingImages[index] && (
+              <ActivityIndicator
+                size="large"
+                color={colors.primaryColor}
+                style={{
+                  position: "absolute",
+                  zIndex: 1,
+                }}
+              />
+            )}
             <Image
-              source={{ uri: item.imageUrl }} // Dùng ảnh sản phẩm làm background
+              source={{
+                uri: !isLink ? API_URL_IMG + item.imageUrl : item.imageUrl,
+              }}
               style={{
                 flex: 1,
                 borderRadius: 30,
+                width: "100%",
               }}
               resizeMode="cover"
-            ></Image>
+              onLoadEnd={() => handleLoadEnd(index)}
+            />
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      {/* Star */}
-      {/* <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          position: "absolute",
-          left: 32,
-          top: 12,
-        }}
-      >
-        {Array.from({ length: 3 }, (_, index) => (
-          <View
-            key={index}
-            style={{
-              shadowColor: "#000", // Màu bóng
-              shadowOffset: { width: 0, height: 2 }, // Độ lệch của bóng
-              shadowOpacity: 0.3, // Độ trong suốt của bóng
-              shadowRadius: 4, // Bán kính làm mờ bóng
-              elevation: 5, // Chỉ dành cho Android
-            }}
-          >
-            <AntDesign name="star" size={16} color="orange" />
-          </View>
-        ))}
-      </View> */}
+
       <View
         style={{
           position: "absolute",
@@ -83,18 +92,17 @@ const ImageList = ({ images = [] }) => {
           flexDirection: "row",
           alignItems: "center",
           gap: 4,
-          // Hiệu ứng bóng đổ
-          shadowColor: "#000", // Màu bóng
-          shadowOffset: { width: 0, height: 2 }, // Độ lệch của bóng
-          shadowOpacity: 0.3, // Độ trong suốt của bóng
-          shadowRadius: 4, // Bán kính làm mờ bóng
-          elevation: 5, // Chỉ dành cho Android
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 4,
+          elevation: 5,
         }}
       >
         <Feather name="camera" size={16} color={colors.whiteColor} />
         <Text
           style={{
-            fontWeight: 500,
+            fontWeight: "500",
             textAlign: "center",
             color: colors.whiteColor,
             fontSize: 13,
@@ -106,4 +114,5 @@ const ImageList = ({ images = [] }) => {
     </View>
   );
 };
+
 export default ImageList;

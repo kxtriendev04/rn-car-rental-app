@@ -54,6 +54,7 @@ const SearchInput = ({}) => {
         </View>
         <View
           style={{
+            margin: 2,
             padding: 8,
             paddingHorizontal: 10,
             borderRadius: 10,

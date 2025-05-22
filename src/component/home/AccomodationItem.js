@@ -9,11 +9,24 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { formatPrice } from "../../util/formatValue";
+import { API_URL, API_URL_IMG } from "../../util/api";
+import { ActivityIndicator } from "react-native";
 
 const AccomodationItem = ({ data, type = "normal" }) => {
   const isNormal = type == "normal";
   const navigation = useNavigation();
   const [liked, setLiked] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+  const isLink = data?.images?.[0]?.imageUrl.startsWith("http");
+  const imageUrl = data?.images?.[0]?.imageUrl;
+  const isAbsoluteUrl =
+    imageUrl?.startsWith("http://") || imageUrl?.startsWith("https://");
+
+  const fullImageUrl = imageUrl
+    ? isAbsoluteUrl
+      ? imageUrl
+      : `${API_URL_IMG}${imageUrl}`
+    : null;
 
   const toggleLike = () => {
     setLiked((prev) => !prev);
@@ -25,7 +38,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
       onPress={() => {
         navigation.navigate("HomeStack", {
           screen: "ProductDetail",
-          params: { id: data.id }
+          params: { id: data.id },
         });
       }}
       // navigation.navigate("ProductDetail", { id: data.id });
@@ -51,21 +64,36 @@ const AccomodationItem = ({ data, type = "normal" }) => {
       ]}
     >
       <View style={{ position: "relative", flex: isNormal ? 3.2 : 2 }}>
-        <Image
-          style={[
-            {
-              // height: 220,
-              borderTopLeftRadius: 22, // Bo góc trên bên trái
-              borderTopRightRadius: 22, // Bo góc trên bên phải
-              //   borderRadius: 12,
+        <View style={{ flex: isNormal ? 3.2 : 2, position: "relative" }}>
+          {imageLoading && (
+            <ActivityIndicator
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                zIndex: 1,
+                transform: [{ translateX: -15 }, { translateY: -15 }],
+              }}
+              size="large"
+              color={colors.mainColor}
+            />
+          )}
+          <Image
+            onLoadEnd={() => setImageLoading(false)}
+            style={{
+              borderTopLeftRadius: 22,
+              borderTopRightRadius: 22,
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              //flex: isNormal ? 3.2 : 2,
-            },
-          ]}
-          source={{ uri: data?.images?.[0]?.imageUrl }}
-        ></Image>
+            }}
+            source={
+              fullImageUrl
+                ? { uri: fullImageUrl }
+                : require("../../../assets/defaultCar.png") // ảnh mặc định nếu không có ảnh
+            }
+          />
+        </View>
         <TouchableOpacity
           onPress={toggleLike}
           style={{

@@ -388,7 +388,9 @@ const ProductDetailScreen = ({ route }) => {
                     },
                     {
                       name: "Tôi muốn được giao xe tận nơi",
-                      location: `${user?.defaultAddress?.road || ""}, ${user?.defaultAddress?.ward || ""}`,
+                      location: `${user?.defaultAddress?.road || ""}, ${
+                        user?.defaultAddress?.ward || ""
+                      }`,
                     },
                   ]}
                   selected={selectedValue}
