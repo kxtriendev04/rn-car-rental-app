@@ -50,7 +50,7 @@ const getStatusBackgroundColor = (status) => {
     case "completed":
       return "#D1ECF1";
     case "delivering":
-      return "lightblue";
+      return "#11bda6";
     default:
       return "#FFF";
   }
@@ -67,7 +67,7 @@ const getStatusTextColor = (status) => {
     case "completed":
       return "#0c5460";
     case "delivering":
-      return "#black";
+      return "#FFF";
     default:
       return "#333";
   }
@@ -105,9 +105,9 @@ const OrderDetail = () => {
         const notification = {
           tieuDe: "Đơn hàng của bạn vừa được chấp nhận",
           moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} chấp thuận, hãy kiểm tra lại thông tin nhé`,
-          userIds: [data.renter.id]
-        }
-        const notiResponse = await api.post('/notifications', notification);
+          userIds: [data.renter.id],
+        };
+        const notiResponse = await api.post("/notifications", notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -125,9 +125,9 @@ const OrderDetail = () => {
         const notification = {
           tieuDe: "Đơn hàng của bạn vừa được giao tới cho người thuê",
           moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} giao tới, hãy kiểm tra lại thông tin nhé`,
-          userIds: [data.renter.id]
-        }
-        const notiResponse = await api.post('/notifications', notification);
+          userIds: [data.renter.id],
+        };
+        const notiResponse = await api.post("/notifications", notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -145,9 +145,9 @@ const OrderDetail = () => {
         const notification = {
           tieuDe: "Đơn hàng của bạn vừa bị từ chối",
           moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} từ chối, hãy tiếp tục thuê 1 xe khác nhé`,
-          userIds: [data.renter.id]
-        }
-        const notiResponse = await api.post('/notifications', notification);
+          userIds: [data.renter.id],
+        };
+        const notiResponse = await api.post("/notifications", notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -165,9 +165,9 @@ const OrderDetail = () => {
         const notification = {
           tieuDe: "Đơn hàng của bạn vừa được hoàn tất",
           moTa: `Đơn hàng có mã ${data.id} vừa được người dùng ${data.vehicle.owner.fullName} hoàn tất, cảm ơn bạn đã trải nghiệm`,
-          userIds: [data.renter.id]
-        }
-        const notiResponse = await api.post('/notifications', notification);
+          userIds: [data.renter.id],
+        };
+        const notiResponse = await api.post("/notifications", notification);
         navigation.goBack();
       }
     } catch (e) {
@@ -202,7 +202,9 @@ const OrderDetail = () => {
               ]}
               onPress={onApprove}
             >
-              <Text style={{ color: getStatusTextColor("approved") }}>Duyệt</Text>
+              <Text style={{ color: getStatusTextColor("approved") }}>
+                Duyệt
+              </Text>
             </TouchableOpacity>
           </>
         );
@@ -243,13 +245,13 @@ const OrderDetail = () => {
             style={[
               styles.button,
               {
-                backgroundColor: getStatusBackgroundColor("complete"),
+                backgroundColor: getStatusBackgroundColor("completed"),
               },
             ]}
             onPress={onReturned}
           >
-            <Text style={{ color: getStatusTextColor("complete") }}>
-              Đã nhận được xe
+            <Text style={{ color: getStatusTextColor("completed") }}>
+              Khách đã trả xe
             </Text>
           </TouchableOpacity>
         );
@@ -267,7 +269,7 @@ const OrderDetail = () => {
       await Clipboard.setStringAsync(id.toString());
       Alert.alert("Đã sao chép", "Mã đơn hàng đã được sao chép vào clipboard.");
     } catch (error) {
-      console.log("e: ", error)
+      console.log("e: ", error);
       Alert.alert("Lỗi", "Không thể sao chép mã đơn hàng.", error);
     }
   };
@@ -397,8 +399,8 @@ const OrderDetail = () => {
                       ? data.vehicle.owner.address
                       : "Chưa rõ địa chỉ"
                     : data.renter.address
-                      ? data.renter.address
-                      : "Chưa rõ địa chỉ"}
+                    ? data.renter.address
+                    : "Chưa rõ địa chỉ"}
                 </Text>
               </View>
             </View>
