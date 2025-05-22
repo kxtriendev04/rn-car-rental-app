@@ -16,8 +16,9 @@ import {
 import colors from "../../util/colors";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import HeaderNavigation from "../../component/HeaderNavigation";
+import api from "../../util/api";
 
-const ChatScreen = ({ navigation, route }) => {
+const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([
     {
       id: "1",
@@ -33,7 +34,7 @@ const ChatScreen = ({ navigation, route }) => {
   const [inputText, setInputText] = useState("");
   const flatListRef = useRef(null);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!inputText.trim()) return;
 
     const userMessage = {
@@ -46,7 +47,10 @@ const ChatScreen = ({ navigation, route }) => {
       sender: "me",
     };
 
-    const botReply = botHandle(inputText);
+    setMessages((prev) => [...prev, userMessage]);
+    setInputText("");
+
+    const reply = await botHandle(inputText);
 
     const botMessage = {
       id: String(messages.length + 2),
@@ -59,137 +63,78 @@ const ChatScreen = ({ navigation, route }) => {
       avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     };
 
-    // Thêm tin nhắn user và bot (trống) vào list
-    setMessages((prev) => [...prev, userMessage, botMessage]);
+    setMessages((prev) => [...prev, botMessage]);
 
-    setInputText("");
+    typeMessage(reply, (currentText) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botMessage.id ? { ...msg, text: currentText } : msg
+        )
+      );
+    });
 
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
     }, 100);
-
-    typeMessage(botReply, (currentText) => {
-      setMessages((prevMessages) => {
-        return prevMessages.map((msg) =>
-          msg.id === botMessage.id ? { ...msg, text: currentText } : msg
-        );
-      });
-    });
   };
 
   const typeMessage = (fullText, callback) => {
     let currentText = "";
     let i = 0;
-
     const interval = setInterval(() => {
       currentText += fullText[i];
       i++;
-
-      if (i === fullText.length) {
-        clearInterval(interval);
-        callback(currentText);
-      } else {
-        callback(currentText);
-      }
-    }, Math.floor(Math.random() * (100 - 10 + 1)) + 10);
+      callback(currentText);
+      if (i >= fullText.length) clearInterval(interval);
+    }, Math.floor(Math.random() * (50 - 10 + 1)) + 10);
   };
 
-  const carData = {
-    vinfast: {
-      vf7: {
-        name: "VF7",
-        seats: 4,
-        owner: "Nguyễn Văn A",
-        location: "Hà Nội",
-        price: "1.000.000 VNĐ",
-      },
-      vf8: {
-        name: "VF8",
-        seats: 7,
-        owner: "Nguyễn Thị B",
-        location: "Hà Nội",
-        price: "1.500.000 VNĐ",
-      },
-      vf9: {
-        name: "VF9",
-        seats: 7,
-        owner: "Nguyễn Văn C",
-        location: "Hà Nội",
-        price: "2.000.000 VNĐ",
-      },
-    },
-  };
-
-  const botHandle = (inputText) => {
+  const botHandle = async (inputText) => {
     const text = inputText.trim().toLowerCase();
 
-    switch (true) {
-      case /xin chào|chào|tạm biệt/.test(text):
-        return "Chào bạn 👋! Tôi có thể giúp gì cho bạn?";
-
-      case /(cách|hướng dẫn|làm thế nào).*(đặt|thuê).*xe/.test(text):
-        return (
-          "Sau đây là hướng dẫn các bước chi tiết:\n" +
-          "1. Đi tới giao diện trang chủ 🏠\n" +
-          "2. Lướt tìm xe mình yêu thích ❤️\n" +
-          "3. Chọn xe mình thích 👉👈\n" +
-          "4. Điền đầy đủ thông tin về đơn thuê 📋\n" +
-          "5. Thanh toán và chờ người chủ xe duyệt đơn 💵\n" +
-          "Vậy là bạn đã hoàn thành việc đặt hàng rùi nè 🥰"
-        );
-
-      case /vf|vinfast/.test(text):
-        return botHandle2nd(text);
-
-      default:
-        return "Mình chưa hiểu ý của bạn. Bạn nhắn rõ ràng hơn để mình hiểu nhé!";
+    if (/xin chào|chào/.test(text)) {
+      return "Chào bạn 👋! Tôi có thể giúp gì cho bạn?";
     }
-  };
 
-  const botHandle2nd = (text) => {
-    switch (true) {
-      case /(vf|vinfast).*7/.test(text):
-        return (
-          "Đây là thông tin về xe: \n" +
-          "1. Tên xe: VF7\n" +
-          "2. Số chỗ ngồi: 4 chỗ\n" +
-          "3. Chủ xe: Nguyễn Văn A\n" +
-          "4. Địa điểm chủ xe: Hà Nội\n" +
-          "5. Giá thuê 1 ngày: 1.000.000 VNĐ\n" +
-          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
-          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
-          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
-          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
-        );
-      case /(vf|vinfast).*8/.test(text):
-        return (
-          "Đây là thông tin về xe: \n" +
-          "1. Tên xe: VF8\n" +
-          "2. Số chỗ ngồi: 7 chỗ\n" +
-          "3. Chủ xe: Nguyễn Thị B\n" +
-          "4. Địa điểm chủ xe: Hà Nội\n" +
-          "5. Giá thuê 1 ngày: 1.500.000 VNĐ\n" +
-          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
-          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
-          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
-          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
-        );
-      case /(vf|vinfast).*9/.test(text):
-        return (
-          "Đây là thông tin về xe: \n" +
-          "1. Tên xe: VF9\n" +
-          "2. Số chỗ ngồi: 7 chỗ\n" +
-          "3. Chủ xe: Nguyễn Văn C\n" +
-          "4. Địa điểm chủ xe: Hà Nội\n" +
-          "5. Giá thuê 1 ngày: 2.000.000 VNĐ\n" +
-          "Trên đây là 1 vài thông tin cơ bản về 1 xe của app, nếu bạn cảm thấy chưa hài lòng thì có thể tham khảo " +
-          "mẫu xe khác tại trang chủ nhé 😁, Nếu đã hài lòng và " +
-          "bạn muốn thông tin chi tiết về xe, bạn có thể liên hệ với chủ xe nhé!" +
-          "Đây là số điện thoại của chủ xe: 0123456789 🥰"
-        );
-      default:
-        return "Hiện tại trang web thuê xe đang có những dòng xe như VF7, VF8, VF9. Bạn muốn tìm hiểu về xe nào nhỉ? 😉";
+    if (/Tạm biệt/.test(text)) {
+      return "Chào bạn 👋! Chúc bạn một ngày vui vẻ";
     }
+
+    if (/(cách|hướng dẫn|làm thế nào).*(đặt|thuê).*xe/.test(text)) {
+      return (
+        "Sau đây là hướng dẫn các bước chi tiết:\n" +
+        "1. Đi tới giao diện trang chủ 🏠\n" +
+        "2. Lướt tìm xe mình yêu thích ❤️\n" +
+        "3. Chọn xe mình thích 👉👈\n" +
+        "4. Điền đầy đủ thông tin về đơn thuê 📋\n" +
+        "5. Thanh toán và chờ người chủ xe duyệt đơn 💵\n" +
+        "Vậy là bạn đã hoàn thành việc đặt hàng rùi nè 🥰"
+      );
+    }
+
+    const fetchVehiclesByBrand = async (brand) => {
+      try {
+        const res = await api.get(`/vehicles/brand?brand=${brand}`);
+        if (res.status === 200 && Array.isArray(res.data.results)) {
+          const names = res.data.results.map((car) => car.name).join(", ");
+          return names || "Chưa có xe nào trong hãng này.";
+        } else {
+          return "Không lấy được dữ liệu xe từ server.";
+        }
+      } catch (error) {
+        console.error(`Lỗi khi lấy xe hãng ${brand}:`, error);
+        return "Có lỗi xảy ra khi gọi API.";
+      }
+    };
+
+    const brandMatch = text.match(/(kia|vinfast|tesla|toyota)/);
+    if (brandMatch) {
+      const brand = brandMatch[1].toUpperCase();
+      const names = await fetchVehiclesByBrand(brand);
+      return `Danh sách xe ${brand}: ${names}`;
+    }
+
+    return "Mình chưa hiểu ý của bạn. Bạn nhắn rõ ràng hơn để mình hiểu nhé!";
   };
 
   const renderMessage = ({ item }) => (
@@ -213,10 +158,7 @@ const ChatScreen = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      // keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-      // style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

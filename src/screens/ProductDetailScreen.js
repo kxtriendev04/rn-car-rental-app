@@ -33,6 +33,7 @@ import {
   ScrollView,
   Button,
   Dimensions,
+  Pressable,
 } from "react-native";
 import colors from "../util/colors";
 import FeatureItem from "../component/FeatureItem";
@@ -64,6 +65,7 @@ const ProductDetailScreen = ({ route }) => {
   const { user } = useContext(AuthContext);
   const { id } = route.params || {};
   const [liked, setLiked] = useState(false);
+  const [checked, setChecked] = useState(false);
   // const id = 5;
   const fetchingData = async () => {
     try {
@@ -615,6 +617,30 @@ const ProductDetailScreen = ({ route }) => {
           >
             {data?.term}
           </Text>
+          <Pressable
+            onPress={() => setChecked(!checked)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <View
+              style={{
+                width: 15,
+                height: 15,
+                borderWidth: 2,
+                borderColor: "#333",
+                backgroundColor: checked ? "#4CAF50" : "white",
+                marginRight: 10,
+              }}
+            />
+            <Text>
+              {checked
+                ? "Bạn đã đồng ý với điều khoản của chúng tôi"
+                : "Bằng cách tích vào đây, bạn đồng ý các điều khoản"}
+            </Text>
+          </Pressable>
         </View>
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
@@ -702,15 +728,17 @@ const ProductDetailScreen = ({ route }) => {
               VNĐ
             </Text>
           </View>
-          <MyButton
-            onPress={() => {
-              // console.log("data: ", data);
-              navigation.navigate("ProductCheckout", { data: data });
-            }}
-            title="Chọn thuê"
-            // onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
-            buttonStyle={{ paddingVertical: 12, opacity: 0.8 }}
-          ></MyButton>
+          {checked && (
+            <MyButton
+              onPress={() => {
+                // console.log("data: ", data);
+                navigation.navigate("ProductCheckout", { data: data });
+              }}
+              title="Chọn thuê"
+              // onPress={scrollToRoomList} // Gọi hàm cuộn khi nhấn
+              buttonStyle={{ paddingVertical: 12, opacity: 0.8 }}
+            ></MyButton>
+          )}
         </View>
       </View>
     </SafeAreaView>
