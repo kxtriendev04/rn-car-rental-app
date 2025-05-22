@@ -55,8 +55,6 @@ import AccomodationItem from "../component/home/AccomodationItem";
 import api from "../util/api";
 import { AuthContext } from "../context/AuthContext";
 
-// Giả sử bạn có danh sách dữ liệu để lấy chi tiết sản phẩm
-
 const ProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { time } = useContext(TimeContext);
@@ -65,6 +63,7 @@ const ProductDetailScreen = ({ route }) => {
   const [img, setimg] = useState([]);
   const { user } = useContext(AuthContext);
   const { id } = route.params || {};
+  const [liked, setLiked] = useState(false);
   // const id = 5;
   const fetchingData = async () => {
     try {
@@ -77,7 +76,54 @@ const ProductDetailScreen = ({ route }) => {
   useEffect(() => {
     fetchingData();
   }, []);
-  console.log("data: ", data);
+
+  const fetchFavoriteStatus = async () => {
+    try {
+      const res = await api.get(
+        `/favorites/check?userId=${user.id}&vehicleId=${data.id}`
+      );
+      if (res.status === 200) {
+        setLiked(res.data.results === true);
+      } else {
+        console.log("Không thể kiểm tra trạng thái yêu thích.");
+      }
+    } catch (e) {
+      console.log("Lỗi khi kiểm tra trạng thái yêu thích: ", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchFavoriteStatus();
+  }, []);
+
+  const toggleLike = async () => {
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+
+    try {
+      if (!wasLiked) {
+        // Thêm vào yêu thích
+        const res = await api.post(
+          `/favorites?userId=${user.id}&vehicleId=${data.id}`
+        );
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error("Không thể thêm vào yêu thích");
+        }
+      } else {
+        // Xoá khỏi yêu thích
+        const res = await api.delete(
+          `/favorites?userId=${user.id}&vehicleId=${data.id}`
+        );
+        if (res.status !== 200 && res.status !== 204) {
+          throw new Error("Không thể xoá khỏi yêu thích");
+        }
+      }
+    } catch (e) {
+      // Rollback nếu tym bị lỗi
+      setLiked(wasLiked);
+      console.log("Lỗi toggle yêu thích:", e);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,7 +131,13 @@ const ProductDetailScreen = ({ route }) => {
         <HeaderNavigation
           title={data.name}
           navigation={navigation}
-          rightIcon=<AntDesign name="hearto" size={24} color="black" />
+          rightIcon=<TouchableOpacity onPress={toggleLike}>
+            <AntDesign
+              name={liked ? "heart" : "hearto"}
+              size={24}
+              color={liked ? colors.mainColor : "black"}
+            />
+          </TouchableOpacity>
         />
         <View style={{ backgroundColor: colors.whiteColor, paddingBottom: 0 }}>
           <ImageList images={data?.images}></ImageList>

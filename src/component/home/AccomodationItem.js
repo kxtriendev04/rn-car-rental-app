@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, Button, Image, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import colors from "../../util/colors";
 import {
   AntDesign,
@@ -7,31 +14,89 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { formatPrice } from "../../util/formatValue";
-import { API_URL, API_URL_IMG } from "../../util/api";
-import { ActivityIndicator } from "react-native";
+import { API_URL_IMG } from "../../util/api";
+import api from "../../util/api";
+import { AuthContext } from "../../context/AuthContext";
 
 const AccomodationItem = ({ data, type = "normal" }) => {
-  const isNormal = type == "normal";
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [liked, setLiked] = useState(false);
+  const [likedVehicles, setLikedVehicles] = useState({});
   const [imageLoading, setImageLoading] = useState(true);
-  const isLink = data?.images?.[0]?.imageUrl.startsWith("http");
+
   const imageUrl = data?.images?.[0]?.imageUrl;
   const isAbsoluteUrl =
     imageUrl?.startsWith("http://") || imageUrl?.startsWith("https://");
-
   const fullImageUrl = imageUrl
     ? isAbsoluteUrl
       ? imageUrl
       : `${API_URL_IMG}${imageUrl}`
     : null;
 
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
+  const fetchFavorites = async () => {
+    try {
+      const res = await api.get(`/favorites?userId=${user.id}`);
+      const favorites = res.data.results || [];
+      const likedVehiclesMap = {};
+      favorites.forEach((vehicle) => {
+        likedVehiclesMap[vehicle.id] = true;
+      });
+      setLikedVehicles(likedVehiclesMap);
+    } catch (e) {
+      console.log("Lỗi khi lấy danh sách yêu thích: ", e);
+      Alert.alert("Lỗi", "Không thể lấy danh sách yêu thích");
+    }
   };
-  // console.log("data in accormodationItem: ", data);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) fetchFavorites();
+  }, [isFocused]);
+
+  const toggleLike = async () => {
+    const wasLiked = !!likedVehicles[data.id]; //ép về boolean
+    setLikedVehicles((prev) => ({
+      ...prev,
+      [data.id]: !wasLiked,
+    }));
+
+    try {
+      if (!wasLiked) {
+        // Thêm vào yêu thích
+        const res = await api.post(
+          `/favorites?userId=${user.id}&vehicleId=${data.id}`
+        );
+        if (res.status === 200 || res.status === 201) {
+          await fetchFavorites();
+        } else {
+          throw new Error("Thêm yêu thích thất bại");
+        }
+      } else {
+        // Xóa khỏi yêu thích
+        const res = await api.delete(
+          `/favorites?userId=${user.id}&vehicleId=${data.id}`
+        );
+        if (res.status === 200 || res.status === 204) {
+          await fetchFavorites(); // Đồng bộ lại danh sách yêu thích
+        } else {
+          throw new Error("Xóa yêu thích thất bại");
+        }
+      }
+    } catch (e) {
+      // Rollback nếu tym bị lỗi
+      setLikedVehicles((prev) => ({
+        ...prev,
+        [data.id]: wasLiked,
+      }));
+      console.log("Đã có lỗi xảy ra: ", e);
+      Alert.alert(
+        "Lỗi",
+        `Không thể ${!wasLiked ? "thêm" : "xóa"} xe yêu thích`
+      );
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -41,30 +106,28 @@ const AccomodationItem = ({ data, type = "normal" }) => {
           params: { id: data.id },
         });
       }}
-      // navigation.navigate("ProductDetail", { id: data.id });
       style={[
         {
-          // width: 250,
           height: 250,
           marginBottom: 10,
-
           borderRadius: 22,
-          // overflow: "hidden",
-          backgroundColor: "white", // Cần có màu nền để shadow hiển thị
-          shadowColor: "#999", // Màu bóng
-          shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
-          shadowOpacity: 0.5, // Độ mờ
-          shadowRadius: 1, // Bán kính mờ
-          elevation: 2, // Bóng trên Android
+          backgroundColor: "white",
+          shadowColor: "#999",
+          shadowOffset: { width: 1, height: 1 },
+          shadowOpacity: 0.5,
+          shadowRadius: 1,
+          elevation: 2,
           position: "relative",
         },
-        isNormal && type !== "masonry"
+        type === "normal" && type !== "masonry"
           ? { width: 247, marginLeft: 10, marginRight: 5 }
           : { width: "100%" },
       ]}
     >
-      <View style={{ position: "relative", flex: isNormal ? 3.2 : 2 }}>
-        <View style={{ flex: isNormal ? 3.2 : 2, position: "relative" }}>
+      <View style={{ position: "relative", flex: type === "normal" ? 3.2 : 2 }}>
+        <View
+          style={{ flex: type === "normal" ? 3.2 : 2, position: "relative" }}
+        >
           {imageLoading && (
             <ActivityIndicator
               style={{
@@ -90,7 +153,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
             source={
               fullImageUrl
                 ? { uri: fullImageUrl }
-                : require("../../../assets/defaultCar.png") // ảnh mặc định nếu không có ảnh
+                : require("../../../assets/defaultCar.png")
             }
           />
         </View>
@@ -103,30 +166,16 @@ const AccomodationItem = ({ data, type = "normal" }) => {
             backgroundColor: colors.whiteColor,
             borderRadius: 20,
             padding: 5,
-            opacity: liked ? 0.8 : 0.5,
+            opacity: likedVehicles[data.id] ? 0.8 : 0.5,
           }}
         >
           <AntDesign
-            name={liked ? "heart" : "hearto"}
+            name={likedVehicles[data.id] ? "heart" : "hearto"}
             size={20}
-            color={liked ? colors.mainColor : "black"}
+            color={likedVehicles[data.id] ? colors.mainColor : "black"}
           />
         </TouchableOpacity>
       </View>
-      {false && isNormal && (
-        <Text
-          style={{
-            textAlign: "center",
-            backgroundColor: colors.blue,
-            fontSize: 14,
-            fontWeight: 500,
-            padding: 2,
-            color: "white",
-          }}
-        >
-          {data.feature}
-        </Text>
-      )}
       <View style={{ padding: 10, gap: 6, flex: 1.5 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Text
@@ -148,36 +197,25 @@ const AccomodationItem = ({ data, type = "normal" }) => {
             </Text>
           </View>
         </View>
-
         <Text style={{ color: colors.textGray, fontSize: 15 }}>
-          {data?.status == "Available" ? "Sẵn sàng cho thuê" : "Không có sẵn"}
+          {data?.status === "Available" ? "Sẵn sàng cho thuê" : "Không có sẵn"}
         </Text>
         <View
           style={{
-            flexDirection: type != "normal" ? "col" : "row",
+            flexDirection: type !== "normal" ? "column" : "row",
             justifyContent: "space-between",
             marginTop: 3,
             gap: 8,
-            marginHorizontal: type != "normal" ? 0 : 5,
+            marginHorizontal: type !== "normal" ? 0 : 5,
           }}
         >
           <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
-            {/* <MaterialCommunityIcons
-              name="seat-outline"
-              size={18}
-              color={colors.mainColor}
-            /> */}
             <MaterialCommunityIcons
               name="globe-model"
               size={18}
               color={colors.mainColor}
             />
-            <Text
-              style={{
-                fontSize: 14,
-                letterSpacing: -1,
-              }}
-            >
+            <Text style={{ fontSize: 14, letterSpacing: -1 }}>
               {data?.year}
             </Text>
           </View>
@@ -187,75 +225,12 @@ const AccomodationItem = ({ data, type = "normal" }) => {
               size={20}
               color={colors.mainColor}
             />
-            <Text
-              style={{
-                fontSize: 14,
-                letterSpacing: -1,
-              }}
-            >
+            <Text style={{ fontSize: 14, letterSpacing: -1 }}>
               {formatPrice(data?.pricePerDay)} VNĐ
             </Text>
           </View>
-          {/* <Text
-            style={{
-              fontSize: 13,
-              textDecorationLine: "line-through",
-              letterSpacing: -1,
-            }}
-          >
-            đ {data?.historicalCost}
-          </Text>
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: 500,
-              color: colors.mainColor,
-              letterSpacing: -1,
-            }}
-          >
-            đ {data?.pricingDecreased}
-          </Text> */}
         </View>
       </View>
-      {/* <View
-        style={{ position: "absolute", top: 80, right: -7.5, zIndex: 9999 }}
-      >
-        <View
-          style={{
-            width: 0,
-            height: 0,
-            borderLeftWidth: 8,
-            borderLeftColor: "#8C3200",
-            borderTopWidth: 6,
-            borderTopColor: "transparent",
-            borderBottomWidth: 6,
-            borderBottomColor: "transparent",
-            position: "absolute",
-            right: 0, // Đẩy tam giác ra ngoài
-            bottom: -7,
-          }}
-        />
-        <Text
-          style={{
-            padding: 2,
-            borderTopLeftRadius: 4,
-            borderBottomLeftRadius: 4,
-            borderTopRightRadius: 4,
-            // borderBottomRightRadius: 8,
-            backgroundColor: "#D86F00",
-            color: "white",
-            paddingHorizontal: 10,
-            shadowColor: "#999", // Màu bóng
-            shadowOffset: { width: 1, height: 1 }, // Độ lệch bóng (X, Y)
-            shadowOpacity: 0.5, // Độ mờ
-            shadowRadius: 1, // Bán kính mờ
-            elevation: 2, // Bóng trên Android
-            fontSize: 12,
-          }}
-        >
-          Tiết kiệm {data?.discount} %
-        </Text>
-      </View> */}
     </TouchableOpacity>
   );
 };
