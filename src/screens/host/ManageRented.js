@@ -18,6 +18,7 @@ import {
 import OrderCard from "../../module/Order/OrderCard";
 import api from "../../util/api";
 import { AuthContext } from "../../context/AuthContext";
+import { useIsFocused } from "@react-navigation/native";
 
 const Seperate = () => {
   return (
@@ -34,7 +35,7 @@ const Seperate = () => {
 
 const ManageRented = () => {
   const { user } = useContext(AuthContext);
-  const tabs = ["Chờ duyệt", "Đang dùng", "Đã duyệt", "Từ chối", "Hoàn thành"];
+  const tabs = ["Chờ duyệt", "Đã duyệt", "Từ chối", "Đang dùng", "Hoàn thành"];
   const [selectedTab, setSelectedTab] = useState("Chờ duyệt");
   const [order, setOrder] = useState([]);
 
@@ -58,9 +59,11 @@ const ManageRented = () => {
     }
   };
 
+  const isForcused = useIsFocused();
+
   useEffect(() => {
-    fetchingOrders();
-  }, []);
+    if (isForcused) fetchingOrders();
+  }, [isForcused]);
 
   // Lọc đơn hàng dựa trên selectedTab
   const filteredOrders = useMemo(() => {
