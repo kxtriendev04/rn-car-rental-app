@@ -30,9 +30,9 @@ const HostHomeScreen = () => {
 
   const fetchingOrders = async () => {
     try {
-      console.log("id: ", user.id);
+      // console.log("id: ", user.id);
       const response = await api.get(`/rentals/user/split/${user.id}`);
-      console.log("response: ", response);
+      // console.log("response: ", response);
       setOrder(response.data.results.content);
     } catch (e) {
       console.log("Mã lỗi: ", e);

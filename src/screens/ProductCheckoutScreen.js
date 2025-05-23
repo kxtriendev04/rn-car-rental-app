@@ -62,18 +62,9 @@ const ProductCheckoutScreen = ({ route }) => {
     },
   ]);
   function convertToDateTime(date, time) {
-    // Bổ sung ":00" vào sau time nếu cần thiết
-    if (!time.includes(":")) time += ":00";
-    if (time.split(":").length === 2) time += ":00";
-    return `${date}T${time}`;
+    const [hour, minute] = time.split(":").map((part) => part.padStart(2, "0"));
+    return `${date}T${hour}:${minute}`;
   }
-  // console.log(data);
-  // useEffect(() => {
-  //   setBill({
-  //     title: `${data.pricePerDay} VNĐ x ${calculateDays(time)} ngày`,
-  //     price: data.pricePerDay * calculateDays(time),
-  //   });
-  // }, []);
 
   const handleSubmit = async () => {
     // console.log(123);
@@ -89,11 +80,21 @@ const ProductCheckoutScreen = ({ route }) => {
     };
     console.log("request: ", request);
     try {
-      api.post("/rentals", request);
+      const res = await api.post("/rentals", request);
+      console.log(res.data.results);
       Alert.alert("Đặt xe thành công!!!");
       navigation.goBack();
     } catch (e) {
-      console.log("Lỗi khi đặt xe!!! ", e);
+      if (e.response) {
+        // lỗi từ server
+        console.log("Lỗi server:", e.response.data);
+      } else if (e.request) {
+        // lỗi do request không gửi được
+        console.log("Lỗi request:", e.request);
+      } else {
+        console.log("Lỗi khác:", e.message);
+      }
+      Alert.alert("Lỗi khi đặt xe. Vui lòng thử lại.");
     }
   };
   // const handleApplyCoupon = async () => {
