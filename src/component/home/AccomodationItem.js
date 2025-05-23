@@ -108,7 +108,7 @@ const AccomodationItem = ({ data, type = "normal" }) => {
       }}
       style={[
         {
-          height: 250,
+          minHeight: type == "full" ? 320 : 250,
           marginBottom: 10,
           borderRadius: 22,
           backgroundColor: "white",
@@ -147,7 +147,8 @@ const AccomodationItem = ({ data, type = "normal" }) => {
               borderTopLeftRadius: 22,
               borderTopRightRadius: 22,
               width: "100%",
-              height: "100%",
+              height: type == "full" ? 200 : type == "masonry" ? 120 : 150,
+              // height: 500,
               objectFit: "cover",
             }}
             source={

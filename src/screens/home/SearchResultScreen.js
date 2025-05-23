@@ -125,72 +125,82 @@ const SearchResultScreen = ({ route, navigation }) => {
           />
         </Pressable>
       </View>
-      {/* DanhSach */}
-      <FlatList
-        data={searchResult}
-        ListHeaderComponent={
-          <View>
-            <View
-              style={{ height: 10, backgroundColor: colors.greyBackground }}
-            ></View>
-            <View
-              style={{
-                paddingTop: 16,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              {/* TabItem */}
-              {tabs.map((tab, index) => (
-                <React.Fragment key={tab}>
-                  <TouchableOpacity
-                    onPress={() => setSelectedTab(tab)}
-                    style={{
-                      flex: 1,
-                      paddingBottom: 8,
+      {searchResult && searchResult ? (
+        <View>
+          {/* DanhSach */}
+          <FlatList
+            data={searchResult}
+            ListHeaderComponent={
+              <View>
+                <View
+                  style={{ height: 10, backgroundColor: colors.greyBackground }}
+                ></View>
+                <View
+                  style={{
+                    paddingTop: 16,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* TabItem */}
+                  {tabs.map((tab, index) => (
+                    <React.Fragment key={tab}>
+                      <TouchableOpacity
+                        onPress={() => setSelectedTab(tab)}
+                        style={{
+                          flex: 1,
+                          paddingBottom: 8,
 
-                      borderBottomWidth: 2, // Độ dày viền dưới
-                      borderBottomColor:
-                        selectedTab == tab ? colors.mainColor : "transparent", // Màu viền dưới
+                          borderBottomWidth: 2, // Độ dày viền dưới
+                          borderBottomColor:
+                            selectedTab == tab
+                              ? colors.mainColor
+                              : "transparent", // Màu viền dưới
+                        }}
+                      >
+                        <Text
+                          style={{
+                            textAlign: "center",
+                            paddingVertical: 4,
+                            color: selectedTab == tab ? colors.mainColor : "",
+                          }}
+                        >
+                          {tab}
+                        </Text>
+                      </TouchableOpacity>
+                      <Seperate />
+                      {/* {index < tabs.length - 1 && <Seperate />} */}
+                    </React.Fragment>
+                  ))}
+
+                  {/* Icon Filter */}
+                  <View
+                    style={{
+                      flex: 0.5,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        paddingVertical: 4,
-                        color: selectedTab == tab ? colors.mainColor : "",
-                      }}
-                    >
-                      {tab}
-                    </Text>
-                  </TouchableOpacity>
-                  <Seperate />
-                  {/* {index < tabs.length - 1 && <Seperate />} */}
-                </React.Fragment>
-              ))}
+                    <Ionicons name="filter" size={18} color="grey" />
+                  </View>
+                </View>
 
-              {/* Icon Filter */}
-              <View
-                style={{
-                  flex: 0.5,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Ionicons name="filter" size={18} color="grey" />
-              </View>
-            </View>
-
-            {/* <View
+                {/* <View
               style={{ height: 10, backgroundColor: colors.greyBackground }}
             ></View> */}
-          </View>
-        }
-        showsHorizontalScrollIndicator={false}
-        // pagingEnabled
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <SearchVehicalCard data={item} />}
-      />
+              </View>
+            }
+            showsHorizontalScrollIndicator={false}
+            // pagingEnabled
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <SearchVehicalCard data={item} />}
+          />
+        </View>
+      ) : (
+        <Text style={{ textAlign: "center", marginTop: 10 }}>
+          Không tìm thấy kết quả.
+        </Text>
+      )}
     </SafeAreaView>
   );
 };

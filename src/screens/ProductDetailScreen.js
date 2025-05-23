@@ -642,11 +642,12 @@ const ProductDetailScreen = ({ route }) => {
             </Text>
           </Pressable>
         </View>
+
         <View
           style={{ height: 15, backgroundColor: colors.greyBackground }}
         ></View>
         {/* Room List */}
-        <View
+        {/* <View
           style={{
             paddingVertical: 15,
             borderRadius: 15,
@@ -672,7 +673,7 @@ const ProductDetailScreen = ({ route }) => {
             keyExtractor={(item) => item?.id}
             style={{ paddingLeft: 5 }}
           />
-        </View>
+        </View> */}
         <View
           style={{ height: 80, backgroundColor: colors.greyBackground }}
         ></View>

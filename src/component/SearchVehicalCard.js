@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   FlatList,
@@ -15,10 +16,13 @@ import { useState } from "react";
 import FeatureIcon from "./FeatureIcon";
 import { formatPrice } from "../util/formatValue";
 import { API_URL_IMG } from "../util/api";
+import { getImageUrl } from "../util/helper";
 
 const SearchVehicalCard = ({ data }) => {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get("window").width;
+  const [imageLoading, setImageLoading] = useState({});
+  const [avatarLoading, setAvatarLoading] = useState(false);
   const [liked, setLiked] = useState(false);
   const toggleLike = () => {
     setLiked((pre) => !pre);
@@ -27,7 +31,13 @@ const SearchVehicalCard = ({ data }) => {
   return (
     <Pressable
       // activeOpacity={1}
-      onPress={() => navigation.navigate("ProductDetail", { id: data?.id })}
+      onPress={() => {
+        navigation.navigate("HomeStack", {
+          screen: "ProductDetail",
+          params: { id: data.id },
+        });
+      }}
+      // onPress={() => navigation.navigate("ProductDetail", { id: data?.id })}
       // onPress={() => {
       //   Alert.alert("Click!"); // Hiển thị thông báo khi nhấn
       // }}
@@ -53,25 +63,47 @@ const SearchVehicalCard = ({ data }) => {
             // viewabilityConfig={viewabilityConfig}
             showsHorizontalScrollIndicator={false}
             data={data?.images}
-            renderItem={({ item, index }) => (
-              <View
-                style={{
-                  width: screenWidth - 15 - 12,
-                  marginTop: 12,
-                  height: 220,
-                  paddingHorizontal: 15,
-                }}
-              >
-                <Image
-                  source={{ uri: API_URL_IMG + item?.imageUrl }} // Dùng ảnh sản phẩm làm background
+            renderItem={({ item, index }) => {
+              const uri = getImageUrl(item?.imageUrl);
+              return (
+                <View
                   style={{
-                    flex: 1,
-                    borderRadius: 18,
+                    width: screenWidth - 15 - 12,
+                    marginTop: 12,
+                    height: 220,
+                    paddingHorizontal: 15,
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                  resizeMode="cover"
-                ></Image>
-              </View>
-            )}
+                >
+                  {imageLoading[index] && (
+                    <ActivityIndicator
+                      size="large"
+                      color={colors.mainColor}
+                      style={{
+                        position: "absolute",
+                        zIndex: 1,
+                      }}
+                    />
+                  )}
+                  <Image
+                    source={{ uri }}
+                    style={{
+                      flex: 1,
+                      borderRadius: 18,
+                      width: "100%",
+                    }}
+                    resizeMode="cover"
+                    onLoadStart={() =>
+                      setImageLoading((prev) => ({ ...prev, [index]: true }))
+                    }
+                    onLoadEnd={() =>
+                      setImageLoading((prev) => ({ ...prev, [index]: false }))
+                    }
+                  />
+                </View>
+              );
+            }}
             keyExtractor={(item, index) => index.toString()}
           />
           <TouchableOpacity
@@ -93,12 +125,65 @@ const SearchVehicalCard = ({ data }) => {
             />
           </TouchableOpacity>
         </View>
-        <Image
-          source={{
-            uri:
-              data?.owner?.avatarUrl ||
-              "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
-          }}
+        <View>
+          {avatarLoading && (
+            <ActivityIndicator
+              size="small"
+              color={colors.mainColor}
+              style={{
+                position: "absolute",
+                left: 28,
+                bottom: -13,
+                width: 42,
+                height: 42,
+                zIndex: 1,
+              }}
+            />
+          )}
+          <Image
+            source={
+              data.owner.avatarUrl
+                ? { uri: getImageUrl(data.owner.avatarUrl) }
+                : {
+                    uri: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
+                  }
+            }
+            onLoadStart={() => setAvatarLoading(true)}
+            onLoadEnd={() => setAvatarLoading(false)}
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 1000,
+              position: "absolute",
+              left: 28,
+              borderColor: "white",
+              borderWidth: 1,
+              bottom: -13,
+            }}
+          />
+        </View>
+
+        {/* <Image
+          // source={
+          //   //   {
+          //   //   uri:
+          //   //     data?.owner?.avatarUrl ||
+          //   //     "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
+          //   // }
+          //   data.owner.avatarUrl
+          //     ? { uri: API_URL_IMG + data?.owner?.avatarUrl }
+          //     : {
+          //         uri: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
+          //       }
+          //   // require("../../../assets/defaultAvatar.jpg")
+          // }
+          source={
+            data.owner.avatarUrl
+              ? { uri: getImageUrl(data.owner.avatarUrl) }
+              : {
+                  uri: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
+                }
+          }
           style={{
             width: 42,
             height: 42,
@@ -109,7 +194,7 @@ const SearchVehicalCard = ({ data }) => {
             borderWidth: 1,
             bottom: -13,
           }}
-        ></Image>
+        ></Image> */}
       </View>
       <Text
         style={{

@@ -55,12 +55,7 @@ const AddCar = ({ navigation }) => {
       pricePerDay: "",
       features: [],
       collateral: "10 triệu tiền mặt khi nhận xe",
-      term: `Bảo quản xe cẩn thận, không được tự ý sửa chữa, thay đổi kết cấu xe.
-Đổ nhiên liệu theo đúng loại quy định của nhà sản xuất.
-Báo ngay cho bên cho thuê nếu xe gặp sự cố, hỏng hóc hoặc tai nạn.
-Trả xe đúng thời gian, địa điểm và tình trạng như lúc nhận.
-Hai bên cam kết thực hiện đúng các điều khoản trên, nếu có tranh chấp, sẽ giải quyết bằng thương lượng hoặc theo pháp luật Việt Nam.
-Tuân thủ luật giao thông Việt Nam.`,
+      term: `Trả xe đúng thời hạn.`,
       isPublished: true,
       status: "Sẵn xe",
       images: [],

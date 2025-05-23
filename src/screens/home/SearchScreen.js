@@ -29,7 +29,7 @@ const suggestionsData = [
   "Bán tải Ford Ranger",
 ];
 
-const recentSearch = ["Khúc Triển", "Lambogini", "Toyota"];
+const recentSearch = ["Tesla", "Lambogini", "Toyota"];
 
 const SearchScreen = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");

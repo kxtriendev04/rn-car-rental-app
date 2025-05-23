@@ -11,7 +11,7 @@ const messages = [
     time: "Today",
     unread: 1,
     avatar:
-      "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg?region=240%2C0%2C1440%2C1080",
+      "https://img.freepik.com/free-vector/cute-bot-say-users-hello-chatbot-greets-online-consultation_80328-195.jpg?semt=ais_hybrid&w=740",
   },
 ];
 
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
-    paddingTop: 50
+    paddingTop: 50,
   },
   header: {
     fontSize: 24,

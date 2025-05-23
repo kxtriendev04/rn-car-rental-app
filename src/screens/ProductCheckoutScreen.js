@@ -81,7 +81,8 @@ const ProductCheckoutScreen = ({ route }) => {
       vehicle: { id: data.id },
       renter: { id: user.id },
       owner: { id: data.owner.id },
-      voucher: { id: voucher.id },
+      // voucher: { id: voucher.id },
+      voucher: voucher?.id ? { id: voucher.id } : undefined,
       startDate: convertToDateTime(time.pickupDate, time.pickupTime),
       endDate: convertToDateTime(time.returnDate, time.returnTime),
       totalPrice: bill[0]?.price - bill[1]?.price || bill[0]?.price,
@@ -95,36 +96,71 @@ const ProductCheckoutScreen = ({ route }) => {
       console.log("Lỗi khi đặt xe!!! ", e);
     }
   };
+  // const handleApplyCoupon = async () => {
+  //   console.log(coupon);
+  //   let priceDecrease = 0;
+  //   try {
+  //     const response = await api.get("/vouchers/code/" + coupon);
+  //     const voucher = response.data.results;
+  //     if (voucher.minOrderValue >= bill[0].price) {
+  //       Alert.alert("Hóa đơn của bạn không đạt yêu cầu");
+  //       return;
+  //     }
+  //     console.log("voucher: ", voucher);
+  //     if (voucher.discountType == "FIXED") {
+  //       priceDecrease = voucher.discountValue;
+  //     } else if (voucher.discountType == "PERCENT") {
+  //       priceDecrease =
+  //         (data.pricePerDay * calculateDays(time) * voucher.discountValue) /
+  //         100;
+  //     }
+  //     setVoucher(voucher);
+  //   } catch (e) {
+  //     console.log("Lỗi khi lấy voucher ", e);
+  //   }
+  //   setBill([
+  //     ...bill,
+  //     {
+  //       title: "Giảm giá",
+  //       price: priceDecrease,
+  //     },
+  //   ]);
+  //   console.log("bill: ", bill);
+  // };
   const handleApplyCoupon = async () => {
-    console.log(coupon);
     let priceDecrease = 0;
     try {
       const response = await api.get("/vouchers/code/" + coupon);
-      const voucher = response.data.results;
-      if (voucher.minOrderValue >= bill[0].price) {
+      const fetchedVoucher = response.data.results;
+
+      if (fetchedVoucher.minOrderValue >= bill[0].price) {
         Alert.alert("Hóa đơn của bạn không đạt yêu cầu");
         return;
       }
-      console.log("voucher: ", voucher);
-      if (voucher.discountType == "FIXED") {
-        priceDecrease = voucher.discountValue;
-      } else if (voucher.discountType == "PERCENT") {
+
+      if (fetchedVoucher.discountType == "FIXED") {
+        priceDecrease = fetchedVoucher.discountValue;
+      } else if (fetchedVoucher.discountType == "PERCENT") {
         priceDecrease =
-          (data.pricePerDay * calculateDays(time) * voucher.discountValue) /
+          (data.pricePerDay *
+            calculateDays(time) *
+            fetchedVoucher.discountValue) /
           100;
       }
-      setVoucher(voucher);
+
+      // ✅ Gộp luôn cả hai cập nhật
+      setVoucher(fetchedVoucher);
+      setBill([
+        bill[0], // giữ nguyên mục đầu
+        {
+          title: "Giảm giá",
+          price: priceDecrease,
+        },
+      ]);
     } catch (e) {
       console.log("Lỗi khi lấy voucher ", e);
+      Alert.alert("Không tìm thấy mã giảm giá!");
     }
-    setBill([
-      ...bill,
-      {
-        title: "Giảm giá",
-        price: priceDecrease,
-      },
-    ]);
-    console.log("bill: ", bill);
   };
 
   return (

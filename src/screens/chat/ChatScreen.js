@@ -28,7 +28,8 @@ const ChatScreen = ({ navigation }) => {
         minute: "2-digit",
       }),
       sender: "other",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+      avatar:
+        "https://img.freepik.com/free-vector/cute-bot-say-users-hello-chatbot-greets-online-consultation_80328-195.jpg?semt=ais_hybrid&w=740",
     },
   ]);
   const [inputText, setInputText] = useState("");

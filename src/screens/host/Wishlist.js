@@ -37,7 +37,8 @@ const Wishlist = () => {
   const fetchData = async () => {
     try {
       const res = await api.get(`/favorites?userId=${user.id}`);
-      if (res === 200 || res === 201) setData(res.data.results);
+      setData(res.data.results);
+      console.log("fetching favourite");
     } catch (e) {
       console.log("Đã xảy ra lỗi: ", e);
     }
@@ -50,18 +51,19 @@ const Wishlist = () => {
 
   const navigator = useNavigation();
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("HomeStack", {
-          screen: "ProductDetail",
-          params: { id: item.id },
-        })
-      }
+    <View
+    // onPress={() =>
+    //   navigation.navigate("HomeStack", {
+    //     screen: "ProductDetail",
+    //     params: { id: item.id },
+    //   })
+    // }
     >
-      <AccomodationItem data={item} />
-    </TouchableOpacity>
+      <AccomodationItem data={item} type="full" />
+      {/* <SearchVehicalCard data={item}></SearchVehicalCard> */}
+    </View>
   );
-
+  console.log("data: ", data);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.whiteColor }}>
       <FlatList
@@ -73,7 +75,11 @@ const Wishlist = () => {
             <Text>Bạn chưa có xe nào trong danh sách yêu thích</Text>
           </View>
         }
-        contentContainerStyle={{ paddingHorizontal: 5 }}
+        contentContainerStyle={{
+          paddingHorizontal: 5,
+          paddingHorizontal: 20,
+          marginTop: 20,
+        }}
       />
     </SafeAreaView>
   );
