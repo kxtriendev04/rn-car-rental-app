@@ -83,7 +83,7 @@ const ProductDetailScreen = ({ route }) => {
     try {
       console.log(`/favorites/check?userId=${user.id}&vehicleId=${data.id}`);
       const res = await api.get(
-        `/favorites/check?userId=${user.id}&vehicleId=${data.id}`
+        `/favorites/check?userId=${user.id}&vehicleId=${id}`
       );
       if (res.status === 200) {
         setLiked(res.data.results === true);

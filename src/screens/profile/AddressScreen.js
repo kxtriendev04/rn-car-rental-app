@@ -15,12 +15,13 @@ import { useCallback } from "react";
 const AddressScreen = ({ navigation, route }) => {
   const [addresses, setAddresses] = useState([]);
   const { user } = useContext(AuthContext);
+  console.log("id: ", user.id);
   const fetchingData = async () => {
     try {
       const response = await api.get("/addresses/user/" + user.id);
       setAddresses(response.data.results);
     } catch (e) {
-      console.log(e);
+      console.log("Lỗi lấy danh sách address", e);
     }
   };
   useFocusEffect(

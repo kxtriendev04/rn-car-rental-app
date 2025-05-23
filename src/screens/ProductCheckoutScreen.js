@@ -84,6 +84,12 @@ const ProductCheckoutScreen = ({ route }) => {
       console.log(res.data.results);
       Alert.alert("Đặt xe thành công!!!");
       navigation.goBack();
+      // navigation.navigate("ManageRented");
+      // navigation.navigate("HomeStack", {
+      //   stack: ,
+      //     screen: "ProductDetail",
+      //     params: { id: data.id },
+      //   });
     } catch (e) {
       if (e.response) {
         // lỗi từ server
